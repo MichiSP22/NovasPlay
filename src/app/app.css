@@ -1,0 +1,9 @@
+.with-layout {
+  padding-top: 76px;
+}
+
+@media (max-width: 900px) {
+  .with-layout {
+    padding-top: 70px;
+  }
+}

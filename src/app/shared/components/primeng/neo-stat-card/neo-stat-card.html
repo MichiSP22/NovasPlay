@@ -1,0 +1,16 @@
+<p-card styleClass="neo-stat-card">
+  <ng-template pTemplate="header">
+    <div class="neo-stat-head">{{ title() }}</div>
+  </ng-template>
+
+  <div class="neo-stat-value">{{ value() }}</div>
+
+  @if (subtitle()) {
+    <div class="neo-stat-subtitle">{{ subtitle() }}</div>
+  }
+
+  @if (trend()) {
+    <p-tag [value]="trend()" severity="info"></p-tag>
+  }
+</p-card>
+

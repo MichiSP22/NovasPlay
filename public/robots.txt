@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Private and checkout flows
+Disallow: /admin
+Disallow: /profile
+Disallow: /checkout
+Disallow: /cart-checkout
+Disallow: /Access
+
+Sitemap: https://novasplay.neocharge.app/sitemap.xml

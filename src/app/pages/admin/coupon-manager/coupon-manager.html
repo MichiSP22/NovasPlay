@@ -1,0 +1,128 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">confirmation_number</span>
+        <h3>Gestion de Cupones</h3>
+      </div>
+      <button class="btn-neon-action" type="button" (click)="openModal()">
+        <span class="material-icons notranslate" translate="no">add</span>
+        Nuevo Cupon
+      </button>
+    </div>
+
+    <div class="manager-filters">
+      <div class="neon-input-group search-filter">
+        <label class="neon-label">Buscar</label>
+        <div class="search-container">
+          <span class="material-icons notranslate" translate="no">search</span>
+          <input
+            class="neon-input"
+            type="text"
+            placeholder="Codigo, nombre o descripcion"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onFilterChange()">
+        </div>
+      </div>
+
+      <div class="neon-input-group">
+        <label class="neon-label">Tipo</label>
+        <select class="neon-select" [(ngModel)]="typeFilter" (change)="onFilterChange()">
+          <option value="all">Todos</option>
+          <option value="percent">Porcentaje</option>
+          <option value="fixed">Monto fijo</option>
+        </select>
+      </div>
+
+      <div class="neon-input-group">
+        <label class="neon-label">Estado</label>
+        <select class="neon-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+          <option value="expired">Expirados</option>
+        </select>
+      </div>
+
+      <button class="btn-ghost-filter" type="button" (click)="clearFilters()">
+        <span class="material-icons notranslate" translate="no">restart_alt</span>
+      </button>
+    </div>
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th style="width: 22%">CUPON</th>
+            <th style="width: 15%">DESCUENTO</th>
+            <th style="width: 15%">ESTADO</th>
+            <th style="width: 22%">VIGENCIA</th>
+            <th style="width: 12%">USOS</th>
+            <th class="text-right" style="width: 14%">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+          } @else if (coupons().length === 0) {
+            <tr><td colspan="6" class="empty-state">No hay cupones registrados.</td></tr>
+          } @else {
+            @for (coupon of coupons(); track coupon.id || coupon.code) {
+              <tr>
+                <td>
+                  <div class="coupon-code notranslate" translate="no">{{ coupon.code }}</div>
+                  <small class="text-truncate-2">{{ coupon.name || coupon.description || 'Sin descripcion' }}</small>
+                </td>
+                <td>
+                  <strong class="discount-value notranslate" translate="no">{{ discountLabel(coupon) }}</strong>
+                  <small>{{ coupon.discountType === 0 ? 'Porcentaje' : 'Monto fijo' }}</small>
+                </td>
+                <td>
+                  <span class="status-pill" [ngClass]="statusClass(coupon)">
+                    {{ statusLabel(coupon) }}
+                  </span>
+                </td>
+                <td>{{ dateRangeLabel(coupon) }}</td>
+                <td class="notranslate" translate="no">{{ usageLabel(coupon) }}</td>
+                <td class="text-right">
+                  <button class="action-btn edit" type="button" title="Editar" (click)="openModal(coupon)">
+                    <span class="material-icons notranslate" translate="no">edit</span>
+                  </button>
+                  <button class="action-btn delete" type="button" title="Eliminar" (click)="deleteCoupon(coupon.id)">
+                    <span class="material-icons notranslate" translate="no">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination-container">
+        <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span>
+          Anterior
+        </button>
+
+        <div class="pagination-info">
+          Pagina <b>{{ currentPage() }}</b> de <b>{{ totalPages() }}</b>
+        </div>
+
+        <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          Siguiente
+          <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-coupon-form-modal
+    [couponToEdit]="selectedCoupon()"
+    (onClose)="closeModal()"
+    (onSave)="onSaveSuccess()">
+  </app-coupon-form-modal>
+}

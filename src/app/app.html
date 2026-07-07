@@ -1,0 +1,20 @@
+@if (showLayout) {
+  <app-header (onOpenAuth)="handleAuthOpen($event)"></app-header>
+}
+
+<main [class.with-layout]="showLayout">
+  <router-outlet></router-outlet>
+</main>
+
+@if (showLayout) {
+  <app-footer></app-footer>
+}
+
+@if (showAuthModal && showLayout) {
+  <app-auth-modal
+    [isLogin]="isLoginMode"
+    (onClose)="handleAuthClose()">
+  </app-auth-modal>
+}
+
+<app-toast></app-toast>

@@ -1,0 +1,304 @@
+<header class="header">
+  <div class="logo notranslate" translate="no" (click)="goHomeTop()">
+    <span class="brand-mark">N</span>
+    <span class="brand-text">Novas<span>Play</span></span>
+  </div>
+
+  <button class="menu-toggle-btn" (click)="toggleMobileMenu()">
+    <span class="material-icons notranslate" translate="no">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
+  </button>
+
+  <div class="nav-links-container notranslate" translate="no" [class.open]="isMobileMenuOpen()">
+    <nav class="nav-links command-nav" aria-label="Herramientas principales">
+      <form class="header-search" (submit)="submitHeaderSearch($event)">
+        <span class="material-icons notranslate" translate="no">search</span>
+        <input
+          type="search"
+          name="headerSearch"
+          [ngModel]="headerSearch()"
+          (ngModelChange)="headerSearch.set($event)"
+          placeholder="Buscar juego"
+          autocomplete="off">
+        <button type="submit" aria-label="Buscar en catalogo">
+          <span class="material-icons notranslate" translate="no">arrow_forward</span>
+        </button>
+      </form>
+    </nav>
+  </div>
+
+  <div class="header-novix-guide notranslate" translate="no" aria-hidden="true">
+    <img src="novix-header-guide.png" alt="">
+    <span>Que vas a recargar?</span>
+  </div>
+
+  <div class="auth-actions notranslate" translate="no">
+    <div class="header-tools">
+      <div class="country-selector">
+        <button type="button" class="country-trigger" (click)="toggleCountryMenu()" aria-label="Seleccionar pais" title="Pais">
+          @if (selectedCountry()?.isoCode === 'GL') {
+            <span class="material-icons notranslate country-icon" translate="no">language</span>
+          } @else if (getCountryFlagUrl(selectedCountry())) {
+            <span class="country-flag-shell" [attr.data-code]="getCountryLabel(selectedCountry())">
+              <img
+                class="country-flag"
+                [src]="getCountryFlagUrl(selectedCountry()) | noCache"
+                [alt]="getCountryName(selectedCountry())"
+                (error)="onCountryFlagError($event)">
+            </span>
+          } @else {
+            <span class="country-code">{{ getCountryLabel(selectedCountry()) }}</span>
+          }
+          <strong>{{ getCountryName(selectedCountry()) }}</strong>
+          <span class="material-icons notranslate dropdown-arrow" translate="no" [class.open]="isCountryMenuOpen()">expand_more</span>
+        </button>
+
+        @if (isCountryMenuOpen()) {
+          <div class="country-menu">
+            @for (country of countries(); track country.isoCode) {
+              <button type="button" class="country-option" [class.selected]="selectedCountry()?.isoCode === country.isoCode" (click)="selectCountry(country)">
+                @if (country.isoCode === 'GL') {
+                  <span class="material-icons notranslate country-icon" translate="no">language</span>
+                } @else if (getCountryFlagUrl(country)) {
+                  <span class="country-flag-shell menu-flag" [attr.data-code]="country.isoCode">
+                    <img
+                      class="country-flag"
+                      [src]="getCountryFlagUrl(country) | noCache"
+                      [alt]="country.name"
+                      (error)="onCountryFlagError($event)">
+                  </span>
+                } @else {
+                  <span class="country-code">{{ country.isoCode }}</span>
+                }
+                <span>{{ country.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <button type="button" (click)="toggleContactModal()" class="tool-btn support-tool" aria-label="Abrir soporte" title="Soporte">
+        <span class="material-icons notranslate" translate="no">support_agent</span>
+      </button>
+    </div>
+
+    @if (hasToken()) {
+      <div class="cart-dropdown-container">
+        <button class="user-account-btn cart-btn" (click)="toggleCart()" aria-label="Abrir carrito">
+          <span class="material-icons notranslate" translate="no">shopping_cart</span>
+          @if (cartService.itemCount() > 0) {
+            <span class="cart-badge">{{ cartService.itemCount() }}</span>
+          }
+        </button>
+      </div>
+
+      <div class="profile-dropdown-container">
+        <button class="user-account-btn" (click)="toggleDropdown()">
+          <span class="material-icons notranslate" translate="no">account_circle</span>
+          <span class="account-name">{{ currentUser()?.firstName || 'Mi Cuenta' }}</span>
+          <span class="material-icons dropdown-arrow notranslate" translate="no" [class.open]="isDropdownOpen()">expand_more</span>
+        </button>
+
+        @if (isDropdownOpen()) {
+          <div class="dropdown-menu account-menu notranslate" translate="no">
+            <div class="account-menu-header">
+              <div class="account-avatar">
+                @if (currentUser()?.imageInfo?.imageURL) {
+                  <img [src]="currentUser()?.imageInfo?.imageURL" [alt]="getAccountName()">
+                } @else {
+                  <span>{{ userInitial() || 'N' }}</span>
+                }
+              </div>
+
+              <div class="account-summary">
+                <span class="account-eyebrow">Cuenta NovasPlay</span>
+                <strong>{{ getAccountName() }}</strong>
+                <small>{{ currentUser()?.email || 'Sesion activa' }}</small>
+              </div>
+
+              <span class="account-role-chip">{{ getRoleLabel() }}</span>
+            </div>
+
+            <div class="account-menu-actions">
+              <button type="button" class="account-action" (click)="goToProfile()">
+                <span class="action-icon material-icons notranslate" translate="no">person</span>
+                <span>
+                  <strong>Mi perfil</strong>
+                  <small>Datos de cuenta</small>
+                </span>
+                <span class="material-icons notranslate action-arrow" translate="no">chevron_right</span>
+              </button>
+
+              @if (canAccessAdmin()) {
+                <button type="button" class="account-action highlighted" (click)="goToAdminPanel()">
+                  <span class="action-icon material-icons notranslate" translate="no">space_dashboard</span>
+                  <span>
+                    <strong>Panel de control</strong>
+                    <small>Gestionar NovasPlay</small>
+                  </span>
+                  <span class="material-icons notranslate action-arrow" translate="no">chevron_right</span>
+                </button>
+              } @else {
+                <button type="button" class="account-action highlighted" (click)="goToOrders()">
+                  <span class="action-icon material-icons notranslate" translate="no">receipt_long</span>
+                  <span>
+                    <strong>Mis compras</strong>
+                    <small>Historial y estados</small>
+                  </span>
+                  <span class="material-icons notranslate action-arrow" translate="no">chevron_right</span>
+                </button>
+              }
+            </div>
+
+            <button type="button" class="account-logout" (click)="logout()">
+              <span class="material-icons notranslate" translate="no">logout</span>
+              Cerrar sesion
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <button class="btn-login" (click)="openAuth('login')">Iniciar sesion</button>
+      <button class="btn-register" (click)="openAuth('register')">Registrarse</button>
+    }
+  </div>
+</header>
+
+@if (hasToken() && isCartOpen()) {
+  <div class="cart-drawer-layer notranslate" translate="no">
+    <button class="cart-drawer-backdrop" aria-label="Cerrar carrito" (click)="closeCart()"></button>
+
+    <aside class="cart-drawer-panel" aria-label="Carrito de compras">
+      <div class="cart-drawer-header">
+        <div class="cart-drawer-title">
+          <span class="cart-drawer-icon material-icons notranslate" translate="no">shopping_bag</span>
+          <div>
+            <span class="cart-eyebrow">Carrito NovasPlay</span>
+            <h2>Tu lista</h2>
+          </div>
+        </div>
+
+        <button type="button" class="cart-drawer-close" (click)="closeCart()" aria-label="Cerrar carrito">
+          <span class="material-icons notranslate" translate="no">close</span>
+        </button>
+      </div>
+
+      <div class="cart-drawer-body">
+        @if (cartService.itemCount() === 0) {
+          <div class="drawer-empty-state">
+            <span class="material-icons notranslate" translate="no">shopping_basket</span>
+            <h3>Tu carrito esta vacio</h3>
+            <p>Agrega una recarga desde el catalogo para verla aqui.</p>
+            <button type="button" class="btn-drawer-secondary" (click)="goHomeTop()">Explorar catalogo</button>
+          </div>
+        } @else {
+          <div class="drawer-items-list">
+            @for (item of cartService.items(); track item.idInterno) {
+              <article class="drawer-cart-item">
+                <div class="drawer-item-main">
+                  <div class="drawer-item-badge">
+                    <span class="material-icons notranslate" translate="no">sports_esports</span>
+                  </div>
+
+                  <div class="drawer-item-copy">
+                    <h3 class="notranslate" translate="no">{{ item.juego }}</h3>
+                    <span>{{ item.paquete.cant }}</span>
+                    <small>ID {{ item.idUsuario }}</small>
+                  </div>
+
+                  <button type="button" class="remove-cart-item" (click)="cartService.removeItem(item.idInterno)" aria-label="Quitar recarga">
+                    <span class="material-icons notranslate" translate="no">delete_outline</span>
+                  </button>
+                </div>
+
+                <div class="drawer-item-footer">
+                  <span class="notranslate" translate="no">{{ item.metodoPagoNombre }}</span>
+                  <strong class="notranslate" translate="no">
+                    @if (item.paquete.promotion) {
+                      {{ item.paquete.simbolo }}{{ item.paquete.promotionPrice }}
+                    } @else {
+                      {{ item.paquete.simbolo }}{{ item.paquete.precio }}
+                    }
+                  </strong>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </div>
+
+      @if (cartService.itemCount() > 0) {
+        <div class="cart-drawer-footer">
+          <div class="drawer-total-panel">
+            <span>Resumen</span>
+            @for (t of cartService.totalsBySymbol(); track t.symbol) {
+              <div class="drawer-total-row">
+                <small>Total {{ t.symbol }}</small>
+                <strong class="notranslate" translate="no">{{ t.symbol }}{{ t.amount.toFixed(2) }}</strong>
+              </div>
+            }
+          </div>
+
+          @if (cartService.totalDiscount().length > 0) {
+            <div class="drawer-savings">
+              <span class="material-icons notranslate" translate="no">savings</span>
+              @for (d of cartService.totalDiscount(); track d.symbol) {
+                <span class="notranslate" translate="no">Ahorras {{ d.symbol }}{{ d.amount.toFixed(2) }}</span>
+              }
+            </div>
+          }
+
+          <button class="btn-process-cart drawer-checkout-btn" (click)="processCart()">
+            <span>Finalizar compra</span>
+            <span class="material-icons notranslate" translate="no">arrow_forward</span>
+          </button>
+        </div>
+      }
+    </aside>
+  </div>
+}
+
+@if (isContactModalOpen()) {
+  <div class="contact-modal-wrapper">
+    <div class="contact-modal-overlay" (click)="toggleContactModal()">
+      <div class="contact-modal-content" (click)="$event.stopPropagation()">
+        <button class="close-modal" (click)="toggleContactModal()">x</button>
+
+        <div class="modal-header">
+          <h2>Soporte <span>NovasPlay</span></h2>
+          <p>Atencion directa para pagos, recargas y dudas sobre tus juegos.</p>
+        </div>
+
+        <form (submit)="enviarContacto($event)" class="contact-form">
+          <div class="form-group subject-group" [class.menu-open]="isSubjectMenuOpen()">
+            <label>Asunto</label>
+            <div class="contact-subject-picker" [class.open]="isSubjectMenuOpen()">
+              <button type="button" class="subject-trigger" [disabled]="isSubmittingContact()" (click)="toggleSubjectMenu()">
+                <span>{{ contactData.subject || 'Selecciona una opcion' }}</span>
+                <span class="material-icons notranslate" translate="no">expand_more</span>
+              </button>
+
+              @if (isSubjectMenuOpen()) {
+                <div class="subject-menu">
+                  @for (subject of contactSubjects; track subject) {
+                    <button type="button" class="subject-option" [class.selected]="contactData.subject === subject" (click)="selectContactSubject(subject)">
+                      {{ subject }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Descripcion detallada</label>
+            <textarea rows="5" name="message" [(ngModel)]="contactData.message" placeholder="Escribe aqui los detalles de tu consulta..." required [disabled]="isSubmittingContact()"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-contact" [disabled]="!contactData.subject || !contactData.message || isSubmittingContact()">
+            {{ isSubmittingContact() ? 'Enviando...' : 'Enviar consulta' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+}

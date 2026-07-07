@@ -1,0 +1,67 @@
+<label class="cyber-date">
+  @if (label) {
+    <span>{{ label }}</span>
+  }
+
+  <div class="date-picker-shell" [class.is-disabled]="isDisabled()" (click)="$event.stopPropagation()">
+    <button
+      type="button"
+      class="date-picker-display"
+      [id]="id"
+      [disabled]="isDisabled()"
+      (click)="togglePicker($event)"
+      (blur)="markTouched()">
+      <span [class.has-value]="currentValue()">{{ displayLabel() }}</span>
+      <span class="material-icons notranslate" translate="no">event</span>
+    </button>
+
+    @if (showPicker()) {
+      <div class="date-picker-popover">
+        <div class="date-picker-header">
+          <button type="button" class="date-picker-nav" (click)="previousMonth()" aria-label="Mes anterior">
+            <span class="material-icons notranslate" translate="no">chevron_left</span>
+          </button>
+
+          <div class="date-picker-title">
+            <span>{{ calendarMonthName() }}</span>
+            <select
+              [ngModel]="calendarView().getFullYear()"
+              (ngModelChange)="changeCalendarYear($event)"
+              [disabled]="isDisabled()">
+              @for (year of yearOptions(); track year) {
+                <option [value]="year">{{ year }}</option>
+              }
+            </select>
+          </div>
+
+          <button type="button" class="date-picker-nav" (click)="nextMonth()" aria-label="Mes siguiente">
+            <span class="material-icons notranslate" translate="no">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="date-picker-weekdays">
+          @for (day of weekDays; track day) {
+            <span>{{ day }}</span>
+          }
+        </div>
+
+        <div class="date-picker-grid">
+          @for (day of calendarDays(); track day.value) {
+            <button
+              type="button"
+              class="date-picker-day"
+              [class.muted]="!day.inMonth"
+              [class.selected]="day.isSelected"
+              (click)="selectDate(day.value)">
+              {{ day.day }}
+            </button>
+          }
+        </div>
+
+        <div class="date-picker-actions">
+          <button type="button" (click)="clearDate($event)">Borrar</button>
+        </div>
+      </div>
+    }
+  </div>
+</label>

@@ -1,0 +1,57 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>{{ coinToEdit ? 'Editar' : 'Nueva' }} Moneda</h3>
+      <button class="close-btn" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="saveCoin()" class="neon-form">
+      <div class="form-group">
+        <label for="name">Nombre de la Moneda</label>
+        <input 
+          id="name"
+          type="text" 
+          [(ngModel)]="coin.name" 
+          name="name" 
+          required 
+          placeholder="Ej: Dólar"
+          class="neon-input">
+      </div>
+
+      <div class="form-group">
+        <label for="code">Código (ISO)</label>
+        <input 
+          id="code"
+          type="text" 
+          [(ngModel)]="coin.code" 
+          name="code" 
+          required 
+          placeholder="Ej: USD"
+          class="neon-input">
+      </div>
+
+      <div class="form-group">
+        <label for="symbol">Símbolo</label>
+        <input 
+          id="symbol"
+          type="text" 
+          [(ngModel)]="coin.symbol" 
+          name="symbol" 
+          required 
+          placeholder="Ej: $"
+          class="neon-input">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action">
+          <span class="material-icons notranslate" translate="no">save</span>
+          Guardar Moneda
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

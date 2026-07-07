@@ -1,0 +1,268 @@
+<div class="profile-page">
+  <div class="profile-grid-bg"></div>
+
+  <main class="profile-shell">
+    <aside class="profile-identity-panel">
+      <div class="profile-avatar-card">
+        <div class="avatar-ring-minimal">
+          <div class="avatar-container">
+            @if (imagePreviewUrl && !hasImageError()) {
+              <img [src]="imagePreviewUrl | noCache" alt="Avatar" class="avatar-image-actual" (error)="onImageError()" />
+            } @else {
+              <div class="avatar-placeholder-minimal">
+                <span class="material-icons notranslate" translate="no">person</span>
+              </div>
+            }
+          </div>
+
+          <label class="btn-edit-avatar-minimal" title="Cambiar foto de perfil">
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+            <span class="material-icons notranslate" translate="no">photo_camera</span>
+          </label>
+        </div>
+
+        <span class="profile-eyebrow">Cuenta NovasPlay</span>
+        <h1>{{ currentUser()?.firstName || 'Jugador' }} {{ currentUser()?.lastName || '' }}</h1>
+        <p>Mantén tus datos listos para procesar tus recargas sin retrasos.</p>
+      </div>
+
+      <nav class="profile-side-nav" aria-label="Secciones de perfil">
+        <button
+          type="button"
+          class="profile-nav-item"
+          [class.active]="activeTab() === 'datos'"
+          (click)="setTab('datos')">
+          <span class="material-icons notranslate" translate="no">badge</span>
+          <span>
+            <strong>Mis datos</strong>
+            <small>Perfil y contacto</small>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="profile-nav-item"
+          [class.active]="activeTab() === 'ordenes'"
+          (click)="setTab('ordenes')">
+          <span class="material-icons notranslate" translate="no">receipt_long</span>
+          <span>
+            <strong>Mis compras</strong>
+            <small>Ordenes y estados</small>
+          </span>
+        </button>
+      </nav>
+
+      <div class="profile-brand-panel" aria-hidden="true">
+        <span class="brand-pulse-dot"></span>
+        <span class="brand-line"></span>
+        <span class="brand-pulse-dot small"></span>
+      </div>
+    </aside>
+
+    <section class="profile-workspace">
+      @if (loading()) {
+        <div class="profile-loading-state">
+          <div class="spinner-minimal"></div>
+          <p>Cargando informacion...</p>
+        </div>
+      } @else {
+        @if (activeTab() === 'datos') {
+          <div class="workspace-header">
+            <span class="profile-eyebrow">Informacion personal</span>
+            <h2>Datos de la cuenta</h2>
+            <p>Estos datos ayudan a identificarte y a contactarte durante una compra.</p>
+          </div>
+
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form-panel">
+            <section class="form-section-card">
+              <div class="form-section-heading">
+                <span class="material-icons notranslate" translate="no">person</span>
+                <div>
+                  <h3>Identidad</h3>
+                  <p>Nombre visible y datos personales basicos.</p>
+                </div>
+              </div>
+
+              <div class="form-grid-minimal">
+                <div class="input-group-minimal">
+                  <label>Nombre(s)</label>
+                  <input type="text" formControlName="firstName" class="input-field-minimal" placeholder="Tu nombre" />
+                </div>
+
+                <div class="input-group-minimal">
+                  <label>Apellido(s)</label>
+                  <input type="text" formControlName="lastName" class="input-field-minimal" placeholder="Tu apellido" />
+                </div>
+
+                <div class="input-group-minimal">
+                  <label>Fecha de nacimiento</label>
+                  <app-cyber-datepicker
+                    formControlName="birth"
+                    cssClass="input-field-minimal"
+                    placeholder="Tu fecha de nac."
+                    maxDate="2010-12-31">
+                  </app-cyber-datepicker>
+                </div>
+              </div>
+            </section>
+
+            <section class="form-section-card">
+              <div class="form-section-heading">
+                <span class="material-icons notranslate" translate="no">call</span>
+                <div>
+                  <h3>Contacto</h3>
+                  <p>Necesario para coordinar compras que requieran asistencia.</p>
+                </div>
+              </div>
+
+              <div class="form-grid-minimal">
+                <div class="input-group-minimal" [class.has-error]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                  <label>Numero de telefono</label>
+                  <input type="text" formControlName="phone" class="input-field-minimal" placeholder="+58 4120000000" />
+                  @if (profileForm.get('phone')?.invalid && (profileForm.get('phone')?.touched || saving())) {
+                    <span class="error-message-minimal">Formato incorrecto. Ejemplo: +58 4141234567</span>
+                  } @else {
+                    <span class="input-hint-minimal">Usa el formato: +[Codigo] [Numero]</span>
+                  }
+                </div>
+
+                <div class="input-group-minimal full-width">
+                  <label>Informacion adicional</label>
+                  <textarea formControlName="observation" class="input-field-minimal textarea-minimal" rows="4" placeholder="Informacion opcional sobre ti..."></textarea>
+                </div>
+              </div>
+            </section>
+
+            <div class="profile-save-bar">
+              <div>
+                <strong>Guardar cambios</strong>
+                <span>Manten tus datos al dia para recibir soporte cuando lo necesites.</span>
+              </div>
+              <button type="submit" class="btn-primary-minimal" [disabled]="saving()">
+                @if (saving()) {
+                  <span class="spinner-small-minimal"></span>
+                  <span>Guardando...</span>
+                } @else {
+                  <span class="material-icons notranslate" translate="no">save</span>
+                  <span>Guardar</span>
+                }
+              </button>
+            </div>
+          </form>
+        }
+
+        @if (activeTab() === 'ordenes') {
+          <div class="workspace-header">
+            <span class="profile-eyebrow">Historial</span>
+            <h2>Mis compras</h2>
+            <p>Consulta tus ordenes, referencias y el estado de cada recarga.</p>
+          </div>
+
+          @if (loadingOrders()) {
+            <div class="profile-loading-state">
+              <span class="spinner-small-minimal"></span>
+              <p>Consultando compras...</p>
+            </div>
+          } @else if (userOrders().length === 0) {
+            <div class="empty-state-minimal">
+              <span class="material-icons notranslate empty-icon" translate="no">shopping_bag</span>
+              <h3>No tienes compras todavia</h3>
+              <p>Tus futuras recargas apareceran aqui.</p>
+            </div>
+          } @else {
+            <div class="orders-history-toolbar">
+              <div>
+                <span class="profile-eyebrow">Compras recientes</span>
+                <strong>{{ ordersRangeLabel() }}</strong>
+              </div>
+              <span class="orders-page-size">{{ ordersPageSize() }} por pagina</span>
+            </div>
+
+            <div class="orders-feed">
+              @for (order of userOrders(); track order.id) {
+                <article class="order-card">
+                  <header class="order-card-header">
+                    <div>
+                      <span class="profile-eyebrow">Orden</span>
+                      <h3>#{{ ('00000000' + order.id).slice(-8) }}</h3>
+                      <small>{{ order.createdAt | date:'dd MMM yyyy, HH:mm' }}</small>
+                    </div>
+                    <div class="order-total">
+                      <span>Total pagado</span>
+                      @for (total of (order.currencyTotals || []); track total.symbol) {
+                        <strong class="order-total-line">{{ total.symbol }}{{ total.amount | number:'1.2-2' }}</strong>
+                      }
+                    </div>
+                  </header>
+
+                  <div class="order-items-list">
+                    @for (item of order.OrderDetails || []; track $index) {
+                      <div class="order-item-row">
+                        <div class="order-item-main">
+                          <strong class="notranslate" translate="no">{{ item.name || item.Name || item.Recharge_Product_Name || 'N/A' }}</strong>
+                          <span>UID: {{ item.accountPay || item.AccountPay }}</span>
+                          <small class="notranslate" translate="no">{{ item.payment_Name || item.Payment_Name || item.paymentName || 'N/A' }} - Ref. {{ item.reference || item.Reference }}</small>
+                        </div>
+
+                        <div class="order-item-meta">
+                          <strong>{{ currencySymbol(item) }}{{ (item.price || item.Price) | number:'1.2-2' }}</strong>
+                          <span>{{ (item.paymentDate || item.PaymentDate) | date:'dd/MM/yyyy HH:mm' }}</span>
+                          <em class="status-pill-minimal" [ngClass]="statusClass(item.status || item.Status)">
+                            {{ statusLabel(item.status || item.Status) }}
+                          </em>
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                  @if (cleanDescription(order.description)) {
+                    <div class="admin-notes-container">
+                      <span class="material-icons notranslate note-icon" translate="no">info</span>
+                      <div class="note-content">
+                        <span class="note-label">Observaciones de la orden</span>
+                        <p class="note-text">{{ cleanDescription(order.description) }}</p>
+                      </div>
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+
+            @if (ordersTotalPages() > 1) {
+              <nav class="orders-pagination" aria-label="Paginacion de compras">
+                <button
+                  type="button"
+                  class="orders-page-btn"
+                  [disabled]="ordersPage() === 1 || loadingOrders()"
+                  (click)="changeOrdersPage(ordersPage() - 1)">
+                  <span class="material-icons notranslate" translate="no">chevron_left</span>
+                </button>
+
+                <div class="orders-page-list">
+                  @for (page of orderPageNumbers(); track page) {
+                    <button
+                      type="button"
+                      class="orders-page-number"
+                      [class.active]="page === ordersPage()"
+                      [disabled]="loadingOrders()"
+                      (click)="changeOrdersPage(page)">
+                      {{ page }}
+                    </button>
+                  }
+                </div>
+
+                <button
+                  type="button"
+                  class="orders-page-btn"
+                  [disabled]="ordersPage() === ordersTotalPages() || loadingOrders()"
+                  (click)="changeOrdersPage(ordersPage() + 1)">
+                  <span class="material-icons notranslate" translate="no">chevron_right</span>
+                </button>
+              </nav>
+            }
+          }
+        }
+      }
+    </section>
+  </main>
+</div>

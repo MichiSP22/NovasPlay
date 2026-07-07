@@ -1,0 +1,60 @@
+<section class="config-shell">
+  <div class="config-header">
+    <div class="header-icon">
+      <span class="material-icons notranslate" translate="no">settings_suggest</span>
+    </div>
+    <div>
+      <span class="config-kicker">Sistema</span>
+      <h3>Configuracion general</h3>
+      <p>Controla estados globales de la tienda sin tocar el resto del administrador.</p>
+    </div>
+    <button type="button" class="refresh-btn" (click)="loadConfig()" [disabled]="loading()">
+      <span class="material-icons notranslate" translate="no">refresh</span>
+      Actualizar
+    </button>
+  </div>
+
+  @if (!configAvailable()) {
+    <div class="config-warning">
+      <span class="material-icons notranslate" translate="no">warning</span>
+      <div>
+        <strong>No se pudo confirmar la configuracion.</strong>
+        <p>{{ configLoadMessage() || 'Se muestra el modo mantenimiento como apagado hasta poder conectar.' }}</p>
+      </div>
+    </div>
+  }
+
+  <div class="config-grid">
+    <article class="maintenance-card" [class.is-active]="maintenanceStatus()">
+      <div class="status-orb">
+        <span class="material-icons notranslate" translate="no">
+          {{ maintenanceStatus() ? 'construction' : 'verified' }}
+        </span>
+      </div>
+
+      <div class="maintenance-copy">
+        <span class="config-kicker">{{ maintenanceStatus() ? 'Pausado' : 'Activo' }}</span>
+        <h4>Modo mantenimiento</h4>
+        <p>
+          Cuando esta activo, la tienda avisa al cliente y bloquea nuevas compras mientras haces ajustes.
+        </p>
+      </div>
+
+      <label class="switch-premium" title="Cambiar modo mantenimiento">
+        <input
+          type="checkbox"
+          [checked]="maintenanceStatus()"
+          (change)="toggleMaintenance()"
+          [disabled]="loading() || !configAvailable()">
+        <span class="slider"></span>
+      </label>
+    </article>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-overlay">
+      <div class="spinner-neon"></div>
+      <span>Actualizando sistema...</span>
+    </div>
+  }
+</section>

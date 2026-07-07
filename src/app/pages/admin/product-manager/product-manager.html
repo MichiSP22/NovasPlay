@@ -1,0 +1,134 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">inventory_2</span>
+        <h3>Gestión de Productos</h3>
+      </div>
+      <button class="btn-neon-action" (click)="openModal()">
+        <span class="material-icons notranslate" translate="no">add</span> Nuevo Producto
+      </button>
+    </div>
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th style="width: 45%">PRODUCTO</th>
+            <th style="width: 22%">TIEMPO DE ESPERA</th>
+            <th style="width: 15%">ESTADO</th>
+            <th class="text-right" style="width: 18%">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+          } @else if (products().length === 0) {
+            <tr><td colspan="4" class="empty-state">No hay productos registrados.</td></tr>
+          } @else {
+            @for (prod of products(); track prod.id) {
+              <tr>
+                <td>
+                  <div class="font-bold">{{ prod.name }}</div>
+                  <small style="color: #aaa" 
+                         class="text-truncate-2 clickable-description" 
+                         [class.is-expanded]="isExpanded(prod.id!)"
+                         (click)="toggleExpand(prod.id!)">
+                    {{ prod.description }}
+                  </small>
+                </td>
+                <td>
+                  <div style="color: #00d4ff; font-weight: 600;">
+                    {{ formatWaitTime(prod.timeMinRecharge) }} a {{ formatWaitTime(prod.timeMaxRecharge) }}
+                  </div>
+                </td>
+                <td>
+                  <span [style.color]="prod.soldOut ? '#ff4d4d' : '#00ffcc'" class="status-badge">
+                    {{ prod.soldOut ? 'Agotado' : 'Disponible' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button class="action-btn assign" title="Asignar Categorías" (click)="openAssignModal(prod)">
+                    <span class="material-icons notranslate" translate="no">category</span>
+                  </button>
+                  <button class="action-btn edit" title="Editar Producto" (click)="openModal(prod)">
+                    <span class="material-icons notranslate" translate="no">edit</span>
+                  </button>
+                  <button class="action-btn delete" title="Eliminar Producto" (click)="deleteProduct(prod.id)">
+                    <span class="material-icons notranslate" translate="no">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-product-form-modal
+    [productToEdit]="selectedProduct()"
+    (onClose)="closeModal()"
+    (onSave)="onSaveSuccess()">
+  </app-product-form-modal>
+}
+
+@if (showAssignModal()) {
+  <div class="modal-backdrop" (click)="closeAssignModal()">
+    <div class="modal-container" style="max-width: 500px;" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Asignar Categorías a {{ selectedProduct()?.name }}</h3>
+        <button class="close-btn" (click)="closeAssignModal()">×</button>
+      </div>
+
+      <div class="neon-form">
+        <p class="subtitle" style="color: #00d4ff; margin-bottom: 20px;">
+          Selecciona en qué categorías aparecerá este producto:
+        </p>
+
+        <div class="checkbox-list" style="max-height: 250px; overflow-y: auto;">
+          @for (cat of availableCategories(); track cat.id) {
+            <div class="checkbox-item" style="padding: 10px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px;">
+              <input 
+                type="checkbox" 
+                [id]="'cat_' + cat.id"
+                [checked]="isCategorySelected(cat.id!)"
+                (change)="toggleCategorySelection(cat.id!)"
+                style="width: 18px; height: 18px;">
+              <label [for]="'cat_' + cat.id" style="margin: 0; cursor: pointer; color: white;">
+                {{ cat.name }}
+              </label>
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer" style="margin-top: 20px;">
+          <button type="button" class="btn-ghost" (click)="closeAssignModal()">Cancelar</button>
+          <button type="button" class="btn-neon-action" (click)="saveCategoryAssignment()">
+            <span class="material-icons notranslate" translate="no">save</span> Guardar Categorías
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Confirm Modal -->
+@if (showConfirmModal()) {
+  <div class="modal-backdrop" (click)="closeConfirm()">
+    <div class="modal-container" style="max-width: 400px; text-align: center;" (click)="$event.stopPropagation()">
+      <div class="modal-header" style="justify-content: center; padding-bottom: 0;">
+        <span class="material-icons notranslate" translate="no" style="font-size: 48px; color: #ff4444; margin-bottom: 10px;">warning</span>
+      </div>
+      <h3 style="color: white; margin-bottom: 10px;">Atención</h3>
+      <p style="color: #aaa; margin-bottom: 25px;">{{ confirmMessage() }}</p>
+      
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn-ghost" (click)="closeConfirm()">Cancelar</button>
+        <button class="btn-neon-action" style="background: rgba(255, 68, 68, 0.1); border-color: #ff4444; color: #ff4444;" (click)="executeConfirm()">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+}

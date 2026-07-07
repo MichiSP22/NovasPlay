@@ -1,0 +1,265 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.12.1
+2 info using node@v24.15.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Michelle\Desktop\NovasPlay\.npmrc
+5 silly config load:file:C:\Users\Michelle\.npmrc
+6 silly config load:file:C:\Users\Michelle\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm ci
+8 verbose argv "ci" "--cache" ".\\.npm-cache"
+9 verbose logfile logs-max:10 dir:C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_26_781Z-
+10 verbose logfile C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_26_781Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+14 silly idealTree buildDeps
+15 silly fetch manifest intl-tel-input@^19.0.0
+16 silly packumentCache full:https://registry.npmjs.org/intl-tel-input cache-miss
+17 http fetch GET 200 https://registry.npmjs.org/intl-tel-input 472ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/intl-tel-input set size:undefined disposed:false
+19 silly placeDep ROOT intl-tel-input@19.5.7 OK for: ngx-intl-tel-input@17.0.0 want: ^19.0.0
+20 silly fetch manifest react@^18.2.0
+21 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+22 silly fetch manifest react-dom@^18.2.0
+23 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+24 silly fetch manifest prop-types@^15.8.1
+25 silly packumentCache full:https://registry.npmjs.org/prop-types cache-miss
+26 http fetch GET 200 https://registry.npmjs.org/npm 772ms
+27 http fetch GET 200 https://registry.npmjs.org/prop-types 335ms (cache miss)
+28 silly packumentCache full:https://registry.npmjs.org/prop-types set size:undefined disposed:false
+29 http fetch GET 200 https://registry.npmjs.org/react 340ms (cache miss)
+30 silly packumentCache full:https://registry.npmjs.org/react set size:undefined disposed:false
+31 http fetch GET 200 https://registry.npmjs.org/react-dom 714ms (cache miss)
+32 silly packumentCache full:https://registry.npmjs.org/react-dom set size:undefined disposed:false
+33 silly placeDep ROOT prop-types@15.8.1 OK for: intl-tel-input@19.5.7 want: ^15.8.1
+34 silly placeDep ROOT react@18.3.1 OK for: intl-tel-input@19.5.7 want: ^18.2.0
+35 silly placeDep ROOT react-dom@18.3.1 OK for: intl-tel-input@19.5.7 want: ^18.2.0
+36 silly fetch manifest loose-envify@^1.4.0
+37 silly packumentCache full:https://registry.npmjs.org/loose-envify cache-miss
+38 silly fetch manifest react-is@^16.13.1
+39 silly packumentCache full:https://registry.npmjs.org/react-is cache-miss
+40 silly fetch manifest loose-envify@^1.1.0
+41 silly packumentCache full:https://registry.npmjs.org/loose-envify cache-miss
+42 silly fetch manifest scheduler@^0.23.2
+43 silly packumentCache full:https://registry.npmjs.org/scheduler cache-miss
+44 silly fetch manifest loose-envify@^1.1.0
+45 silly packumentCache full:https://registry.npmjs.org/loose-envify cache-miss
+46 http fetch GET 200 https://registry.npmjs.org/loose-envify 74ms (cache miss)
+47 silly packumentCache full:https://registry.npmjs.org/loose-envify set size:undefined disposed:false
+48 http fetch GET 200 https://registry.npmjs.org/loose-envify 133ms (cache miss)
+49 silly packumentCache full:https://registry.npmjs.org/loose-envify set size:undefined disposed:false
+50 http fetch GET 200 https://registry.npmjs.org/scheduler 228ms (cache miss)
+51 silly packumentCache full:https://registry.npmjs.org/scheduler set size:undefined disposed:false
+52 http fetch GET 200 https://registry.npmjs.org/loose-envify 314ms (cache miss)
+53 silly packumentCache full:https://registry.npmjs.org/loose-envify set size:undefined disposed:false
+54 http fetch GET 200 https://registry.npmjs.org/react-is 488ms (cache miss)
+55 silly packumentCache full:https://registry.npmjs.org/react-is set size:undefined disposed:false
+56 silly fetch manifest @angular/cdk@^20.0.3
+57 silly packumentCache full:https://registry.npmjs.org/@angular%2fcdk cache-miss
+58 http fetch GET 200 https://registry.npmjs.org/@angular%2fcdk 185ms (cache miss)
+59 silly packumentCache full:https://registry.npmjs.org/@angular%2fcdk set size:undefined disposed:false
+60 silly fetch manifest @angular/common@^20.0.4
+61 silly packumentCache full:https://registry.npmjs.org/@angular%2fcommon cache-miss
+62 http fetch GET 200 https://registry.npmjs.org/@angular%2fcommon 207ms (cache miss)
+63 silly packumentCache full:https://registry.npmjs.org/@angular%2fcommon set size:undefined disposed:false
+64 silly fetch manifest @angular/core@^20.0.4
+65 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore cache-miss
+66 http fetch GET 200 https://registry.npmjs.org/@angular%2fcore 363ms (cache miss)
+67 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore set size:undefined disposed:false
+68 silly fetch manifest @angular/compiler@20.3.23
+69 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler cache-miss
+70 http fetch GET 200 https://registry.npmjs.org/@angular%2fcompiler 381ms (cache miss)
+71 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler set size:undefined disposed:false
+72 silly fetch manifest rxjs@^6.0.0 || ^7.8.1
+73 silly packumentCache full:https://registry.npmjs.org/rxjs cache-miss
+74 http fetch GET 200 https://registry.npmjs.org/rxjs 142ms (cache miss)
+75 silly packumentCache full:https://registry.npmjs.org/rxjs set size:undefined disposed:false
+76 silly fetch manifest zone.js@~0.15.0
+77 silly packumentCache full:https://registry.npmjs.org/zone.js cache-miss
+78 http fetch GET 200 https://registry.npmjs.org/zone.js 84ms (cache miss)
+79 silly packumentCache full:https://registry.npmjs.org/zone.js set size:undefined disposed:false
+80 silly placeDep ROOT @angular/cdk@20.2.14 OK for: primeng@20.4.0 want: ^20.0.3
+81 silly placeDep ROOT loose-envify@1.4.0 OK for: prop-types@15.8.1 want: ^1.4.0
+82 silly placeDep ROOT react-is@16.13.1 OK for: prop-types@15.8.1 want: ^16.13.1
+83 silly placeDep ROOT scheduler@0.23.2 OK for: react-dom@18.3.1 want: ^0.23.2
+84 verbose stack Error: 
+84 verbose stack `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+84 verbose stack
+84 verbose stack Missing: intl-tel-input@19.5.7 from lock file
+84 verbose stack Missing: prop-types@15.8.1 from lock file
+84 verbose stack Missing: react@18.3.1 from lock file
+84 verbose stack Missing: react-dom@18.3.1 from lock file
+84 verbose stack Missing: @angular/cdk@20.2.14 from lock file
+84 verbose stack Missing: loose-envify@1.4.0 from lock file
+84 verbose stack Missing: react-is@16.13.1 from lock file
+84 verbose stack Missing: scheduler@0.23.2 from lock file
+84 verbose stack
+84 verbose stack Clean install a project
+84 verbose stack
+84 verbose stack Usage:
+84 verbose stack npm ci
+84 verbose stack
+84 verbose stack Options:
+84 verbose stack [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+84 verbose stack [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+84 verbose stack [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+84 verbose stack [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts]
+84 verbose stack [--allow-git <all|none|root>] [--no-audit] [--no-bin-links] [--no-fund]
+84 verbose stack [--dry-run]
+84 verbose stack [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+84 verbose stack [--workspaces] [--include-workspace-root] [--install-links]
+84 verbose stack
+84 verbose stack   --install-strategy
+84 verbose stack     Sets the strategy for installing packages in node_modules.
+84 verbose stack
+84 verbose stack   --legacy-bundling
+84 verbose stack     Instead of hoisting package installs in `node_modules`, install packages
+84 verbose stack
+84 verbose stack   --global-style
+84 verbose stack     Only install direct dependencies in the top level `node_modules`,
+84 verbose stack
+84 verbose stack   --omit
+84 verbose stack     Dependency types to omit from the installation tree on disk.
+84 verbose stack
+84 verbose stack   --include
+84 verbose stack     Option that allows for defining which types of dependencies to install.
+84 verbose stack
+84 verbose stack   --strict-peer-deps
+84 verbose stack     If set to `true`, and `--legacy-peer-deps` is not set, then _any_
+84 verbose stack
+84 verbose stack   --foreground-scripts
+84 verbose stack     Run all build scripts (ie, `preinstall`, `install`, and
+84 verbose stack
+84 verbose stack   --ignore-scripts
+84 verbose stack     If true, npm does not run scripts specified in package.json files.
+84 verbose stack
+84 verbose stack   --allow-git
+84 verbose stack     Limits the ability for npm to fetch dependencies from git references.
+84 verbose stack
+84 verbose stack   --audit
+84 verbose stack     When "true" submit audit reports alongside the current npm command to the
+84 verbose stack
+84 verbose stack   --bin-links
+84 verbose stack     Tells npm to create symlinks (or `.cmd` shims on Windows) for package
+84 verbose stack
+84 verbose stack   --fund
+84 verbose stack     When "true" displays the message at the end of each `npm install`
+84 verbose stack
+84 verbose stack   --dry-run
+84 verbose stack     Indicates that you don't want npm to make any changes and that it should
+84 verbose stack
+84 verbose stack   -w|--workspace
+84 verbose stack     Enable running a command in the context of the configured workspaces of the
+84 verbose stack
+84 verbose stack   --workspaces
+84 verbose stack     Set to true to run the command in the context of **all** configured
+84 verbose stack
+84 verbose stack   --include-workspace-root
+84 verbose stack     Include the workspace root when workspaces are enabled for a command.
+84 verbose stack
+84 verbose stack   --install-links
+84 verbose stack     When set file: protocol dependencies will be packed and installed as
+84 verbose stack
+84 verbose stack
+84 verbose stack aliases: clean-install, ic, install-clean, isntall-clean
+84 verbose stack
+84 verbose stack Run "npm help ci" for more info
+84 verbose stack     at CI.usageError (C:\Program Files\nodejs\node_modules\npm\lib\base-cmd.js:177:26)
+84 verbose stack     at CI.exec (C:\Program Files\nodejs\node_modules\npm\lib\commands\ci.js:73:18)
+84 verbose stack     at async Npm.exec (C:\Program Files\nodejs\node_modules\npm\lib\npm.js:193:9)
+84 verbose stack     at async module.exports (C:\Program Files\nodejs\node_modules\npm\lib\cli\entry.js:67:5)
+85 error code EUSAGE
+86 error
+86 error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+86 error
+86 error Missing: intl-tel-input@19.5.7 from lock file
+86 error Missing: prop-types@15.8.1 from lock file
+86 error Missing: react@18.3.1 from lock file
+86 error Missing: react-dom@18.3.1 from lock file
+86 error Missing: @angular/cdk@20.2.14 from lock file
+86 error Missing: loose-envify@1.4.0 from lock file
+86 error Missing: react-is@16.13.1 from lock file
+86 error Missing: scheduler@0.23.2 from lock file
+86 error
+86 error Clean install a project
+86 error
+86 error Usage:
+86 error npm ci
+86 error
+86 error Options:
+86 error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+86 error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+86 error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+86 error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts]
+86 error [--allow-git <all|none|root>] [--no-audit] [--no-bin-links] [--no-fund]
+86 error [--dry-run]
+86 error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+86 error [--workspaces] [--include-workspace-root] [--install-links]
+86 error
+86 error   --install-strategy
+86 error     Sets the strategy for installing packages in node_modules.
+86 error
+86 error   --legacy-bundling
+86 error     Instead of hoisting package installs in `node_modules`, install packages
+86 error
+86 error   --global-style
+86 error     Only install direct dependencies in the top level `node_modules`,
+86 error
+86 error   --omit
+86 error     Dependency types to omit from the installation tree on disk.
+86 error
+86 error   --include
+86 error     Option that allows for defining which types of dependencies to install.
+86 error
+86 error   --strict-peer-deps
+86 error     If set to `true`, and `--legacy-peer-deps` is not set, then _any_
+86 error
+86 error   --foreground-scripts
+86 error     Run all build scripts (ie, `preinstall`, `install`, and
+86 error
+86 error   --ignore-scripts
+86 error     If true, npm does not run scripts specified in package.json files.
+86 error
+86 error   --allow-git
+86 error     Limits the ability for npm to fetch dependencies from git references.
+86 error
+86 error   --audit
+86 error     When "true" submit audit reports alongside the current npm command to the
+86 error
+86 error   --bin-links
+86 error     Tells npm to create symlinks (or `.cmd` shims on Windows) for package
+86 error
+86 error   --fund
+86 error     When "true" displays the message at the end of each `npm install`
+86 error
+86 error   --dry-run
+86 error     Indicates that you don't want npm to make any changes and that it should
+86 error
+86 error   -w|--workspace
+86 error     Enable running a command in the context of the configured workspaces of the
+86 error
+86 error   --workspaces
+86 error     Set to true to run the command in the context of **all** configured
+86 error
+86 error   --include-workspace-root
+86 error     Include the workspace root when workspaces are enabled for a command.
+86 error
+86 error   --install-links
+86 error     When set file: protocol dependencies will be packed and installed as
+86 error
+86 error
+86 error aliases: clean-install, ic, install-clean, isntall-clean
+86 error
+86 error Run "npm help ci" for more info
+87 verbose cwd C:\Users\Michelle\Desktop\NovasPlay
+88 verbose os Windows_NT 10.0.26200
+89 verbose node v24.15.0
+90 verbose npm  v11.12.1
+91 notice
+91 notice New minor version of npm available! 11.12.1 -> 11.16.0
+91 notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+91 notice To update run: npm install -g npm@11.16.0
+91 notice  { force: true, Symbol(proc-log.meta): true }
+92 verbose exit 1
+93 verbose code 1
+94 error A complete log of this run can be found in: C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_26_781Z-debug-0.log

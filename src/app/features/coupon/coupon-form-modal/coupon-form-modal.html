@@ -1,0 +1,198 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ couponToEdit ? 'Editar' : 'Nuevo' }} Cupon</h3>
+      <button class="close-btn" type="button" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form class="neon-form" (ngSubmit)="saveCoupon()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Codigo</label>
+          <input
+            class="neon-input notranslate"
+            translate="no"
+            type="text"
+            name="code"
+            [(ngModel)]="coupon.code"
+            placeholder="Ej: NOVAS10"
+            autocomplete="off"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre interno</label>
+          <input
+            class="neon-input"
+            type="text"
+            name="name"
+            [(ngModel)]="coupon.name"
+            placeholder="Campana o referencia">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripcion</label>
+        <textarea
+          class="neon-input"
+          name="description"
+          rows="3"
+          [(ngModel)]="coupon.description"
+          placeholder="Condiciones o uso del cupon"></textarea>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo de descuento</label>
+          <select class="neon-select" name="discountType" [(ngModel)]="coupon.discountType">
+            <option [ngValue]="0">Porcentaje</option>
+            <option [ngValue]="1">Monto fijo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>{{ coupon.discountType === 0 ? 'Porcentaje' : 'Monto' }}</label>
+          <input
+            class="neon-input"
+            type="text"
+            inputmode="decimal"
+            name="value"
+            [(ngModel)]="valueInput"
+            (blur)="normalizeValueInput()"
+            [placeholder]="coupon.discountType === 0 ? 'Ej: 10' : 'Ej: 5,00'"
+            required>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Alcance</label>
+          <select class="neon-select" name="scope" [(ngModel)]="coupon.scope">
+            <option [ngValue]="0">Orden completa</option>
+            <option [ngValue]="1">Item de orden</option>
+            <option [ngValue]="2">Recarga especifica</option>
+            <option [ngValue]="3">Producto especifico</option>
+            <option [ngValue]="4">Categoria especifica</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Usuario especifico</label>
+          <input
+            class="neon-input notranslate"
+            translate="no"
+            type="text"
+            name="userID"
+            [(ngModel)]="coupon.userID"
+            placeholder="UUID opcional">
+        </div>
+      </div>
+
+      @if (coupon.scope === 2 || coupon.scope === 3 || coupon.scope === 4) {
+        <div class="form-grid target-grid">
+          @if (coupon.scope === 2) {
+            <div class="form-group">
+              <label>ID de recarga</label>
+              <input class="neon-input" type="number" min="1" name="detailID" [(ngModel)]="coupon.detailID" placeholder="DetailID">
+            </div>
+          }
+
+          @if (coupon.scope === 3) {
+            <div class="form-group">
+              <label>ID de producto</label>
+              <input class="neon-input" type="number" min="1" name="productID" [(ngModel)]="coupon.productID" placeholder="ProductID">
+            </div>
+          }
+
+          @if (coupon.scope === 4) {
+            <div class="form-group">
+              <label>ID de categoria</label>
+              <input class="neon-input" type="number" min="1" name="categoryID" [(ngModel)]="coupon.categoryID" placeholder="CategoryID">
+            </div>
+          }
+        </div>
+      }
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Compra minima</label>
+          <input
+            class="neon-input"
+            type="text"
+            inputmode="decimal"
+            name="minimumAmount"
+            [(ngModel)]="minimumAmountInput"
+            (blur)="normalizeMinimumAmountInput()"
+            placeholder="Opcional">
+        </div>
+
+        <div class="form-group">
+          <label>Tope de descuento</label>
+          <input
+            class="neon-input"
+            type="text"
+            inputmode="decimal"
+            name="maximumDiscount"
+            [(ngModel)]="maximumDiscountInput"
+            (blur)="normalizeMaximumDiscountInput()"
+            placeholder="Opcional">
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Inicio</label>
+          <input class="neon-input" type="date" name="startDate" [(ngModel)]="coupon.startDate">
+        </div>
+
+        <div class="form-group">
+          <label>Fin</label>
+          <input class="neon-input" type="date" name="endDate" [(ngModel)]="coupon.endDate">
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Usos totales</label>
+          <input
+            class="neon-input"
+            type="number"
+            min="1"
+            name="usageLimit"
+            [(ngModel)]="coupon.usageLimit"
+            placeholder="Ilimitado">
+        </div>
+
+        <div class="form-group">
+          <label>Usos por usuario</label>
+          <input
+            class="neon-input"
+            type="number"
+            min="1"
+            name="maxUsesPerUser"
+            [(ngModel)]="coupon.maxUsesPerUser"
+            placeholder="Sin limite">
+        </div>
+      </div>
+
+      <div class="form-grid status-grid">
+        <div class="toggle-stack">
+          <label class="toggle-row">
+            <input type="checkbox" name="active" [(ngModel)]="coupon.active">
+            <span>Cupon activo</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action">
+          <span class="material-icons notranslate" translate="no">save</span>
+          Guardar Cupon
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

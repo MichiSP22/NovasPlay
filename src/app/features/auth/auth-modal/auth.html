@@ -1,0 +1,293 @@
+<div class="modal-overlay">
+  <div class="auth-card" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close()" type="button">&times;</button>
+
+    <div class="auth-header">
+      <h2 class="main-title">
+        @if (isRecoveryMode) {
+          @if (recoveryStep === 1) { RECUPERAR CUENTA }
+          @else if (recoveryStep === 2) { VALIDAR CÓDIGO }
+          @else { NUEVA CONTRASEÑA }
+        } @else {
+          {{ isLogin ? 'INICIAR SESIÓN' : 'REGISTRARSE' }}
+        }
+      </h2>
+    </div>
+
+    @if (!isRecoveryMode && isLogin) {
+      <button class="google-btn" type="button" (click)="loginWithGoogle()">
+        <div class="google-icon-wrapper">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/500px-Google_%22G%22_logo.svg.png" alt="Google" />
+        </div>
+        <span class="google-btn-text">Iniciar con Google</span>
+      </button>
+
+      <div class="divider-text">
+        <span>O USA TU CUENTA</span>
+      </div>
+    }
+
+    <form [formGroup]="authForm" (ngSubmit)="submit()">
+      
+      @if (isRecoveryMode) {
+        @if (recoveryStep === 1) {
+          <div class="form-group">
+            <p class="recovery-instruction">Ingresa tu email para el codigo de restablecimiento de la contraseña</p>
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          </div>
+        }
+        @if (recoveryStep === 2) {
+          <div class="form-group">
+            <label>Código de recuperación</label>
+            <input type="text" formControlName="recoveryCode" placeholder="Ingresa el código" />
+          </div>
+        }
+        @if (recoveryStep === 3) {
+          <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <div class="password-wrapper">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" />
+              <button type="button" class="toggle-eye" (click)="showPassword = !showPassword">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                  @if (showPassword) {
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                  }
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <div class="password-wrapper">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Repite tu contraseña" />
+              <button type="button" class="toggle-eye" (click)="showConfirmPassword = !showConfirmPassword">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                  @if (showConfirmPassword) {
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                  }
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      } 
+      @else {
+        @if (!isLogin) {
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" formControlName="firstName" placeholder="Ej: Juan" />
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" formControlName="lastName" placeholder="Ej: Pérez" />
+            </div>
+          </div>
+        }
+        
+        <div class="form-group">
+          <label>{{ isLogin ? 'Usuario o email' : 'Usuario' }}</label>
+          <input
+            type="text"
+            formControlName="username"
+            [placeholder]="isLogin ? 'Usuario o correo@ejemplo.com' : 'Nombre de usuario'"
+          />
+        </div>
+        
+        @if (!isLogin) {
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          </div>
+        }
+        
+        <div class="form-group">
+          <label>Contraseña</label>
+          <div class="password-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" />
+            <button type="button" class="toggle-eye" (click)="showPassword = !showPassword">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                @if (showPassword) {
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                } @else {
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                }
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        @if (!isLogin) {
+          <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <div class="password-wrapper">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Repite tu contraseña" />
+              <button type="button" class="toggle-eye" (click)="showConfirmPassword = !showConfirmPassword">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                  @if (showConfirmPassword) {
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                  }
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+        
+        @if (!isLogin) {
+          <div class="form-row-phone">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <div class="phone-input-container">
+                <div class="country-picker" (click)="toggleCountryList(); $event.stopPropagation()">
+                  <div class="selected-flag-view">
+                    <img [src]="getSelectedCountry().flag" [alt]="getSelectedCountry().name" />
+                    <span class="prefix-text">{{ getSelectedCountry().code }}</span>
+                  </div>
+                  
+                  @if (showCountryList) {
+                    <div class="country-dropdown-list" (click)="$event.stopPropagation()">
+                      <div class="search-container">
+                        <input 
+                          type="text" 
+                          class="country-search-input" 
+                          placeholder="Buscar país..." 
+                          [(ngModel)]="searchQuery"
+                          [ngModelOptions]="{standalone: true}"
+                          (input)="filterCountries()"
+                          (click)="$event.stopPropagation()"
+                        />
+                      </div>
+                      
+                      <div class="options-container">
+                        @for (country of filteredCountries; track country.name) {
+                          <div class="country-option" (click)="selectCountry(country); $event.stopPropagation()">
+                            <img [src]="country.flag" [alt]="country.name" />
+                            <span class="country-name">{{ country.name }}</span>
+                            <span class="country-code">{{ country.code }}</span>
+                          </div>
+                        }
+                        
+                        @if (filteredCountries.length === 0) {
+                          <div class="no-results">No se encontraron resultados</div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+                <input type="tel" formControlName="phone" placeholder="Número" class="phone-main-field" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Cumpleanos</label>
+              <div class="date-field" (click)="$event.stopPropagation()">
+                <input type="hidden" formControlName="birthday" />
+                <button type="button" class="date-display" (click)="toggleBirthdayPicker($event)">
+                  <span [class.has-value]="authForm.get('birthday')?.value">{{ birthdayLabel }}</span>
+                  <span class="material-icons notranslate date-icon" translate="no">event</span>
+                </button>
+
+                @if (showBirthdayPicker) {
+                  <div class="calendar-popover">
+                    <div class="calendar-header">
+                      <button type="button" class="calendar-nav" (click)="previousMonth()" aria-label="Mes anterior">
+                        <span class="material-icons notranslate" translate="no">chevron_left</span>
+                      </button>
+
+                      <div class="calendar-title-group">
+                        <span class="calendar-month">{{ calendarMonthName }}</span>
+                        <select
+                          class="calendar-year-select"
+                          [ngModel]="calendarView.getFullYear()"
+                          [ngModelOptions]="{ standalone: true }"
+                          (ngModelChange)="changeCalendarYear($event)">
+                          @for (year of birthdayYearOptions; track year) {
+                            <option [value]="year">{{ year }}</option>
+                          }
+                        </select>
+                      </div>
+
+                      <button type="button" class="calendar-nav" (click)="nextMonth()" aria-label="Mes siguiente">
+                        <span class="material-icons notranslate" translate="no">chevron_right</span>
+                      </button>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                      @for (day of weekDays; track day) {
+                        <span>{{ day }}</span>
+                      }
+                    </div>
+
+                    <div class="calendar-grid">
+                      @for (day of calendarDays; track day.value) {
+                        <button
+                          type="button"
+                          class="calendar-day"
+                          [class.muted]="!day.inMonth"
+                          [class.selected]="day.isSelected"
+                          (click)="selectBirthday(day.value)">
+                          {{ day.day }}
+                        </button>
+                      }
+                    </div>
+
+                    <div class="calendar-actions">
+                      <button type="button" (click)="clearBirthday($event)">Borrar</button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-options terms-options">
+            <label class="custom-checkbox">
+              <input type="checkbox" formControlName="acceptTerms" />
+              <span class="checkmark"></span>
+              <span class="label-text">
+                Acepto los <a href="#" (click)="openTermsModal($event)">términos y condiciones</a>
+              </span>
+            </label>
+          </div>
+        }
+
+        @if (isLogin) {
+          <div class="form-options">
+            <label class="custom-checkbox">
+              <input type="checkbox" formControlName="rememberMe" />
+              <span class="checkmark"></span>
+              <span class="label-text">Recordarme</span>
+            </label>
+            <button type="button" class="forgot-password-link" (click)="forgotPassword()">¿Olvidaste tu contraseña?</button>
+          </div>
+        }
+      }
+      
+      <button type="submit" class="submit-btn" [disabled]="authForm.invalid" [class.btn-disabled]="authForm.invalid">
+        {{ isRecoveryMode ? 'CONTINUAR' : (isLogin ? 'INGRESAR' : 'REGISTRARSE') }}
+      </button>
+    </form>
+    
+    <div class="auth-switch">
+      <p>
+        {{ isRecoveryMode ? '¿Recordaste tu contraseña?' : (isLogin ? '¿Aún no tienes cuenta?' : '¿Ya eres miembro?') }}
+        <span (click)="toggleMode()">{{ isRecoveryMode ? 'Inicia Sesión' : (isLogin ? 'Regístrate' : 'Inicia Sesión') }}</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+@if (showTermsModal) {
+  <app-terms-modal (onClose)="showTermsModal = false"></app-terms-modal>
+}

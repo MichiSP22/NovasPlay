@@ -1,0 +1,15 @@
+export const ADMIN_SECTIONS = {
+  dashboard: 'dashboard',
+  clients: 'clientes',
+  recharges: 'recargas',
+  products: 'productos',
+  coins: 'monedas',
+  countries: 'paises',
+  categories: 'categorias',
+  payments: 'pagos',
+  prices: 'precios',
+  coupons: 'cupones',
+  orders: 'ordenes',
+  profile: 'perfil',
+  settings: 'configuracion',
+} as const;

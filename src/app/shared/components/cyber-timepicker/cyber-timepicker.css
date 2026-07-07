@@ -1,0 +1,168 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cyber-timepicker-container {
+  position: relative;
+  width: 100%;
+}
+
+.fake-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fake-input .placeholder-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+}
+
+.fake-input .time-text {
+  color: #fff;
+  font-weight: 600;
+}
+
+.time-icon {
+  color: #00d4ff;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.cyber-timepicker-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999999998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cyber-time-popup {
+  position: relative;
+  width: 260px;
+  background: #0a0a14;
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 212, 255, 0.1);
+  padding: 15px;
+  z-index: 999999999;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.time-columns {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  height: 160px;
+}
+
+.time-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.column-header {
+  text-align: center;
+  color: #00d4ff;
+  font-family: 'Rajdhani', 'Orbitron', sans-serif;
+  font-weight: 800;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.scrollable-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-right: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 212, 255, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+.scrollable-list::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollable-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+.time-item {
+  color: #fff;
+  padding: 6px;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: 'Orbitron', monospace;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.time-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.time-item.is-selected {
+  background: linear-gradient(135deg, #00d4ff 0%, #9d00ff 100%);
+  color: #fff;
+  border-color: rgba(0, 212, 255, 0.5);
+  font-weight: bold;
+}
+
+.time-separator {
+  display: flex;
+  align-items: center;
+  color: #00d4ff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.btn-confirm-time {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: linear-gradient(90deg, #101018, #1a1a24);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-confirm-time:hover {
+  background: rgba(0, 212, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}

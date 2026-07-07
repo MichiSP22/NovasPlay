@@ -1,0 +1,15 @@
+<div class="toast-container">
+  @for (toast of notificationService.toasts(); track toast.id) {
+    <div
+      class="toast"
+      [ngClass]="[toast.type, isPaused(toast.id) ? 'paused' : '']"
+      [style]="'--toast-duration: ' + toast.duration + 'ms'"
+      (mouseenter)="onToastMouseEnter(toast.id)"
+      (mouseleave)="onToastMouseLeave(toast.id)">
+      <div class="toast-content">
+        <p class="toast-text">{{ toast.message }}</p>
+      </div>
+      <div class="progress-bar"></div>
+    </div>
+  }
+</div>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es" class="notranslate" translate="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate">
+  <title>NovasPlay | Recargas Online</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NovasPlay es una plataforma de recargas online para juegos, con catalogo gamer, pagos verificados y soporte directo.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://novasplay.neocharge.app/">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="novasplay-icon.png">
+  <link rel="apple-touch-icon" href="novasplay-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+</head>
+<body class="notranslate" translate="no">
+  <app-root></app-root>
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var chatLauncher = null;
+      var greetingBubble = null;
+      var greetingTimer = null;
+      var shouldOpenWhenReady = false;
+      var hasOpenedChat = false;
+
+      function createLauncher() {
+        if (document.getElementById('novasplay-chat-launcher')) return;
+
+        chatLauncher = document.createElement('button');
+        chatLauncher.type = 'button';
+        chatLauncher.id = 'novasplay-chat-launcher';
+        chatLauncher.className = 'novasplay-chat-launcher';
+        chatLauncher.setAttribute('aria-label', 'Abrir chat con NovaBot');
+        chatLauncher.innerHTML =
+          '<span class="novasplay-chat-launcher__pulse"></span>' +
+          '<span class="novasplay-chat-launcher__bot">' +
+            '<img src="novabot.png" alt="" aria-hidden="true">' +
+            '<span class="novasplay-chat-launcher__visor" aria-hidden="true">' +
+              '<span class="novasplay-chat-launcher__eye">N</span>' +
+              '<span class="novasplay-chat-launcher__eye">N</span>' +
+            '</span>' +
+          '</span>' +
+          '<span class="novasplay-chat-launcher__badge" aria-hidden="true">1</span>' +
+          '<span class="novasplay-chat-launcher__status" aria-hidden="true"></span>';
+
+        chatLauncher.addEventListener('click', function () {
+          requestOpenChat();
+        });
+
+        document.body.appendChild(chatLauncher);
+      }
+
+      function createGreetingBubble() {
+        if (document.getElementById('novasplay-chat-greeting')) return;
+
+        greetingBubble = document.createElement('button');
+        greetingBubble.type = 'button';
+        greetingBubble.id = 'novasplay-chat-greeting';
+        greetingBubble.className = 'novasplay-chat-greeting';
+        greetingBubble.setAttribute('aria-label', 'Abrir chat con NovaBot');
+        greetingBubble.innerHTML =
+          '<span class="novasplay-chat-greeting__name">NovaBot</span>' +
+          '<span class="novasplay-chat-greeting__message">NovaBot esta disponible para ayudarte.</span>';
+
+        greetingBubble.addEventListener('click', function () {
+          requestOpenChat();
+        });
+
+        document.body.appendChild(greetingBubble);
+      }
+
+      function requestOpenChat() {
+        hasOpenedChat = true;
+        shouldOpenWhenReady = true;
+        hideGreetingBubble();
+
+        if (chatLauncher) {
+          chatLauncher.classList.add('novasplay-chat-launcher--loading');
+          chatLauncher.classList.add('novasplay-chat-launcher--opened');
+        }
+
+        if (openTawkWidget()) {
+          setLauncherVisible(false);
+        }
+      }
+
+      function setLauncherVisible(isVisible) {
+        if (!chatLauncher) return;
+        chatLauncher.classList.toggle('novasplay-chat-launcher--hidden', !isVisible);
+        if (!isVisible) {
+          hideGreetingBubble();
+        }
+        if (isVisible) {
+          chatLauncher.classList.remove('novasplay-chat-launcher--loading');
+        }
+      }
+
+      function openTawkWidget() {
+        if (!window.Tawk_API || typeof window.Tawk_API.maximize !== 'function') {
+          return false;
+        }
+
+        if (typeof window.Tawk_API.showWidget === 'function') {
+          window.Tawk_API.showWidget();
+        }
+
+        window.Tawk_API.maximize();
+        shouldOpenWhenReady = false;
+        return true;
+      }
+
+      function hideTawkWidget() {
+        if (window.Tawk_API && typeof window.Tawk_API.hideWidget === 'function') {
+          window.Tawk_API.hideWidget();
+        }
+      }
+
+      function hasPlayedAlert() {
+        return false;
+      }
+
+      function markAlertPlayed() {}
+
+      function hideGreetingBubble() {
+        if (!greetingBubble) return;
+
+        greetingBubble.classList.remove('novasplay-chat-greeting--visible');
+        if (greetingTimer) {
+          window.clearTimeout(greetingTimer);
+          greetingTimer = null;
+        }
+      }
+
+      function showGreetingBubble() {
+        if (!greetingBubble || !chatLauncher || hasOpenedChat) return;
+
+        greetingBubble.classList.add('novasplay-chat-greeting--visible');
+        chatLauncher.classList.add('novasplay-chat-launcher--notified');
+        chatLauncher.classList.add('novasplay-chat-launcher--attention');
+
+        window.setTimeout(function () {
+          if (chatLauncher) {
+            chatLauncher.classList.remove('novasplay-chat-launcher--attention');
+          }
+        }, 2200);
+
+        greetingTimer = window.setTimeout(function () {
+          hideGreetingBubble();
+        }, 10000);
+      }
+
+      function armAttentionCue() {
+        if (hasPlayedAlert()) return;
+
+        window.setTimeout(function () {
+          if (hasOpenedChat || !chatLauncher || hasPlayedAlert()) return;
+
+          markAlertPlayed();
+          showGreetingBubble();
+        }, 1600);
+      }
+
+      createLauncher();
+      createGreetingBubble();
+      armAttentionCue();
+
+      Tawk_API.onLoad = function () {
+        if (shouldOpenWhenReady) {
+          openTawkWidget();
+          setLauncherVisible(false);
+          return;
+        }
+
+        hideTawkWidget();
+        setLauncherVisible(true);
+      };
+
+      Tawk_API.onChatMaximized = function () {
+        hasOpenedChat = true;
+        setLauncherVisible(false);
+      };
+
+      Tawk_API.onChatMinimized = function () {
+        hideTawkWidget();
+        setLauncherVisible(true);
+      };
+
+      Tawk_API.onChatHidden = function () {
+        setLauncherVisible(true);
+      };
+
+      var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/6a246c4d74bd6b1c2dcc96ed/1jqf4e3i0';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+  <!--End of Tawk.to Script-->
+</body>
+</html>

@@ -1,0 +1,73 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.12.1
+2 info using node@v24.15.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Michelle\Desktop\NovasPlay\.npmrc
+5 silly config load:file:C:\Users\Michelle\.npmrc
+6 silly config load:file:C:\Users\Michelle\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" ".\\.npm-cache"
+9 verbose logfile logs-max:10 dir:C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_42_198Z-
+10 verbose logfile C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_42_198Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly fetch manifest zone.js@~0.15.0
+15 silly packumentCache full:https://registry.npmjs.org/zone.js cache-miss
+16 http cache https://registry.npmjs.org/zone.js 12ms (cache hit)
+17 silly packumentCache full:https://registry.npmjs.org/zone.js set size:378576 disposed:false
+18 verbose stack Error: could not resolve
+18 verbose stack     at PlaceDep.failPeerConflict (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:503:25)
+18 verbose stack     at new PlaceDep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:157:21)
+18 verbose stack     at #buildDepStep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:933:18)
+18 verbose stack     at async Arborist.buildIdealTree (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:170:7)
+18 verbose stack     at async Promise.all (index 1)
+18 verbose stack     at async Arborist.reify (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:111:5)
+18 verbose stack     at async Install.exec (C:\Program Files\nodejs\node_modules\npm\lib\commands\install.js:146:5)
+18 verbose stack     at async Npm.exec (C:\Program Files\nodejs\node_modules\npm\lib\npm.js:193:9)
+18 verbose stack     at async module.exports (C:\Program Files\nodejs\node_modules\npm\lib\cli\entry.js:67:5)
+19 error code ERESOLVE
+20 error ERESOLVE could not resolve
+21 error
+22 error While resolving: @angular/core@20.3.21
+22 error Found: zone.js@0.16.2
+22 error node_modules/zone.js
+22 error   zone.js@"^0.16.0" from the root project
+22 error
+22 error Could not resolve dependency:
+22 error peerOptional zone.js@"~0.15.0" from @angular/core@20.3.21
+22 error node_modules/@angular/core
+22 error   @angular/core@"^20.3.16" from the root project
+22 error   peer @angular/core@"20.3.21" from @angular/animations@20.3.21
+22 error   node_modules/@angular/animations
+22 error     @angular/animations@"^20.3.16" from the root project
+22 error     3 more (@angular/platform-browser, ngx-bootstrap, primeng)
+22 error   10 more (@angular/build, @angular/common, @angular/forms, ...)
+22 error
+22 error Conflicting peer dependency: zone.js@0.15.1
+22 error node_modules/zone.js
+22 error   peerOptional zone.js@"~0.15.0" from @angular/core@20.3.21
+22 error   node_modules/@angular/core
+22 error     @angular/core@"^20.3.16" from the root project
+22 error     peer @angular/core@"20.3.21" from @angular/animations@20.3.21
+22 error     node_modules/@angular/animations
+22 error       @angular/animations@"^20.3.16" from the root project
+22 error       3 more (@angular/platform-browser, ngx-bootstrap, primeng)
+22 error     10 more (@angular/build, @angular/common, @angular/forms, ...)
+22 error
+22 error Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+23 error
+23 error
+23 error For a full report see:
+23 error C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_42_198Z-eresolve-report.txt
+24 silly unfinished npm timer reify 1780375722685
+25 silly unfinished npm timer reify:loadTrees 1780375722688
+26 silly unfinished npm timer idealTree:buildDeps 1780375722853
+27 silly unfinished npm timer idealTree:node_modules/@angular/core 1780375722856
+28 verbose cwd C:\Users\Michelle\Desktop\NovasPlay
+29 verbose os Windows_NT 10.0.26200
+30 verbose node v24.15.0
+31 verbose npm  v11.12.1
+32 verbose exit 1
+33 verbose code 1
+34 error A complete log of this run can be found in: C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_42_198Z-debug-0.log

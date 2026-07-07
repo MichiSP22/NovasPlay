@@ -1,0 +1,290 @@
+<div class="checkout-page">
+  <div class="page-grid"></div>
+
+  <div class="checkout-shell">
+    <header class="checkout-hero">
+      <button class="back-link" (click)="goBack()">
+        <span class="material-icons notranslate" translate="no">arrow_back</span>
+        Volver a la tienda
+      </button>
+
+      <div class="hero-copy">
+        <span class="eyebrow">Pago seguro NovasPlay</span>
+        <h1>{{ groupedItems().length > 1 ? 'Completa tus pagos' : 'Completa tu pago' }}</h1>
+        <p>{{ groupedItems().length > 1 ? 'Carga cada referencia y revisa los montos antes de crear la orden.' : 'Registra los datos de tu transferencia y confirma tu orden.' }}</p>
+      </div>
+    </header>
+
+    @if (cartService.itemCount() === 0) {
+      <div class="empty-cart-message">
+        <span class="material-icons notranslate" translate="no">remove_shopping_cart</span>
+        <h2>No hay productos en el carrito</h2>
+        <button class="btn-primary-action" (click)="goBack()">Explorar catalogo</button>
+      </div>
+    } @else {
+      <div class="payment-layout">
+        <main class="payment-board">
+          @if (cargando()) {
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Preparando datos de pago...</p>
+            </div>
+          } @else {
+            @for (grupo of groupedItems(); track grupo.methodId; let i = $index) {
+              <article class="payment-step-card">
+                <header class="method-header">
+                  <div class="method-number">{{ i + 1 }}</div>
+                  <div class="method-info">
+                    <span class="panel-kicker">Metodo de pago</span>
+                    <h2 class="method-name notranslate" translate="no">{{ grupo.name }}</h2>
+                  </div>
+                  <div class="group-total">
+                    <span>Subtotal</span>
+                    <strong>{{ grupo.symbol }}{{ grupo.subtotal.toFixed(2) }}</strong>
+                  </div>
+                </header>
+
+                <div class="method-signal-row">
+                  <span>
+                    <span class="material-icons notranslate" translate="no">verified_user</span>
+                    Pago protegido
+                  </span>
+                  <span>
+                    <span class="material-icons notranslate" translate="no">receipt_long</span>
+                    Revision manual
+                  </span>
+                  <span>
+                    <span class="material-icons notranslate" translate="no">bolt</span>
+                    Orden al confirmar
+                  </span>
+                </div>
+
+                <div class="payment-content-grid">
+                  <section class="bank-panel">
+                    <div class="section-label">
+                      <span class="material-icons notranslate" translate="no">account_balance</span>
+                      Datos para transferir
+                    </div>
+
+                    @if (bankData()[grupo.methodId] && bankData()[grupo.methodId].length > 0) {
+                      <div class="bank-details-grid">
+                        @for (data of bankData()[grupo.methodId]; track data.Id || data.id || data.Key || data.key) {
+                          <div class="bank-info-row">
+                            <span class="info-key">{{ data.Key || data.key }}</span>
+
+                            @if ((data.ValueType || data.valueType || '').toLowerCase() === 'file') {
+                              <div class="info-image">
+                                <img [src]="(data.Value || data.value).includes('data:image') ? (data.Value || data.value) : 'data:image/jpeg;base64,' + (data.Value || data.value)" alt="QR Pago">
+                              </div>
+                            } @else {
+                              <span class="info-value">{{ data.Value || data.value }}</span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    } @else {
+                      <div class="no-bank-data">
+                        <span class="material-icons notranslate" translate="no">support_agent</span>
+                        <p>Solicita los datos bancarios por atencion al cliente.</p>
+                      </div>
+                    }
+                  </section>
+
+                  <div class="payment-warning">
+                    <span class="material-icons notranslate" translate="no">priority_high</span>
+                    Envia el monto exacto del producto para evitar demoras en la verificacion.
+                  </div>
+
+                  <section class="reference-panel">
+                    <div class="section-label">
+                      <span class="material-icons notranslate" translate="no">edit_note</span>
+                      Datos de tu pago
+                    </div>
+
+                    <div class="form-grid">
+                      <label class="form-field reference-field">
+                        <span>
+                          Nro. de referencia
+                          <b>*</b>
+                        </span>
+                        <div class="input-wrapper">
+                          <span class="material-icons notranslate input-icon" translate="no">confirmation_number</span>
+                          <input type="text"
+                                 [value]="references()[grupo.methodId] || ''"
+                                 (input)="updateReference(grupo.methodId, $event)"
+                                 placeholder="Numero de operacion"
+                                 class="cyber-input">
+                        </div>
+                        <small>Pago para {{ grupo.name }}</small>
+                      </label>
+
+                      <label class="form-field">
+                        <span>
+                          Fecha
+                          <b>*</b>
+                        </span>
+                        <div class="input-wrapper">
+                          <app-cyber-datepicker
+                                 [ngModel]="paymentDates()[grupo.methodId]"
+                                 (ngModelChange)="updatePaymentDateValue(grupo.methodId, $event)"
+                                 cssClass="cyber-input"
+                                 placeholder="Fecha de Pago">
+                          </app-cyber-datepicker>
+                        </div>
+                      </label>
+
+                      <label class="form-field">
+                        <span>
+                          Hora
+                          <b>*</b>
+                        </span>
+                        <div class="input-wrapper">
+                          <app-cyber-timepicker
+                                 [ngModel]="paymentTimes()[grupo.methodId]"
+                                 (ngModelChange)="updatePaymentTimeValue(grupo.methodId, $event)"
+                                 cssClass="cyber-input"
+                                 placeholder="Hora de Pago">
+                          </app-cyber-timepicker>
+                        </div>
+                      </label>
+                    </div>
+                  </section>
+                </div>
+              </article>
+            }
+          }
+        </main>
+
+        <aside class="summary-panel">
+          <div class="summary-sticky-card">
+            <section class="summary-order-section">
+              <div class="summary-main-title">
+              <span class="material-icons notranslate" translate="no">fact_check</span>
+              <div>
+                <span class="panel-kicker">Resumen de compra</span>
+                <h3>Tu orden</h3>
+              </div>
+            </div>
+            <div class="summary-row">
+              <span>Articulos</span>
+              <strong class="count-badge">{{ cartService.itemCount() }}</strong>
+            </div>
+
+            <div class="summary-items-list">
+              @for (grupo of groupedItems(); track grupo.methodId) {
+                @for (item of grupo.items; track item.idInterno) {
+                  <div class="summary-item">
+                    <div class="summary-item-copy">
+                      <div class="summary-item-title">
+                        <strong class="notranslate" translate="no">{{ item.juego }}</strong>
+                        <b class="summary-item-price notranslate" translate="no">
+                          @if (item.paquete.promotion) {
+                            {{ item.paquete.simbolo }}{{ item.paquete.promotionPrice }}
+                          } @else {
+                            {{ item.paquete.simbolo }}{{ item.paquete.precio }}
+                          }
+                        </b>
+                      </div>
+                      <span>{{ item.paquete.cant }}</span>
+                      <small>ID {{ item.idUsuario }} - {{ grupo.name }}</small>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+            </section>
+
+            <section class="summary-payment-section">
+              <div class="coupon-panel">
+              <span class="summary-section-label">Descuento</span>
+              <label class="coupon-label" for="couponCode">
+                <span class="material-icons notranslate" translate="no">confirmation_number</span>
+                Cupon
+              </label>
+
+              <div class="coupon-entry">
+                <input
+                  id="couponCode"
+                  class="coupon-input notranslate"
+                  translate="no"
+                  type="text"
+                  placeholder="Codigo"
+                  [(ngModel)]="couponCode"
+                  [disabled]="couponLoading() || !!couponPreview()"
+                  autocomplete="off">
+
+                @if (couponPreview()) {
+                  <button class="btn-remove-coupon" type="button" (click)="removeCoupon()">
+                    <span class="material-icons notranslate" translate="no">close</span>
+                  </button>
+                } @else {
+                  <button
+                    class="btn-apply-coupon"
+                    type="button"
+                    [disabled]="couponLoading()"
+                    (click)="applyCoupon()">
+                    {{ couponLoading() ? 'Validando...' : 'Aplicar' }}
+                  </button>
+                }
+              </div>
+
+              @if (couponMessage()) {
+                <p class="coupon-message" [class.is-valid]="couponPreview()">{{ couponMessage() }}</p>
+              }
+
+              @if (couponPreview() && hasCouponDiscount()) {
+                <div class="coupon-result">
+                  @for (discount of couponDiscounts(); track discount.symbol) {
+                    <div class="coupon-row">
+                      <span>Ahorro cupon</span>
+                      <strong class="notranslate" translate="no">-{{ discount.symbol }}{{ discount.amount.toFixed(2) }}</strong>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+            <div class="currency-breakdown">
+              <div class="summary-section-label">Total final</div>
+              @for (total of couponFinalTotals(); track total.symbol) {
+                <div class="currency-total">
+                  <span class="symbol-label">Total a pagar</span>
+                  <strong class="symbol-amount notranslate" translate="no">{{ total.symbol }}{{ total.amount.toFixed(2) }}</strong>
+
+                  @for (d of cartService.totalDiscount(); track d.symbol) {
+                    @if (d.symbol === total.symbol) {
+                      <div class="discount-badge-final">
+                        <span class="material-icons notranslate" translate="no">savings</span>
+                        Ahorro {{ d.symbol }}{{ d.amount.toFixed(2) }}
+                      </div>
+                    }
+                  }
+
+                  @for (discount of couponDiscounts(); track discount.symbol) {
+                    @if (discount.symbol === total.symbol && discount.amount > 0) {
+                      <div class="discount-badge-final coupon-saving">
+                        <span class="material-icons notranslate" translate="no">confirmation_number</span>
+                        Cupon -{{ discount.symbol }}{{ discount.amount.toFixed(2) }}
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+            <button class="btn-confirm-order"
+                    [disabled]="procesando() || cartService.itemCount() === 0"
+                    (click)="confirmOrder()">
+              {{ procesando() ? 'Procesando...' : 'Confirmar pago' }}
+              <span class="material-icons notranslate" translate="no">send</span>
+            </button>
+
+              <p class="final-hint">
+                <span class="material-icons notranslate" translate="no">info</span>
+                Verifica referencias, fecha y hora antes de confirmar.
+              </p>
+            </section>
+          </div>
+        </aside>
+      </div>
+    }
+  </div>
+</div>

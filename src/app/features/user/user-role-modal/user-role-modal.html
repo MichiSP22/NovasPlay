@@ -1,0 +1,34 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" style="max-width: 400px;" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>Cambiar Rol de Cliente</h3>
+      <button class="close-btn" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="saveRole()" class="neon-form">
+      
+      <p style="color: #aaa; margin-bottom: 20px;">
+        Cliente: <strong style="color: #00d4ff;">{{ userToEdit.firstName }} {{ userToEdit.lastName }}</strong>
+      </p>
+
+      <div class="form-group">
+        <label>Asignar Nuevo Rol</label>
+        <select [(ngModel)]="newRole" name="role" required class="neon-input">
+          <option value="Client">Cliente</option>
+          <option value="Admin">Administrador</option>
+          <option value="Root">Súper Administrador (Root)</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action">
+          <span class="material-icons notranslate" translate="no">security</span> Actualizar Rol
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

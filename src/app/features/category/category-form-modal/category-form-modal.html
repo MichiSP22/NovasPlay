@@ -1,0 +1,69 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>{{ categoryToEdit ? 'Editar' : 'Nueva' }} Categoría</h3>
+      <button class="close-btn" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="saveCategory()" class="neon-form">
+      
+      <div class="form-group">
+        <label for="name">Nombre de la Categoría</label>
+        <input 
+          id="name"
+          type="text" 
+          [(ngModel)]="category.name" 
+          name="name" 
+          required 
+          placeholder="Ej: Shooters"
+          class="neon-input">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea 
+          id="description"
+          [(ngModel)]="category.description" 
+          name="description" 
+          required 
+          placeholder="Ej: Descripcion de la categoria"
+          class="neon-input"
+          style="min-height: 80px; resize: vertical;">
+        </textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="imageFile">Imagen Principal</label>
+        <input 
+          id="imageFile"
+          type="file" 
+          (change)="onImageSelected($event)" 
+          accept="image/*"
+          class="neon-input"
+          [required]="!category.id"> 
+      </div>
+
+      <div class="form-group">
+        <label for="iconFile">Ícono de la Categoría</label>
+        <input 
+          id="iconFile"
+          type="file" 
+          (change)="onIconSelected($event)" 
+          accept="image/*"
+          class="neon-input"
+          [required]="!category.id">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action">
+          <span class="material-icons notranslate" translate="no">save</span>
+          Guardar Categoría
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

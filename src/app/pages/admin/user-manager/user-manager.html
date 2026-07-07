@@ -1,0 +1,153 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">people</span>
+        <h3>Directorio de Clientes</h3>
+      </div>
+      <button class="btn-ghost" (click)="loadUsers()" title="Refrescar Lista">
+        <span class="material-icons notranslate" translate="no">refresh</span> Actualizar
+      </button>
+    </div>
+
+    <div class="manager-filters">
+      <div class="neon-input-group" style="flex: 1; min-width: 250px;">
+        <label class="neon-label">Buscar Cliente</label>
+        <div class="search-container">
+          <span class="material-icons notranslate" translate="no">search</span>
+          <input type="text" 
+                 class="neon-input" 
+                 placeholder="Nombre del cliente..."
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="onFilterChange()">
+        </div>
+      </div>
+
+      @if (searchTerm) {
+        <button class="btn-neon-action" (click)="clearSearch()" style="height: 42px;">
+          <span class="material-icons notranslate" translate="no">close</span> Limpiar
+        </button>
+      }
+
+      <button class="btn-neon-action" (click)="loadUsers()" style="height: 42px;">
+        <span class="material-icons notranslate" translate="no">sync</span> Actualizar
+      </button>
+    </div>
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>NOMBRE COMPLETO</th>
+            <th>TELÉFONO</th>
+            <th>CORREO ELECTRÓNICO</th>
+            <th>ROL</th>
+            <th>ESTADO</th>
+            <th class="text-right">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="4" class="text-center">Cargando clientes...</td></tr>
+          } @else if (users().length === 0) {
+            <tr><td colspan="4" class="empty-state">No se encontraron clientes.</td></tr>
+          } @else {
+            @for (usr of users(); track usr.id) {
+              <tr [class.highlighted-row]="isHighlighted(usr)">
+                <td class="font-bold">
+                  <span [class.highlighted-name]="isHighlighted(usr)">
+                    {{ usr.firstName }} {{ usr.lastName }}
+                  </span>
+                </td>
+                <td style="color: #aaa;">{{ usr.phone || 'N/A' }}</td>
+                <td style="color: #aaa;">{{ usr.email || 'N/A' }}</td>
+                <td>
+                  <span style="font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; color: #00d4ff; font-weight: 600;">
+                    {{ usr.role }}
+                  </span>
+                </td>
+                <td>
+                  @switch (usr.status) {
+                    @case (0) {
+                      <span style="color: #00e676; font-weight: 600; font-size: 0.85em; text-transform: uppercase;">ACTIVO</span>
+                    }
+                    @case (1) {
+                      <span style="color: #ffb300; font-weight: 600; font-size: 0.85em; text-transform: uppercase;">INACTIVO</span>
+                    }
+                    @case (2) {
+                      <span style="color: #ab47bc; font-weight: 600; font-size: 0.85em; text-transform: uppercase;">BLOQUEADO</span>
+                    }
+                    @case (3) {
+                      <span style="color: #ff4444; font-weight: 600; font-size: 0.85em; text-transform: uppercase;">BANEADO</span>
+                    }
+                    @default {
+                      <span style="color: #888; font-weight: 600; font-size: 0.85em; text-transform: uppercase;">DESCONOCIDO</span>
+                    }
+                  }
+                </td>
+                <td class="text-right">
+                  <button class="action-btn edit" title="Ver Órdenes" (click)="goToOrders(usr.id)">
+                    <span class="material-icons notranslate" translate="no">shopping_bag</span>
+                  </button>
+                  @if (usr.role !== 'Administrator' && usr.role !== 'Root' && currentUser()?.role !== 'Support') {
+                    <button class="action-btn" [ngClass]="usr.role === 'Support' ? 'delete' : 'assign'" [title]="usr.role === 'Support' ? 'Quitar Soporte' : 'Asignar Soporte'" (click)="toggleSupport(usr)">
+                      <span class="material-icons notranslate" translate="no">{{ usr.role === 'Support' ? 'person_remove' : 'support_agent' }}</span>
+                    </button>
+                    <button class="action-btn" [ngClass]="usr.status === 3 ? 'assign' : 'delete'" [title]="usr.status === 3 ? 'Desbanear Usuario' : 'Banear Usuario'" (click)="toggleBan(usr)">
+                      <span class="material-icons notranslate" translate="no">{{ usr.status === 3 ? 'how_to_reg' : 'block' }}</span>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+
+
+    @if (totalPages() > 1) {
+      <div class="pagination-container">
+        <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span> Anterior
+        </button>
+        
+        <div class="pagination-info">
+          Página <b>{{ currentPage() }}</b> de <b>{{ totalPages() }}</b>
+        </div>
+
+        <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          Siguiente <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showConfirmModal() && userToPerformAction()) {
+  <div class="modal-backdrop" (click)="closeConfirmModal()">
+    <div class="modal-container" style="max-width: 400px; text-align: center;" (click)="$event.stopPropagation()">
+      <div class="modal-header" style="justify-content: center; position: relative;">
+        <h4 style="margin: 0; font-size: 1.25rem;">Confirmar Acción</h4>
+        <button class="close-btn" style="position: absolute; right: 0; top: -5px;" (click)="closeConfirmModal()">&times;</button>
+      </div>
+      
+      <div style="margin: 25px 0; color: #fff; font-size: 1.05rem; line-height: 1.5;">
+        ¿Estás seguro de que deseas 
+        <span style="color: #00d4ff; font-weight: 600;">
+          @if (confirmAction() === 'ban') { banear }
+          @else if (confirmAction() === 'unban') { desbanear }
+          @else if (confirmAction() === 'assignSupport') { asignar como soporte a }
+          @else if (confirmAction() === 'removeSupport') { remover el soporte a }
+        </span> 
+        {{ userToPerformAction()?.firstName }}?
+      </div>
+
+      <div class="modal-footer" style="justify-content: center; margin-top: 25px;">
+        <button class="btn-ghost" (click)="closeConfirmModal()">Cancelar</button>
+        <button class="btn-neon-action" style="background: rgba(0, 212, 255, 0.15);" (click)="executeConfirm()">Sí, proceder</button>
+      </div>
+    </div>
+  </div>
+}

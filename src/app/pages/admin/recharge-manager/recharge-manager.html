@@ -1,0 +1,86 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">bolt</span>
+        <h3>Gestión de Recargas</h3>
+      </div>
+      <button class="btn-neon-action" (click)="openModal()">
+        <span class="material-icons notranslate" translate="no">add</span> Nueva Recarga
+      </button>
+    </div>
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th style="width: 40%">RECARGA</th>
+            <th style="width: 22%">PRODUCTO ASOCIADO</th>
+            <th style="width: 15%">ESTADO</th>
+            <th class="text-right" style="width: 23%">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+          } @else if (recharges().length === 0) {
+            <tr><td colspan="4" class="empty-state">No hay recargas registradas.</td></tr>
+          } @else {
+            @for (rec of recharges(); track rec.id) {
+              <tr>
+                <td>
+                  <div class="font-bold notranslate" translate="no">{{ rec.name }}</div>
+                  <small style="color: #aaa" 
+                         class="text-truncate-2 clickable-description" 
+                         [class.is-expanded]="isExpanded(rec.id!)"
+                         (click)="toggleExpand(rec.id!)">
+                    {{ rec.description }}
+                  </small>
+                </td>
+                <td style="color: #00d4ff;" class="notranslate" translate="no">{{ getProductName(rec.productID) }}</td>
+                <td>
+                  <span [style.color]="rec.soldOut ? '#ff4d4d' : '#00ffcc'" class="status-badge">
+                    {{ rec.soldOut ? 'Agotada' : 'Disponible' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button class="action-btn edit" title="Editar" (click)="openModal(rec)">
+                    <span class="material-icons notranslate" translate="no">edit</span>
+                  </button>
+                  <button class="action-btn delete" title="Eliminar" (click)="deleteRecharge(rec.id)">
+                    <span class="material-icons notranslate" translate="no">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination-container">
+        <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span> Anterior
+        </button>
+        
+        <div class="pagination-info">
+          Página <b>{{ currentPage() }}</b> de <b>{{ totalPages() }}</b>
+        </div>
+
+        <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          Siguiente <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-recharge-form-modal
+    [rechargeToEdit]="selectedRecharge()"
+    [availableProducts]="productsList()"
+    (onClose)="closeModal()"
+    (onSave)="onSaveSuccess()">
+  </app-recharge-form-modal>
+}

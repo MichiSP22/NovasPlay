@@ -1,0 +1,55 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>Procesar Orden #{{ ('00000000' + orderToProcess.id).slice(-8) }}</h3>
+      <button class="close-btn" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="processOrder()" class="neon-form">
+      
+      <div class="order-summary" style="background: rgba(0, 212, 255, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 212, 255, 0.2);">
+        <p style="margin: 0 0 10px 0; color: #fff;" title="Usuario ID: {{ orderToProcess.userID }}"><strong>Cliente:</strong> {{ orderToProcess.userFirstName || orderToProcess.userLastName ? ((orderToProcess.userFirstName || '') + ' ' + (orderToProcess.userLastName || '')).trim() : orderToProcess.userID }}</p>
+        <p style="margin: 0; color: #aaa;"><strong>Nota del Cliente:</strong> {{ cleanDescription(orderToProcess.description) }}</p>
+      </div>
+
+      <div class="form-group">
+        <label>Recargas en la Orden:</label>
+        <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+          @for (item of (orderToProcess.OrderDetails || []); track (item.id ?? item.detailID ?? item.rechargeID)) {
+            <div style="margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+              <p style="margin: 0 0 5px 0; color: #66ffdc; font-weight: bold;">
+                {{ item.name || item.Name || item.Recharge_Product_Name || 'Recarga' }} - {{ item.accountPay || item.AccountPay }}
+              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.85rem; color: #aaa;">Monto: {{ currencySymbol(item) }}{{ (item.price || item.Price) | number:'1.2-2' }}</span>
+                <select [(ngModel)]="rechargeStatuses[item.id ?? item.detailID ?? item.rechargeID]" name="status_{{item.id ?? item.detailID ?? item.rechargeID}}" required class="neon-input" style="width: auto; padding: 5px; font-size: 0.85rem; margin-top: 0;">
+                  <option [ngValue]="0">Pendiente</option>
+                  <option [ngValue]="1">Confirmado</option>
+                  <option [ngValue]="2">Procesando</option>
+                  <option [ngValue]="3">Completado</option>
+                  <option [ngValue]="4">Reembolsado</option>
+                  <option [ngValue]="5">Cancelado</option>
+                </select>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Nota del Administrador (Opcional)</label>
+        <textarea [(ngModel)]="adminNotes" name="notes" placeholder="Ej: Pago verificado correctamente..." class="neon-input" style="min-height: 80px;"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn-neon-action" (click)="processOrder()">
+          <span class="material-icons notranslate" translate="no">check_circle</span> Procesar Orden
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

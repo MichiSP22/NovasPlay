@@ -1,0 +1,84 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <form (ngSubmit)="saveProduct()" class="modal-container" style="max-width: 600px;" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>{{ productToEdit ? 'Editar' : 'Nuevo' }} Producto</h3>
+      <button type="button" class="close-btn" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <div class="neon-form">
+      
+      <div class="form-group">
+        <label>Nombre del Producto</label>
+        <input type="text" [(ngModel)]="product.name" name="name" required placeholder="Ej: Recarga Free Fire" class="neon-input">
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="product.description" name="description" required class="neon-input" style="min-height: 80px;"></textarea>
+      </div>
+
+      <!-- Tiempo de Espera Mínimo -->
+      <label style="color: #00d4ff; font-weight: 700; margin-bottom: 15px; display: block;">Escala de Tiempo de Espera (Duración)</label>
+      
+      <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Tiempo Mínimo:</p>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.7rem; color: #888;">Horas</label>
+            <input type="number" [(ngModel)]="minHours" name="minHours" min="0" class="neon-input" placeholder="0">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.7rem; color: #888;">Minutos</label>
+            <input type="number" [(ngModel)]="minMinutes" name="minMinutes" min="0" max="59" class="neon-input" placeholder="30">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tiempo de Espera Máximo -->
+      <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Tiempo Máximo:</p>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.7rem; color: #888;">Horas</label>
+            <input type="number" [(ngModel)]="maxHours" name="maxHours" min="0" class="neon-input" placeholder="1">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.7rem; color: #888;">Minutos</label>
+            <input type="number" [(ngModel)]="maxMinutes" name="maxMinutes" min="0" max="59" class="neon-input" placeholder="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" [(ngModel)]="product.soldOut" name="soldOut" id="soldOutCheck" style="width: 20px; height: 20px;">
+        <label for="soldOutCheck" style="margin-bottom: 0; color: #ff4d4d;">¿Producto Agotado? (Ocultar del catálogo)</label>
+      </div>
+
+      <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" [(ngModel)]="product.internalProcess" name="internalProcess" id="internalProcessCheck" style="width: 20px; height: 20px;">
+        <label for="internalProcessCheck" style="margin-bottom: 0; color: #00ffcc;">¿Proceso Interno? (El Administrador accede a la cuenta)</label>
+      </div>
+
+      <div class="form-group">
+        <label>Imagen Principal</label>
+        <input type="file" (change)="onImageSelected($event)" accept="image/*" class="neon-input" [required]="!product.id"> 
+      </div>
+
+      <div class="form-group">
+        <label>Ícono del Producto</label>
+        <input type="file" (change)="onIconSelected($event)" accept="image/*" class="neon-input" [required]="!product.id">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+      <button type="submit" class="btn-neon-action">
+        <span class="material-icons notranslate" translate="no">save</span> Guardar Producto
+      </button>
+    </div>
+
+  </form>
+</div>

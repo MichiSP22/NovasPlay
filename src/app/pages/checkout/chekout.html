@@ -1,0 +1,380 @@
+<div class="checkout-page">
+  <div class="console-grid"></div>
+
+  <div class="checkout-shell">
+    <button class="back-link" type="button" (click)="volver()">
+      <span class="material-icons notranslate" translate="no">arrow_back</span>
+      Volver a la tienda
+    </button>
+
+    <section class="mission-board">
+      <div class="mission-art">
+        <img src="novasplay-feature-game.png" class="fallback-art" alt="" aria-hidden="true">
+
+        @if (juego()?.imageInfo?.imageURL) {
+          <img
+            [src]="juego()!.imageInfo!.imageURL"
+            [alt]="juegoNombre()"
+            class="product-cover"
+            (error)="($any($event.target).style.display = 'none')">
+        } @else if (juego()?.iconInfo?.iconURL) {
+          <img
+            [src]="juego()!.iconInfo!.iconURL"
+            [alt]="juegoNombre()"
+            class="product-cover product-cover-icon"
+            (error)="($any($event.target).style.display = 'none')">
+        } @else {
+          <div class="cover-fallback">
+            <span>N</span>
+            <strong>NovasPlay</strong>
+          </div>
+        }
+
+        <div class="art-label">
+          <span>Recarga activa</span>
+          <strong>{{ juegoNombre() }}</strong>
+        </div>
+      </div>
+
+      <div class="mission-copy">
+        <span class="eyebrow">NovasPlay recarga</span>
+        <h1>{{ juegoNombre() }}</h1>
+        <p>{{ juego()?.description || 'Recarga tu producto favorito de forma rapida y segura con NovasPlay.' }}</p>
+
+        <div class="signal-row">
+          @if (juego()) {
+            <span class="signal-pill">
+              <span class="material-icons notranslate" translate="no">bolt</span>
+              {{ formatWaitTime(juego()!.timeMinRecharge) }} a {{ formatWaitTime(juego()!.timeMaxRecharge) }}
+            </span>
+          }
+          <span class="signal-pill">
+            <span class="material-icons notranslate" translate="no">verified</span>
+            Pago seguro
+          </span>
+          <span class="signal-pill">
+            <span class="material-icons notranslate" translate="no">support_agent</span>
+            Atencion activa
+          </span>
+        </div>
+      </div>
+
+      <aside class="novix-guide" [class.is-alert]="novixReaction() === 'warn'" [class.is-success]="novixReaction() === 'success'" [class.is-pulse-a]="novixReaction() !== 'idle' && novixPulse() % 2 === 1" [class.is-pulse-b]="novixReaction() !== 'idle' && novixPulse() % 2 === 0" aria-label="Guia Novix">
+        <div class="novix-stage" aria-hidden="true">
+          <img src="novix-checkout-guide.png" alt="" class="novix-character novix-character-desktop">
+          <img src="novix.png" alt="" class="novix-character-mobile">
+        </div>
+
+        <div class="novix-message">
+          <span class="panel-kicker">Novix dice</span>
+          <strong class="novix-line" [class.is-alt]="novixMessageIndex() % 2 === 1" [class.is-direct]="novixPrompt() !== null">
+            {{ novixCurrentMessage() }}
+          </strong>
+          <div class="novix-beats" [class.is-paused]="novixPrompt() !== null" aria-hidden="true">
+            @for (message of novixMessages(); track $index) {
+              <span [class.is-active]="$index === novixMessageIndex() % novixMessages().length"></span>
+            }
+          </div>
+          <span class="novix-pointer">
+            <span class="material-icons notranslate novix-pointer-icon novix-pointer-icon-desktop" translate="no">south_west</span>
+            <span class="material-icons notranslate novix-pointer-icon novix-pointer-icon-mobile" translate="no">south</span>
+            Sigue abajo
+          </span>
+        </div>
+      </aside>
+
+    </section>
+
+    <div class="purchase-layout">
+      <main class="flow-column">
+        @if (juego()?.internalProcess) {
+          <section class="notice-panel">
+            <span class="notice-icon">
+              <span class="material-icons notranslate" translate="no">verified_user</span>
+            </span>
+            <div class="notice-body">
+              <span class="panel-kicker">Proceso verificado</span>
+              <h2>Orden revisada por NovasPlay</h2>
+              <p>Validamos los datos de la recarga antes de procesarla para evitar errores en tu pedido.</p>
+              <span class="notice-tag">Completa los datos solicitados del juego</span>
+            </div>
+          </section>
+        }
+
+        @if (juego() && !juego()?.internalProcess) {
+          <section class="flow-panel account-panel" id="accountStep">
+            <div class="panel-index">
+              <b>01</b>
+              <span>Cuenta</span>
+            </div>
+
+            <div class="panel-body">
+              <div class="panel-heading">
+                <span class="panel-kicker">Cuenta destino</span>
+                <h2>Identifica al jugador</h2>
+              </div>
+
+              <label class="account-field" [class.needs-attention]="idAttention()">
+                <span>User ID de jugador</span>
+                <input
+                  id="playerIdInput"
+                  type="text"
+                  [(ngModel)]="idUsuario"
+                  (ngModelChange)="clearIdAttention()"
+                  placeholder="Ej: 12345678"
+                  required>
+                <small>
+                  @if (idAttention()) {
+                    Falta este dato para poder agregar la recarga.
+                  } @else {
+                    Asegurate de que el ID sea correcto antes de agregar la recarga.
+                  }
+                </small>
+              </label>
+            </div>
+          </section>
+        }
+
+        <section class="flow-panel payment-panel" id="paymentStep">
+          <div class="panel-index">
+            <b>02</b>
+            <span>Metodo</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="panel-heading split-heading">
+              <div>
+                <span class="panel-kicker">Metodo de pago</span>
+                <h2>Selecciona como pagar</h2>
+                @if (countryPaymentHint()) {
+                  <small class="payment-country-hint">{{ countryPaymentHint() }}</small>
+                }
+              </div>
+              <span class="option-count">{{ metodosDePago().length }} opciones</span>
+            </div>
+
+            @if (telefonoInvalido()) {
+              <div class="phone-required-alert">
+                <span class="material-icons notranslate" translate="no">info</span>
+                Actualiza tu telefono en el perfil antes de completar una compra.
+              </div>
+            }
+
+            @if (metodosDePago().length === 0) {
+              <div class="state-box warning">
+                <span class="material-icons notranslate" translate="no">payments</span>
+                No hay metodos de pago disponibles para este pais.
+              </div>
+            } @else {
+              <div class="payment-list">
+                @for (metodo of metodosDePago(); track metodo.Id || metodo.id) {
+                  <button
+                    class="pay-item"
+                    type="button"
+                    [class.active]="metodoPagoSeleccionado() === getPaymentId(metodo)"
+                    (click)="seleccionarPago(metodo)">
+                    <span class="pay-media">
+                      @if (getPaymentImageUrl(metodo)) {
+                        <img [src]="getPaymentImageUrl(metodo) | noCache" class="pay-icon-img" alt="Metodo">
+                      } @else {
+                        <span class="material-icons notranslate" translate="no">payments</span>
+                      }
+                    </span>
+                    <span class="pay-copy">
+                      <span class="pay-name">{{ metodo.Name || metodo.name }}</span>
+                      @if (isInternationalPayment(metodo)) {
+                        <span class="pay-badge">Internacional</span>
+                      }
+                    </span>
+                    <span class="material-icons notranslate pay-check" translate="no">
+                      {{ metodoPagoSeleccionado() === getPaymentId(metodo) ? 'check_circle' : 'radio_button_unchecked' }}
+                    </span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="flow-panel packages-panel" id="packageStep">
+          <div class="panel-index">
+            <b>03</b>
+            <span>Paquete</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="panel-heading split-heading">
+              <div>
+                <span class="panel-kicker">Planes disponibles</span>
+                <h2>Elige tu paquete</h2>
+              </div>
+              @if (paquetesDinamicos().length > 0) {
+                <span class="option-count">{{ paquetesDinamicos().length }} planes</span>
+              }
+            </div>
+
+            @if (cargandoInfo()) {
+              <div class="state-box">
+                <span class="loader-dot"></span>
+                Cargando paquetes disponibles...
+              </div>
+            } @else if (!metodoPagoSeleccionado()) {
+              <div class="state-box muted">
+                <span class="material-icons notranslate" translate="no">touch_app</span>
+                Selecciona primero un metodo de pago.
+              </div>
+            } @else if (paquetesDinamicos().length === 0) {
+              <div class="state-box warning">
+                <span class="material-icons notranslate" translate="no">inventory_2</span>
+                No hay recargas disponibles para esta combinacion.
+              </div>
+            } @else {
+              <div class="packages-list">
+                @for (p of paquetesDinamicos(); track p.id) {
+                  <button
+                    class="pkg-card"
+                    type="button"
+                    [class.selected]="paqueteSeleccionado()?.id === p.id"
+                    [class.is-sold-out]="p.soldOut"
+                    (click)="seleccionarPaquete(p)">
+                    @if (p.soldOut) {
+                      <span class="soldout-label">Agotado</span>
+                    }
+
+                    <span class="pkg-visual">
+                      @if (p.imageUrl) {
+                        <img [src]="p.imageUrl | noCache" class="pkg-icon-img" alt="Recarga">
+                      } @else {
+                        <span class="material-icons notranslate" translate="no">diamond</span>
+                      }
+                    </span>
+
+                    <span class="pkg-info">
+                      <strong>{{ p.cant }}</strong>
+                      @if (p.promotion) {
+                        <span class="price-line">
+                          <span class="pkg-price-original">{{ p.simbolo }}{{ p.precio }}</span>
+                          <span class="pkg-price-promo">{{ p.simbolo }}{{ p.promotionPrice }}</span>
+                        </span>
+                      } @else {
+                        <span class="pkg-price">{{ p.simbolo }}{{ p.precio }}</span>
+                      }
+                    </span>
+
+                    <span class="pkg-select">
+                      <span class="material-icons notranslate" translate="no">
+                        {{ paqueteSeleccionado()?.id === p.id ? 'check' : 'add' }}
+                      </span>
+                    </span>
+                  </button>
+                }
+              </div>
+
+              <div class="selection-bar">
+                <div class="selection-copy">
+                  @if (paqueteSeleccionado()) {
+                    <span>Paquete listo</span>
+                    <strong>{{ paqueteSeleccionado()?.cant }}</strong>
+                  } @else {
+                    <span>Seleccion pendiente</span>
+                    <strong>Elige una recarga</strong>
+                  }
+                </div>
+                <button
+                  class="add-to-cart-btn"
+                  type="button"
+                  [disabled]="!paqueteSeleccionado()"
+                  (click)="agregarAlCarrito()">
+                  <span class="material-icons notranslate" translate="no">playlist_add</span>
+                  Anadir a la lista
+                </button>
+              </div>
+            }
+          </div>
+        </section>
+      </main>
+
+      <aside class="ticket-panel">
+        <div class="ticket-card">
+          <div class="ticket-head">
+            <span class="summary-media">
+              @if (juego()?.iconInfo?.iconURL) {
+                <img [src]="juego()!.iconInfo!.iconURL" [alt]="juegoNombre()">
+              } @else if (juego()?.imageInfo?.imageURL) {
+                <img [src]="juego()!.imageInfo!.imageURL" [alt]="juegoNombre()">
+              } @else {
+                <span>N</span>
+              }
+            </span>
+            <div>
+              <span class="panel-kicker">Lista actual</span>
+              <h3>Resumen</h3>
+            </div>
+          </div>
+
+          <div class="cart-items-container">
+            @if (carrito().length === 0) {
+              <div class="empty-cart-msg">
+                <span class="material-icons notranslate" translate="no">shopping_bag</span>
+                Tu lista de recargas esta vacia.
+              </div>
+            }
+
+            @for (item of carrito(); track item.idInterno) {
+              <div class="cart-item-row">
+                <div class="cart-item-info">
+                  <span class="cart-item-qty">{{ item.paquete.cant }}</span>
+                  <span class="cart-item-id">ID: {{ item.idUsuario }}</span>
+                </div>
+                <div class="cart-item-price">
+                  @if (item.paquete.promotion) {
+                    <div class="summary-price-stack">
+                      <span class="price-summary-old">{{ item.paquete.simbolo }}{{ item.paquete.precio }}</span>
+                      <span class="price-summary-new">{{ item.paquete.simbolo }}{{ item.paquete.promotionPrice }}</span>
+                    </div>
+                  } @else {
+                    <span>{{ item.paquete.simbolo }}{{ item.paquete.precio }}</span>
+                  }
+                  <button class="remove-item" type="button" (click)="eliminarDelCarrito(item.idInterno)" title="Quitar recarga">
+                    <span class="material-icons notranslate" translate="no">close</span>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (carrito().length > 0) {
+            <div class="summary-content">
+              @if (cartService.totalDiscount().length > 0) {
+                <div class="discount-notice">
+                  <span class="material-icons notranslate" translate="no">sell</span>
+                  Precio con descuento
+                </div>
+              }
+
+              <div class="summary-total-box">
+                <span>Total</span>
+                @for (t of totalsCarrito(); track t.symbol) {
+                  <strong>{{ t.symbol }}{{ t.amount.toFixed(2) }}</strong>
+                }
+                @for (d of cartService.totalDiscount(); track d.symbol) {
+                  <small>Ahorras {{ d.symbol }}{{ d.amount.toFixed(2) }}</small>
+                }
+              </div>
+            </div>
+          }
+
+          <button
+            class="checkout-button"
+            type="button"
+            [disabled]="!metodoPagoSeleccionado() || carrito().length === 0"
+            (click)="confirmarFinal()">
+            Continuar al pago
+            <span class="material-icons notranslate" translate="no">arrow_forward</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+

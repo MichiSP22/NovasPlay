@@ -1,0 +1,574 @@
+'Log files:
+C:\Users\Michelle\Desktop\NovasPlay\.npm-cache\_logs\2026-06-02T04_48_42_198Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: @angular/core@20.3.21
+Found: zone.js@0.16.2
+node_modules/zone.js
+  zone.js@"^0.16.0" from the root project
+
+Could not resolve dependency:
+peerOptional zone.js@"~0.15.0" from @angular/core@20.3.21
+node_modules/@angular/core
+  @angular/core@"^20.3.16" from the root project
+  peer @angular/core@"20.3.21" from @angular/animations@20.3.21
+  node_modules/@angular/animations
+    @angular/animations@"^20.3.16" from the root project
+    peerOptional @angular/animations@"20.3.21" from @angular/platform-browser@20.3.21
+    node_modules/@angular/platform-browser
+      @angular/platform-browser@"^20.3.0" from the root project
+      peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+      node_modules/@angular/forms
+        @angular/forms@"^20.3.0" from the root project
+        peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+        node_modules/ngx-bootstrap
+          ngx-bootstrap@"^20.0.2" from the root project
+          peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+      node_modules/@angular/platform-server
+        @angular/platform-server@"^20.3.0" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+      node_modules/@angular/router
+        @angular/router@"^20.3.0" from the root project
+        peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+        peer @angular/router@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/animations@"^20.0.2" from ngx-bootstrap@20.0.2
+    node_modules/ngx-bootstrap
+      ngx-bootstrap@"^20.0.2" from the root project
+      peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/animations@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+  peerOptional @angular/core@"^20.0.0" from @angular/build@20.3.26
+  node_modules/@angular/build
+    dev @angular/build@"^20.3.10" from the root project
+  peer @angular/core@"20.3.21" from @angular/common@20.3.21
+  node_modules/@angular/common
+    @angular/common@"^20.3.16" from the root project
+    peer @angular/common@"20.3.21" from @angular/forms@20.3.21
+    node_modules/@angular/forms
+      @angular/forms@"^20.3.0" from the root project
+      peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+      node_modules/ngx-bootstrap
+        ngx-bootstrap@"^20.0.2" from the root project
+        peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/common@"20.3.21" from @angular/platform-browser@20.3.21
+    node_modules/@angular/platform-browser
+      @angular/platform-browser@"^20.3.0" from the root project
+      peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+      node_modules/@angular/forms
+        @angular/forms@"^20.3.0" from the root project
+        peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+        node_modules/ngx-bootstrap
+          ngx-bootstrap@"^20.0.2" from the root project
+          peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+      node_modules/@angular/platform-server
+        @angular/platform-server@"^20.3.0" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+      node_modules/@angular/router
+        @angular/router@"^20.3.0" from the root project
+        peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+        peer @angular/router@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/common@"20.3.21" from @angular/platform-server@20.3.21
+    node_modules/@angular/platform-server
+      @angular/platform-server@"^20.3.0" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+    peer @angular/common@"20.3.21" from @angular/router@20.3.21
+    node_modules/@angular/router
+      @angular/router@"^20.3.0" from the root project
+      peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+      peer @angular/router@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/common@"^20.0.0" from @angular/ssr@20.3.26
+    node_modules/@angular/ssr
+      @angular/ssr@"^20.3.10" from the root project
+      peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+    peer @angular/common@"^20.0.2" from ngx-bootstrap@20.0.2
+    node_modules/ngx-bootstrap
+      ngx-bootstrap@"^20.0.2" from the root project
+      peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/common@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+    node_modules/ngx-intl-tel-input
+      ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/common@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+  peer @angular/core@"20.3.21" from @angular/forms@20.3.21
+  node_modules/@angular/forms
+    @angular/forms@"^20.3.0" from the root project
+    peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+    node_modules/ngx-bootstrap
+      ngx-bootstrap@"^20.0.2" from the root project
+      peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+    node_modules/ngx-intl-tel-input
+      ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/forms@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+  peer @angular/core@"20.3.21" from @angular/platform-browser@20.3.21
+  node_modules/@angular/platform-browser
+    @angular/platform-browser@"^20.3.0" from the root project
+    peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+    node_modules/@angular/build
+      dev @angular/build@"^20.3.10" from the root project
+    peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+    node_modules/@angular/forms
+      @angular/forms@"^20.3.0" from the root project
+      peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+      node_modules/ngx-bootstrap
+        ngx-bootstrap@"^20.0.2" from the root project
+        peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+    node_modules/@angular/platform-server
+      @angular/platform-server@"^20.3.0" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+    peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+    node_modules/@angular/router
+      @angular/router@"^20.3.0" from the root project
+      peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+      peer @angular/router@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+  peer @angular/core@"20.3.21" from @angular/platform-server@20.3.21
+  node_modules/@angular/platform-server
+    @angular/platform-server@"^20.3.0" from the root project
+    peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+    node_modules/@angular/build
+      dev @angular/build@"^20.3.10" from the root project
+    peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+    node_modules/@angular/ssr
+      @angular/ssr@"^20.3.10" from the root project
+      peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+  peer @angular/core@"20.3.21" from @angular/router@20.3.21
+  node_modules/@angular/router
+    @angular/router@"^20.3.0" from the root project
+    peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+    node_modules/@angular/ssr
+      @angular/ssr@"^20.3.10" from the root project
+      peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+    peer @angular/router@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+  peer @angular/core@"^20.0.0" from @angular/ssr@20.3.26
+  node_modules/@angular/ssr
+    @angular/ssr@"^20.3.10" from the root project
+    peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+    node_modules/@angular/build
+      dev @angular/build@"^20.3.10" from the root project
+  peer @angular/core@"^20.0.2" from ngx-bootstrap@20.0.2
+  node_modules/ngx-bootstrap
+    ngx-bootstrap@"^20.0.2" from the root project
+    peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+    node_modules/ngx-intl-tel-input
+      ngx-intl-tel-input@"^17.0.0" from the root project
+  peer @angular/core@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+  node_modules/ngx-intl-tel-input
+    ngx-intl-tel-input@"^17.0.0" from the root project
+  peer @angular/core@"^20.0.4" from primeng@20.4.0
+  node_modules/primeng
+    primeng@"^20.4.0" from the root project
+
+Conflicting peer dependency: zone.js@0.15.1
+node_modules/zone.js
+  peerOptional zone.js@"~0.15.0" from @angular/core@20.3.21
+  node_modules/@angular/core
+    @angular/core@"^20.3.16" from the root project
+    peer @angular/core@"20.3.21" from @angular/animations@20.3.21
+    node_modules/@angular/animations
+      @angular/animations@"^20.3.16" from the root project
+      peerOptional @angular/animations@"20.3.21" from @angular/platform-browser@20.3.21
+      node_modules/@angular/platform-browser
+        @angular/platform-browser@"^20.3.0" from the root project
+        peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+        node_modules/@angular/forms
+          @angular/forms@"^20.3.0" from the root project
+          peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+          node_modules/ngx-bootstrap
+            ngx-bootstrap@"^20.0.2" from the root project
+            peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+            node_modules/ngx-intl-tel-input
+              ngx-intl-tel-input@"^17.0.0" from the root project
+          peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+          peer @angular/forms@"^20.0.4" from primeng@20.4.0
+          node_modules/primeng
+            primeng@"^20.4.0" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+        node_modules/@angular/platform-server
+          @angular/platform-server@"^20.3.0" from the root project
+          peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+          peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+          node_modules/@angular/ssr
+            @angular/ssr@"^20.3.10" from the root project
+            peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+            node_modules/@angular/build
+              dev @angular/build@"^20.3.10" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+        node_modules/@angular/router
+          @angular/router@"^20.3.0" from the root project
+          peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+          node_modules/@angular/ssr
+            @angular/ssr@"^20.3.10" from the root project
+            peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+            node_modules/@angular/build
+              dev @angular/build@"^20.3.10" from the root project
+          peer @angular/router@"^20.0.4" from primeng@20.4.0
+          node_modules/primeng
+            primeng@"^20.4.0" from the root project
+        peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/animations@"^20.0.2" from ngx-bootstrap@20.0.2
+      node_modules/ngx-bootstrap
+        ngx-bootstrap@"^20.0.2" from the root project
+        peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/animations@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peerOptional @angular/core@"^20.0.0" from @angular/build@20.3.26
+    node_modules/@angular/build
+      dev @angular/build@"^20.3.10" from the root project
+    peer @angular/core@"20.3.21" from @angular/common@20.3.21
+    node_modules/@angular/common
+      @angular/common@"^20.3.16" from the root project
+      peer @angular/common@"20.3.21" from @angular/forms@20.3.21
+      node_modules/@angular/forms
+        @angular/forms@"^20.3.0" from the root project
+        peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+        node_modules/ngx-bootstrap
+          ngx-bootstrap@"^20.0.2" from the root project
+          peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/common@"20.3.21" from @angular/platform-browser@20.3.21
+      node_modules/@angular/platform-browser
+        @angular/platform-browser@"^20.3.0" from the root project
+        peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+        node_modules/@angular/forms
+          @angular/forms@"^20.3.0" from the root project
+          peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+          node_modules/ngx-bootstrap
+            ngx-bootstrap@"^20.0.2" from the root project
+            peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+            node_modules/ngx-intl-tel-input
+              ngx-intl-tel-input@"^17.0.0" from the root project
+          peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+          peer @angular/forms@"^20.0.4" from primeng@20.4.0
+          node_modules/primeng
+            primeng@"^20.4.0" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+        node_modules/@angular/platform-server
+          @angular/platform-server@"^20.3.0" from the root project
+          peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+          peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+          node_modules/@angular/ssr
+            @angular/ssr@"^20.3.10" from the root project
+            peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+            node_modules/@angular/build
+              dev @angular/build@"^20.3.10" from the root project
+        peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+        node_modules/@angular/router
+          @angular/router@"^20.3.0" from the root project
+          peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+          node_modules/@angular/ssr
+            @angular/ssr@"^20.3.10" from the root project
+            peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+            node_modules/@angular/build
+              dev @angular/build@"^20.3.10" from the root project
+          peer @angular/router@"^20.0.4" from primeng@20.4.0
+          node_modules/primeng
+            primeng@"^20.4.0" from the root project
+        peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/common@"20.3.21" from @angular/platform-server@20.3.21
+      node_modules/@angular/platform-server
+        @angular/platform-server@"^20.3.0" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+      peer @angular/common@"20.3.21" from @angular/router@20.3.21
+      node_modules/@angular/router
+        @angular/router@"^20.3.0" from the root project
+        peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+        peer @angular/router@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/common@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+      peer @angular/common@"^20.0.2" from ngx-bootstrap@20.0.2
+      node_modules/ngx-bootstrap
+        ngx-bootstrap@"^20.0.2" from the root project
+        peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/common@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/common@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/core@"20.3.21" from @angular/forms@20.3.21
+    node_modules/@angular/forms
+      @angular/forms@"^20.3.0" from the root project
+      peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+      node_modules/ngx-bootstrap
+        ngx-bootstrap@"^20.0.2" from the root project
+        peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+      peer @angular/forms@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/core@"20.3.21" from @angular/platform-browser@20.3.21
+    node_modules/@angular/platform-browser
+      @angular/platform-browser@"^20.3.0" from the root project
+      peerOptional @angular/platform-browser@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/forms@20.3.21
+      node_modules/@angular/forms
+        @angular/forms@"^20.3.0" from the root project
+        peer @angular/forms@"^20.0.2" from ngx-bootstrap@20.0.2
+        node_modules/ngx-bootstrap
+          ngx-bootstrap@"^20.0.2" from the root project
+          peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+          node_modules/ngx-intl-tel-input
+            ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+        node_modules/ngx-intl-tel-input
+          ngx-intl-tel-input@"^17.0.0" from the root project
+        peer @angular/forms@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/platform-server@20.3.21
+      node_modules/@angular/platform-server
+        @angular/platform-server@"^20.3.0" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+        peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+      peer @angular/platform-browser@"20.3.21" from @angular/router@20.3.21
+      node_modules/@angular/router
+        @angular/router@"^20.3.0" from the root project
+        peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+        node_modules/@angular/ssr
+          @angular/ssr@"^20.3.10" from the root project
+          peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+          node_modules/@angular/build
+            dev @angular/build@"^20.3.10" from the root project
+        peer @angular/router@"^20.0.4" from primeng@20.4.0
+        node_modules/primeng
+          primeng@"^20.4.0" from the root project
+      peer @angular/platform-browser@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/core@"20.3.21" from @angular/platform-server@20.3.21
+    node_modules/@angular/platform-server
+      @angular/platform-server@"^20.3.0" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+      peerOptional @angular/platform-server@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+    peer @angular/core@"20.3.21" from @angular/router@20.3.21
+    node_modules/@angular/router
+      @angular/router@"^20.3.0" from the root project
+      peer @angular/router@"^20.0.0" from @angular/ssr@20.3.26
+      node_modules/@angular/ssr
+        @angular/ssr@"^20.3.10" from the root project
+        peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+        node_modules/@angular/build
+          dev @angular/build@"^20.3.10" from the root project
+      peer @angular/router@"^20.0.4" from primeng@20.4.0
+      node_modules/primeng
+        primeng@"^20.4.0" from the root project
+    peer @angular/core@"^20.0.0" from @angular/ssr@20.3.26
+    node_modules/@angular/ssr
+      @angular/ssr@"^20.3.10" from the root project
+      peerOptional @angular/ssr@"^20.3.26" from @angular/build@20.3.26
+      node_modules/@angular/build
+        dev @angular/build@"^20.3.10" from the root project
+    peer @angular/core@"^20.0.2" from ngx-bootstrap@20.0.2
+    node_modules/ngx-bootstrap
+      ngx-bootstrap@"^20.0.2" from the root project
+      peer ngx-bootstrap@">= 12.0.0" from ngx-intl-tel-input@17.0.0
+      node_modules/ngx-intl-tel-input
+        ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/core@">= 17.0.0" from ngx-intl-tel-input@17.0.0
+    node_modules/ngx-intl-tel-input
+      ngx-intl-tel-input@"^17.0.0" from the root project
+    peer @angular/core@"^20.0.4" from primeng@20.4.0
+    node_modules/primeng
+      primeng@"^20.4.0" from the root project
+
+Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.

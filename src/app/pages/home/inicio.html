@@ -1,0 +1,140 @@
+@if (configService.maintenanceMode()) {
+<div class="maintenance-banner">
+  <div class="banner-content">
+    <span class="material-icons">engineering</span>
+    <p>Estamos realizando mejoras. El servicio se reanudara pronto.</p>
+  </div>
+</div>
+}
+
+@if (showWelcomeFlyer()) {
+<div class="welcome-flyer-backdrop" (click)="closeWelcomeFlyer()">
+  <section class="welcome-flyer" role="dialog" aria-modal="true" aria-labelledby="welcome-flyer-title"
+    (click)="$event.stopPropagation()">
+    <button type="button" class="welcome-flyer-close" aria-label="Cerrar promocion" (click)="closeWelcomeFlyer()">
+      <span class="material-icons notranslate" translate="no">close</span>
+    </button>
+
+    <div class="welcome-flyer-copy">
+      <span class="welcome-flyer-kicker">Inauguracion NovasPlay</span>
+      <h2 id="welcome-flyer-title">Inauguramos<br><span>NovasPlay</span><br>con<br>descuentos</h2>
+      <p>
+        Por inauguracion tendremos promociones especiales en recargas.
+        Entra al catalogo y aprovecha tus juegos favoritos al mejor precio.
+      </p>
+
+      <div class="welcome-flyer-badges" aria-label="Beneficios de inauguracion">
+        <span>
+          <span class="material-icons notranslate" translate="no" aria-hidden="true">redeem</span>
+          Bienvenida especial
+        </span>
+        <span>
+          <span class="material-icons notranslate" translate="no" aria-hidden="true">local_offer</span>
+          Descuentos activos
+        </span>
+        <span>
+          <span class="material-icons notranslate" translate="no" aria-hidden="true">verified_user</span>
+          Recargas seguras
+        </span>
+      </div>
+
+      <div class="welcome-flyer-actions">
+        <button type="button" class="welcome-flyer-primary" (click)="goToCatalog()">
+          Ver catalogo
+          <span class="material-icons notranslate" translate="no">arrow_forward</span>
+        </button>
+        <button type="button" class="welcome-flyer-secondary" (click)="closeWelcomeFlyer()">
+          Luego
+        </button>
+      </div>
+    </div>
+
+    <div class="welcome-flyer-visual" aria-hidden="true">
+      <span class="welcome-flyer-aura"></span>
+      <span class="welcome-flyer-orbit welcome-flyer-orbit-one"></span>
+      <span class="welcome-flyer-orbit welcome-flyer-orbit-two"></span>
+      <span class="welcome-flyer-stage"></span>
+      <span class="welcome-flyer-screen-glow"></span>
+      <img class="welcome-flyer-novix" src="novix-inauguration-scene.png" alt="">
+      <span class="welcome-flyer-phone-grip"></span>
+      <span class="welcome-flyer-platform">
+        <span class="flyer-phone-shell">
+          <span class="flyer-phone-topbar">
+            <span class="material-icons notranslate" translate="no">menu</span>
+            <span class="flyer-phone-logo">N</span>
+            <span class="flyer-phone-icons">
+              <span class="material-icons notranslate" translate="no">language</span>
+              <span class="material-icons notranslate" translate="no">sports_esports</span>
+            </span>
+          </span>
+          <span class="flyer-phone-content">
+            <span class="flyer-phone-brand">NovasPlay</span>
+            <strong>Las mejores recargas para tus juegos favoritos.</strong>
+            <span class="flyer-phone-copy">
+              Explora el catalogo y encuentra precios especiales para no quedarte sin saldo a mitad de partida.
+            </span>
+            <span class="flyer-phone-cta">
+              Ver catalogo
+              <span class="material-icons notranslate" translate="no">arrow_downward</span>
+            </span>
+            <span class="flyer-phone-game">
+              <img src="novasplay-feature-game.png" alt="">
+              <span>
+                <small>Ahora en portada</small>
+                <b>Blood Strike</b>
+                <em>Juego de accion</em>
+              </span>
+            </span>
+          </span>
+        </span>
+      </span>
+      <span class="welcome-flyer-coin welcome-flyer-coin-one"></span>
+      <span class="welcome-flyer-coin welcome-flyer-coin-two"></span>
+      <span class="welcome-flyer-coin welcome-flyer-coin-three"></span>
+      <span class="welcome-flyer-spark welcome-flyer-spark-one"></span>
+      <span class="welcome-flyer-spark welcome-flyer-spark-two"></span>
+      <span class="welcome-flyer-spark welcome-flyer-spark-three"></span>
+    </div>
+  </section>
+</div>
+}
+
+<div [class.page-locked]="configService.maintenanceMode()">
+  <app-nav-bar></app-nav-bar>
+  <app-features></app-features>
+  <app-catalogo id="catalogo" [isMaintenance]="configService.maintenanceMode()"></app-catalogo>
+  <section class="trust-section scroll-reveal">
+    <div class="trust-shell">
+      <div class="trust-heading">
+        <span class="section-kicker">Compra con tranquilidad</span>
+        <h2>Recargas seguras, rapidas y con respaldo.</h2>
+      </div>
+
+      <div class="trust-grid">
+        <article class="trust-card">
+          <span class="material-icons notranslate" translate="no">verified_user</span>
+          <div>
+            <h3>Somos de confianza</h3>
+            <p>Ordenes claras, atencion directa y acompanamiento cuando lo necesites.</p>
+          </div>
+        </article>
+
+        <article class="trust-card">
+          <span class="material-icons notranslate" translate="no">lock</span>
+          <div>
+            <h3>Pagos verificados</h3>
+            <p>Revisamos tus comprobantes con un proceso ordenado y seguro.</p>
+          </div>
+        </article>
+
+        <article class="trust-card">
+          <span class="material-icons notranslate" translate="no">bolt</span>
+          <div>
+            <h3>Recargas rapidas</h3>
+            <p>Seleccionas tu juego, confirmas tus datos y seguimos tu pedido sin vueltas.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>

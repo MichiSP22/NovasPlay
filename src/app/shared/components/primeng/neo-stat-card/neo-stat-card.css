@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .neo-stat-card {
+  border: 1px solid rgba(110, 100, 255, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(155deg, rgba(19, 24, 52, 0.92), rgba(13, 16, 35, 0.9));
+}
+
+.neo-stat-head {
+  color: #b9c7ff;
+  font-family: var(--font-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.neo-stat-value {
+  color: #f7f8ff;
+  font-family: var(--font-numeric);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+}
+
+.neo-stat-subtitle {
+  margin-top: 6px;
+  color: #97a7dc;
+  font-size: 0.9rem;
+}
+

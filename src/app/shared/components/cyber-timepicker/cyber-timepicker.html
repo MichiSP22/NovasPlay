@@ -1,0 +1,49 @@
+<div class="cyber-timepicker-container">
+  <!-- Fake Input -->
+  <div class="fake-input {{ cssClass }}" (click)="toggle()">
+    <span *ngIf="formattedDisplay" class="time-text">{{ formattedDisplay }}</span>
+    <span *ngIf="!formattedDisplay" class="placeholder-text">{{ placeholder }}</span>
+    <span class="material-icons notranslate time-icon" translate="no">schedule</span>
+  </div>
+
+  <!-- Tooltip/Dropdown list -->
+  <div *ngIf="isOpen()" class="cyber-timepicker-overlay" (click)="isOpen.set(false)">
+    <div class="cyber-time-popup" (click)="$event.stopPropagation()">
+      <div class="time-columns">
+        
+        <!-- Hour Column -->
+        <div class="time-column">
+          <div class="column-header">Hr</div>
+          <div class="scrollable-list" #hourList>
+            <div *ngFor="let h of hours" 
+                 class="time-item"
+                 [class.is-selected]="currentHour === h"
+                 (click)="selectHour(h, $event)">
+              {{ h }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="time-separator">:</div>
+        
+        <!-- Minute Column -->
+        <div class="time-column">
+          <div class="column-header">Min</div>
+          <div class="scrollable-list" #minuteList>
+            <div *ngFor="let m of minutes" 
+                 class="time-item"
+                 [class.is-selected]="currentMinute === m"
+                 (click)="selectMinute(m, $event)">
+              {{ m }}
+            </div>
+          </div>
+        </div>
+      
+      </div>
+      
+      <button class="btn-confirm-time" (click)="closePopup($event)">
+        CONFIRMAR HORA
+      </button>
+    </div>
+  </div>
+</div>

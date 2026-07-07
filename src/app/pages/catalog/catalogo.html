@@ -1,0 +1,142 @@
+<section id="catalog-section" class="catalog-wrapper">
+  <div class="catalog-shell">
+    <div class="catalog-showcase scroll-reveal">
+      <span class="showcase-bg-grid" aria-hidden="true"></span>
+      <span class="showcase-controller material-icons notranslate" translate="no" aria-hidden="true">widgets</span>
+      <span class="showcase-coin coin-one material-icons notranslate" translate="no" aria-hidden="true">monetization_on</span>
+      <span class="showcase-coin coin-two material-icons notranslate" translate="no" aria-hidden="true">paid</span>
+      <span class="showcase-pixel pixel-one" aria-hidden="true"></span>
+      <span class="showcase-pixel pixel-two" aria-hidden="true"></span>
+      <span class="showcase-circuit circuit-one" aria-hidden="true"></span>
+      <span class="showcase-circuit circuit-two" aria-hidden="true"></span>
+
+      <div class="showcase-copy">
+        <h2 class="main-title">Tu proxima partida empieza aqui.</h2>
+        <p class="subtitle">Olvídate de los procesos largos. Encuentra diamantes, oro, pases o saldo para tus juegos favoritos en segundos y vuelve rápido a la acción.</p>
+      </div>
+
+      <div class="showcase-orbit" aria-hidden="true">
+        <span class="orbit-ring"></span>
+        <span class="orbit-core">N</span>
+      </div>
+
+      <div class="showcase-stack" aria-hidden="true">
+        @for (juego of juegos().slice(0, 3); track juego.id || juego.name; let i = $index) {
+          <div class="showcase-card mini-{{ i }}">
+            @if (getDisplayIcon(juego)) {
+              <img [src]="getDisplayIcon(juego)" [alt]="juego.name" width="210" height="118">
+            } @else {
+              <div class="no-image">NovasPlay</div>
+            }
+          </div>
+        }
+      </div>
+
+      <span class="scan-line scan-a"></span>
+      <span class="scan-line scan-b"></span>
+      <span class="nova-dot dot-a"></span>
+      <span class="nova-dot dot-b"></span>
+    </div>
+
+    <div class="catalog-heading scroll-reveal">
+      <div>
+        <h3><span class="heading-accent" aria-hidden="true"></span>Explora el catalogo</h3>
+      </div>
+      <span class="heading-line"></span>
+    </div>
+
+    <div class="catalog-board scroll-reveal" [class.maintenance-active]="isMaintenance">
+      @if (isMaintenance) {
+        <div class="maintenance-overlay">
+          <div class="overlay-card">
+            <div class="status-icon-box">
+              <span class="material-icons notranslate" translate="no">lock</span>
+            </div>
+            <h3>Catalogo en mantenimiento</h3>
+            <p>Estamos actualizando nuestros productos para ofrecerte una mejor experiencia. Podras realizar compras muy pronto.</p>
+            <div class="glow-line"></div>
+          </div>
+        </div>
+      }
+
+      @if (cargando()) {
+        <div class="games-grid">
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <article class="game-card skeleton-card">
+              <div class="game-cover skeleton-pulse"></div>
+              <div class="game-info">
+                <div class="skeleton-text skeleton-title skeleton-pulse"></div>
+              </div>
+            </article>
+          }
+        </div>
+      } @else if (juegos().length === 0) {
+        <p class="empty-catalog">
+          {{ searchTerm() ? 'No encontramos juegos con esa busqueda.' : 'No hay juegos disponibles.' }}
+        </p>
+      } @else {
+        <div class="games-grid">
+          @for (juego of juegos(); track juego.id || juego.name; let i = $index) {
+            <article class="game-card popular-card" [style.--card-delay.ms]="i * 55" [class.is-sold-out]="juego.soldOut" (click)="irACheckout(juego)">
+              <div class="game-cover">
+                @if (juego.imageInfo?.imageURL) {
+                  <img [src]="juego.imageInfo!.imageURL" [alt]="juego.name" class="game-img"
+                       [attr.loading]="i <= 3 ? 'eager' : 'lazy'"
+                       width="390" height="220">
+                } @else {
+                  <div class="no-image">Sin portada</div>
+                }
+
+                @if (isProductNew(juego) && !juego.soldOut) {
+                  <span class="card-ribbon">Nuevo</span>
+                }
+
+                @if (juego.soldOut) {
+                  <span class="sold-out-pill">Agotado</span>
+                }
+              </div>
+
+              <div class="game-info">
+                <h4 class="notranslate" translate="no">{{ juego.name }}</h4>
+                @if (juego.categories && juego.categories.length > 0) {
+                  <div class="category-tags">
+                    @for (cat of juego.categories.slice(0, 2); track cat) {
+                      <span>{{ cat }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+      @if (!cargando() && totalPages() > 1) {
+        <div class="pagination-footer">
+          <button
+            class="pagination-btn arrow"
+            [disabled]="currentPage() === 1"
+            (click)="cambiarPagina(currentPage() - 1)">
+            <span class="material-icons notranslate" translate="no">chevron_left</span>
+            Anterior
+          </button>
+
+          <button
+            class="pagination-btn show-more"
+            [disabled]="currentPage() === totalPages()"
+            (click)="cambiarPagina(currentPage() + 1)">
+            Ver mas
+          </button>
+
+          <button
+            class="pagination-btn arrow"
+            [disabled]="currentPage() === totalPages()"
+            (click)="cambiarPagina(currentPage() + 1)">
+            Siguiente
+            <span class="material-icons notranslate" translate="no">chevron_right</span>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</section>

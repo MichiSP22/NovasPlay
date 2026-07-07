@@ -1,0 +1,138 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">payments</span>
+        <h3>Gestión de Precios</h3>
+      </div>
+      <button class="btn-neon-action" (click)="openModal()">
+        <span class="material-icons notranslate" translate="no">add</span> Nuevo Precio
+      </button>
+    </div>
+
+    <div class="manager-filters">
+      <div class="neon-input-group" style="flex: 1; min-width: 220px;">
+        <label class="neon-label">Recarga</label>
+        <div class="search-container">
+          <span class="material-icons notranslate" translate="no">search</span>
+          <input type="text" 
+                 class="neon-input" 
+                 placeholder="Ej: 60 Diamantes..."
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="onFilterChange()">
+        </div>
+      </div>
+
+      <div class="neon-input-group" style="flex: 1; min-width: 220px;">
+        <label class="neon-label">Producto / Juego</label>
+        <div class="search-container">
+          <span class="material-icons notranslate" translate="no">games</span>
+          <input type="text" 
+                 class="neon-input" 
+                 placeholder="Ej: Free Fire..."
+                 [(ngModel)]="searchProductTerm"
+                 (ngModelChange)="onFilterChange()">
+        </div>
+      </div>
+
+      <div class="neon-input-group" style="min-width: 180px;">
+        <label class="neon-label">Categoría Producto</label>
+        <select class="neon-select" (change)="onProductFilterChange($event)">
+          <option value="0">Todos los Productos</option>
+          @for (prod of productsList(); track prod.id) {
+            <option [value]="prod.id">{{ prod.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="neon-input-group" style="min-width: 180px;">
+        <label class="neon-label">Método de Pago</label>
+        <select class="neon-select" (change)="onPaymentFilterChange($event)">
+          <option value="0">Todos los Métodos</option>
+          @for (pay of paymentsList(); track pay.id) {
+            <option [value]="pay.id">{{ pay.name }}</option>
+          }
+        </select>
+      </div>
+
+      <button class="btn-neon-action" (click)="loadPrices()" style="height: 42px;">
+        <span class="material-icons notranslate" translate="no">sync</span>
+      </button>
+    </div>
+
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>PRODUCTO</th>
+            <th>RECARGA</th>
+            <th>MÉTODO DE PAGO</th>
+            <th>PRECIO ESTABLECIDO</th>
+            <th class="text-right">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+          } @else if (prices().length === 0) {
+            <tr><td colspan="4" class="empty-state">No hay precios registrados.</td></tr>
+          } @else {
+            @for (p of prices(); track p.id) {
+              <tr>
+                <td class="notranslate" translate="no">{{ p.id }}</td>
+                 <!-- Usamos el ID como fallback si product Name fallo o esta vacío -->
+                <td style="color: #00d4ff;" class="font-bold notranslate" translate="no">{{ p.productName || 'Producto no disp.' }}</td>
+                <td style="color: #e0e0e0;" class="notranslate" translate="no">{{ getRechargeName(p.detailID) }}</td>
+                <td style="color: #b0b0b0;" class="notranslate" translate="no">{{ getPaymentName(p.paymentID) }}</td>
+                <td class="font-bold notranslate" translate="no" style="color: #00ffcc;">
+                  <!-- Usamos getCoinSymbol como fallback manual -->
+                  {{ p.coinSymbol || '$' }} {{ p.price | number:'1.2-2' }}
+                  @if(p.promotion) {
+                    <span style="font-size: 0.8em; color: #ff0077; display: block;" class="notranslate" translate="no">Promoción: {{ p.coinSymbol || '$' }} {{ p.promotionPrice | number:'1.2-2' }}</span>
+                  }
+                </td>
+                <td class="text-right">
+                  <button class="action-btn edit" title="Editar" (click)="openModal(p)">
+                    <span class="material-icons notranslate" translate="no">edit</span>
+                  </button>
+                  <button class="action-btn delete" title="Eliminar" (click)="deletePrice(p.id)">
+                    <span class="material-icons notranslate" translate="no">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination-container">
+        <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span> Anterior
+        </button>
+        
+        <div class="pagination-info">
+          Página <b>{{ currentPage() }}</b> de <b>{{ totalPages() }}</b>
+        </div>
+
+        <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          Siguiente <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-price-form-modal
+    [priceToEdit]="selectedPrice()"
+    [availableRecharges]="rechargesList()"
+    [availablePayments]="paymentsList()"
+    [availableProducts]="productsList()"
+    (onClose)="closeModal()"
+    (onSave)="onSaveSuccess()">
+  </app-price-form-modal>
+}

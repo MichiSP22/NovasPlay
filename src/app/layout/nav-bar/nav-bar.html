@@ -1,0 +1,104 @@
+<section class="hero-command">
+  <span class="hero-energy energy-a" aria-hidden="true"></span>
+  <span class="hero-energy energy-b" aria-hidden="true"></span>
+  <span class="hero-hud hud-a" aria-hidden="true"></span>
+  <span class="hero-hud hud-b" aria-hidden="true"></span>
+  <span class="game-glyph glyph-a material-icons notranslate" translate="no" aria-hidden="true">sports_esports</span>
+  <span class="game-glyph glyph-b material-icons notranslate" translate="no" aria-hidden="true">gamepad</span>
+  <span class="pixel-stream stream-a" aria-hidden="true"></span>
+  <span class="pixel-stream stream-b" aria-hidden="true"></span>
+  <span class="coin-burst coin-a material-icons notranslate" translate="no" aria-hidden="true">monetization_on</span>
+  <span class="coin-burst coin-b material-icons notranslate" translate="no" aria-hidden="true">paid</span>
+  <span class="coin-burst coin-c material-icons notranslate" translate="no" aria-hidden="true">toll</span>
+  <div class="side-arcade side-left" aria-hidden="true">
+    <span class="arcade-rail"></span>
+    <span class="arcade-node node-1"></span>
+    <span class="arcade-node node-2"></span>
+    <span class="arcade-node node-3"></span>
+    <span class="arcade-cross cross-1"></span>
+    <span class="arcade-bars"></span>
+  </div>
+  <div class="side-arcade side-right" aria-hidden="true">
+    <span class="arcade-rail"></span>
+    <span class="arcade-node node-1"></span>
+    <span class="arcade-node node-2"></span>
+    <span class="arcade-node node-3"></span>
+    <span class="arcade-cross cross-1"></span>
+    <span class="arcade-bars"></span>
+  </div>
+
+  <div class="hero-backdrop">
+    @if (Imagenes.length > 0) {
+      @for (img of Imagenes; track img.id || img.title; let i = $index) {
+        <img [src]="img.url" [alt]="img.title" class="backdrop-img" [class.active]="isActiveHero(img)" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i <= 1 ? 'eager' : 'lazy'">
+      }
+    }
+  </div>
+
+  <div class="hero-grid">
+    <aside class="hero-copy-panel">
+      <span class="hero-kicker">NovasPlay</span>
+      <h1 class="hero-title">Las mejores recargas para tus juegos favoritos.</h1>
+      <p class="hero-copy">
+        En Novasplay entendemos lo que buscas. Explora nuestro catálogo y encuentra los mejores precios del mercado para que nunca te quedes sin saldo a mitad de partida.
+      </p>
+
+      <div class="hero-actions">
+        <button type="button" class="hero-primary" (click)="scrollToCatalog()">
+          <span>Ver catalogo</span>
+          <span class="material-icons notranslate" translate="no">arrow_downward</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="hero-showcase">
+      <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek.png" alt="" aria-hidden="true">
+      @if (imagenActiva()) {
+        <div class="showcase-frame notranslate" translate="no">
+          <span class="corner-piece corner-tl" aria-hidden="true"></span>
+          <span class="corner-piece corner-tr" aria-hidden="true"></span>
+          <span class="corner-piece corner-bl" aria-hidden="true"></span>
+          <span class="corner-piece corner-br" aria-hidden="true"></span>
+          <div class="frame-toolbar" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <article class="spotlight-card">
+            <div class="spotlight-media">
+              @for (img of Imagenes; track img.id || img.title; let i = $index) {
+                <img [src]="img.url" [alt]="img.title" [class.active]="isActiveHero(img)" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i <= 1 ? 'eager' : 'lazy'">
+              }
+              <span class="media-glow"></span>
+            </div>
+            <div class="spotlight-info">
+              <span class="spotlight-label">Ahora en portada</span>
+              <h2>{{ imagenActiva().title }}</h2>
+              <p>{{ imagenActiva().desc }}</p>
+            </div>
+          </article>
+
+        </div>
+      }
+      <img class="hero-novix-peek hero-novix-peek-front hero-novix-peek-front-top" src="novix-hero-peek.png" alt="" aria-hidden="true">
+      <img class="hero-novix-peek hero-novix-peek-front hero-novix-peek-front-bottom" src="novix-hero-peek.png" alt="" aria-hidden="true">
+    </div>
+  </div>
+
+  @if (Imagenes.length > 1) {
+    <div class="deck-strip" [class.compact-deck]="Imagenes.length <= 3">
+      <div #heroDeck class="deck-track" role="list" aria-label="Productos destacados">
+        @for (img of Imagenes; track img.id || img.title; let i = $index) {
+          <button type="button" class="deck-card" role="listitem" [class.active]="isActiveHero(img)" (click)="selectHeroItem(img, i)">
+            <img [src]="img.iconUrl || img.url" [alt]="img.title" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i === 0 ? 'eager' : 'lazy'" width="160" height="120">
+            <span class="deck-title notranslate" translate="no">{{ img.title }}</span>
+          </button>
+        }
+      </div>
+      @if (heroProgressVisible()) {
+        <span class="deck-progress" [style.--deck-progress-duration]="heroAutoplayDelay + 'ms'" aria-hidden="true"></span>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,529 @@
+@if (isBootstrapped()) {
+<div class="admin-app">
+  <!-- Cabecera Mobile Refinada -->
+  <header class="mobile-nav-header">
+    <button class="hamburger-btn" (click)="toggleSidebar()" aria-label="Abrir menu">
+      <span class="material-icons notranslate" translate="no">{{ isSidebarOpen() ? 'close' : 'menu' }}</span>
+    </button>
+    <div class="nav-brand notranslate" translate="no">
+      <span class="brand-name">NOVAS<span>PLAY</span></span>
+    </div>
+    <div class="header-right-spacer"></div>
+  </header>
+
+  <!-- Backdrop con efecto visual mejorado -->
+  @if (isSidebarOpen()) {
+  <div class="sidebar-backdrop" (click)="toggleSidebar()"></div>
+  }
+
+  <aside class="nav-sidebar notranslate" translate="no" [class.sidebar-open]="isSidebarOpen()">
+    <div class="nav-brand notranslate" translate="no">
+      <div class="brand-accent">N</div>
+      <span class="brand-name">NOVAS<span>PLAY</span></span>
+    </div>
+
+    <nav class="nav-list">
+      <small class="nav-caption">Principal</small>
+      <a class="nav-link" [class.active]="vistaActual() === 'dashboard'" (click)="cambiarVista('dashboard')">
+        <span class="material-icons notranslate" translate="no">analytics</span> Dashboard
+      </a>
+
+      @if (!isSupportUser()) {
+      <small class="nav-caption">Inventario</small>
+      <a class="nav-link" [class.active]="vistaActual() === 'productos'" (click)="cambiarVista('productos')">
+        <span class="material-icons notranslate" translate="no">inventory</span> Productos
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'categorias'" (click)="cambiarVista('categorias')">
+        <span class="material-icons notranslate" translate="no">category</span> Categorias
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'recargas'" (click)="cambiarVista('recargas')">
+        <span class="material-icons notranslate" translate="no">account_balance</span> Recargas
+      </a>
+      }
+
+      <small class="nav-caption">Ventas y Finanzas</small>
+      <a class="nav-link" [class.active]="vistaActual() === 'ordenes'" (click)="cambiarVista('ordenes')">
+        <span class="material-icons notranslate" translate="no">shopping_bag</span> Ordenes
+      </a>
+
+      @if (!isSupportUser()) {
+      <a class="nav-link" [class.active]="vistaActual() === 'pagos'" (click)="cambiarVista('pagos')">
+        <span class="material-icons notranslate" translate="no">payments</span> Metodos Pago
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'precios'" (click)="cambiarVista('precios')">
+        <span class="material-icons notranslate" translate="no">sell</span> Precios
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'cupones'" (click)="cambiarVista('cupones')">
+        <span class="material-icons notranslate" translate="no">confirmation_number</span> Cupones
+      </a>
+      }
+
+      <small class="nav-caption">Sistema</small>
+      <a class="nav-link" [class.active]="vistaActual() === 'clientes'" (click)="cambiarVista('clientes')">
+        <span class="material-icons notranslate" translate="no">people_alt</span> Clientes
+      </a>
+
+      @if (!isSupportUser()) {
+      <a class="nav-link" [class.active]="vistaActual() === 'paises'" (click)="cambiarVista('paises')">
+        <span class="material-icons notranslate" translate="no">public</span> Paises
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'monedas'" (click)="cambiarVista('monedas')">
+        <span class="material-icons notranslate" translate="no">paid</span> Monedas
+      </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'configuracion'" (click)="cambiarVista('configuracion')">
+        <span class="material-icons notranslate" translate="no">settings_suggest</span> Configuracion
+      </a>
+      }
+    </nav>
+
+    <div class="nav-footer">
+      <div class="sidebar-profile">
+        <div class="user-avatar">
+          <span>{{ userInitial() }}</span>
+        </div>
+        <div class="profile-details">
+          <span class="user-name">{{ currentUser()?.firstName || 'Administrador' }} {{ currentUser()?.lastName || ''
+            }}</span>
+          <span class="user-role">{{ currentUser()?.role || 'Root' }}</span>
+        </div>
+      </div>
+
+      <button class="logout-link" (click)="logout()">
+        <span class="material-icons notranslate" translate="no">logout</span> Salir del panel
+      </button>
+    </div>
+  </aside>
+
+  <main class="app-viewport" [class.dashboard-viewport]="vistaActual() === 'dashboard'">
+    <section class="admin-command-bar">
+      <div class="command-copy">
+        <span class="command-kicker">Panel administrativo</span>
+        <h1>{{ getSeccionTitle() }}</h1>
+        <p>Control operativo, ventas y configuracion del ecosistema en tiempo real.</p>
+      </div>
+    </section>
+
+    <div class="app-content" [class.dashboard-mode]="vistaActual() === 'dashboard'">
+      @if (vistaActual() === 'dashboard') {
+
+      <section class="dashboard-title-panel">
+        <span class="dashboard-title-kicker">Panel administrativo</span>
+        <h1>{{ getSeccionTitle() }}</h1>
+        <p>Control operativo, ventas y configuracion del ecosistema en tiempo real.</p>
+      </section>
+
+      @if (isSupportUser()) {
+      <section class="audit-section">
+        <div class="audit-card">
+          <div class="audit-filters">
+            <div class="audit-filter-group">
+              <label class="premium-label">
+                <span class="material-icons notranslate" translate="no">calendar_month</span>
+                Desde
+              </label>
+              <div class="input-with-icon">
+                <app-cyber-datepicker [ngModel]="filterStartDate()" (ngModelChange)="onAuditStartDateChange($event)"
+                  placeholder="Fecha inicial">
+                </app-cyber-datepicker>
+              </div>
+            </div>
+            <div class="audit-filter-group">
+              <label class="premium-label">
+                <span class="material-icons notranslate" translate="no">history</span>
+                Hasta
+              </label>
+              <div class="input-with-icon">
+                <app-cyber-datepicker [ngModel]="filterEndDate()" (ngModelChange)="onAuditEndDateChange($event)"
+                  placeholder="Fecha final">
+                </app-cyber-datepicker>
+              </div>
+            </div>
+            <div class="audit-filter-group user-select-group">
+              <label class="premium-label">
+                <span class="material-icons notranslate" translate="no">timeline</span>
+                Lapso
+              </label>
+              <div class="input-with-icon">
+                <select class="glass-input" [value]="filterDashboardPeriod()" (change)="onDashboardPeriodChange($event)">
+                  <option value="">Auto</option>
+                  <option value="Hour">Hora</option>
+                  <option value="Day">Dia</option>
+                  <option value="Week">Semana</option>
+                  <option value="Fortnight">Quincena</option>
+                  <option value="Month">Mes</option>
+                  <option value="Quarter">Trimestre</option>
+                  <option value="Year">Ano</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      }
+
+      @if (!isSupportUser()) {
+
+      <section class="premium-command-hero">
+        <section class="ops-flow-column premium-command-dock">
+            <div class="ops-section-label">Accesos operativos</div>
+            <div class="ops-links-list">
+              <button type="button" class="ops-link" (click)="cambiarVista('ordenes')">
+                <span class="material-icons notranslate" translate="no">shopping_bag</span>
+                <b>Ordenes</b>
+                <strong>{{ totalOrdenes() }}</strong>
+              </button>
+              <button type="button" class="ops-link urgent" (click)="cambiarVista('recargas')">
+                <span class="material-icons notranslate" translate="no">bolt</span>
+                <b>Recargas</b>
+                <strong>{{ pendientes() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('productos')">
+                <span class="material-icons notranslate" translate="no">inventory_2</span>
+                <b>Productos</b>
+                <strong>{{ totalProductos() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('clientes')">
+                <span class="material-icons notranslate" translate="no">people</span>
+                <b>Clientes</b>
+                <strong>{{ totalUsuarios() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('categorias')">
+                <span class="material-icons notranslate" translate="no">category</span>
+                <b>Categorias</b>
+                <strong>{{ totalCategorias() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('pagos')">
+                <span class="material-icons notranslate" translate="no">payments</span>
+                <b>Pagos</b>
+                <strong>{{ totalPagos() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('paises')">
+                <span class="material-icons notranslate" translate="no">public</span>
+                <b>Paises</b>
+                <strong>{{ totalPaises() }}</strong>
+              </button>
+              <button type="button" class="ops-link" (click)="cambiarVista('monedas')">
+                <span class="material-icons notranslate" translate="no">paid</span>
+                <b>Monedas</b>
+                <strong>{{ totalMonedas() }}</strong>
+              </button>
+            </div>
+          </section>
+      </section>
+
+      <section class="dashboard-workspace premium-dashboard-shell">
+        <div class="dashboard-main-stack">
+
+          <section class="ops-balance-column">
+          <div class="ops-section-label">Caja de recargas</div>
+          <div class="ops-balance-block">
+            <span>Ingresos completados</span>
+            @if (!ingresosCargados()) {
+              <strong>Cargando...</strong>
+            } @else if (ingresosPorMoneda().length === 0) {
+              <strong>$0.00</strong>
+              <small>Sin ingresos registrados</small>
+            }
+            <div class="ops-currency-list">
+              @for (ing of ingresosPorMoneda(); track ing.moneda) {
+                <p class="notranslate" translate="no">
+                  <b>{{ ing.moneda }}</b>
+                  <em>{{ ing.total | number:'1.2-2' }}</em>
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="ops-balance-block muted">
+            <span>Promedio por orden</span>
+            @if (!promedioCargado()) {
+              <strong>Cargando...</strong>
+            } @else if (promedioPorMoneda().length === 0) {
+              <strong>$0.00</strong>
+            }
+            <div class="ops-currency-list">
+              @for (avg of promedioPorMoneda(); track avg.moneda) {
+                <p class="notranslate" translate="no">
+                  <b>{{ avg.moneda }}</b>
+                  <em>{{ avg.total | number:'1.2-2' }}</em>
+                </p>
+              }
+            </div>
+          </div>
+          <div class="ops-balance-hud">
+            <div class="hud-node">
+              <span class="material-icons notranslate" translate="no">analytics</span>
+              <small>Recargas historicas</small>
+              <b>{{ totalHistoricoRecargas() }}</b>
+            </div>
+            <div class="hud-node pulse">
+              <span class="material-icons notranslate" translate="no">bolt</span>
+              <small>Pendientes</small>
+              <b>{{ pendientes() }}</b>
+            </div>
+            <div class="hud-node">
+              <span class="material-icons notranslate" translate="no">receipt_long</span>
+              <small>Ordenes</small>
+              <b>{{ totalOrdenes() }}</b>
+            </div>
+          </div>
+          </section>
+
+          <section class="ops-analytics-panel">
+            <div class="card-header">
+              <div class="header-left">
+                <span class="material-icons notranslate" translate="no">query_stats</span>
+                <h3>Inteligencia de Negocios Dinamica</h3>
+              </div>
+            </div>
+            <div class="analytics-grid">
+              <!-- 1. Revenue por Estado (index 0) -->
+              <div class="chart-box">
+                <h4 class="chart-title">Revenue por Estado y Metodo</h4>
+                <div class="chart-container"><canvas #dynamicChart></canvas></div>
+              </div>
+
+              <!-- 2. Volumen por Estado (index 1) -->
+              <div class="chart-box">
+                <h4 class="chart-title">Volumen por Estado y Metodo</h4>
+                <div class="chart-container"><canvas #dynamicChart></canvas></div>
+              </div>
+
+              <!-- 3. Tendencia Diaria (index 2) - WIDE -->
+              <div class="chart-box wide-chart">
+                <div class="chart-header-flex">
+                  <h4 class="chart-title">Conteo de Recargas Diarias</h4>
+                  <div class="chart-badge">
+                    <span class="badge-label">TOTAL</span>
+                    <span class="badge-value">{{ totalHistoricoRecargas() }}</span>
+                  </div>
+                </div>
+                <div class="chart-container"><canvas #dynamicChart></canvas></div>
+              </div>
+
+              <!-- 4. Ingresos Diarios (index 3) - WIDE -->
+              <div class="chart-box wide-chart">
+                <h4 class="chart-title">Ingresos Diarios por Metodo</h4>
+                <div class="chart-container"><canvas #dynamicChart></canvas></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="ops-support-column">
+            <div class="ops-section-label">Revision de soporte</div>
+            <div class="ops-support-filters">
+              <label>
+                <span>Desde</span>
+                <app-cyber-datepicker [ngModel]="filterStartDate()" (ngModelChange)="onAuditStartDateChange($event)"
+                  placeholder="Fecha inicial">
+                </app-cyber-datepicker>
+              </label>
+              <label>
+                <span>Hasta</span>
+                <app-cyber-datepicker [ngModel]="filterEndDate()" (ngModelChange)="onAuditEndDateChange($event)"
+                  placeholder="Fecha final">
+                </app-cyber-datepicker>
+              </label>
+              <label>
+                <span>Soporte</span>
+                <select class="glass-input" [value]="filterDashboardUserId()" (change)="onUserFilterChange($event)">
+                  <option value="">-- Seleccionar --</option>
+                  @for (u of adminFilterUsers(); track u.id) {
+                    <option [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
+                  }
+                </select>
+              </label>
+              <label>
+                <span>Lapso</span>
+                <select class="glass-input" [value]="filterDashboardPeriod()" (change)="onDashboardPeriodChange($event)">
+                  <option value="">Auto</option>
+                  <option value="Hour">Hora</option>
+                  <option value="Day">Dia</option>
+                  <option value="Week">Semana</option>
+                  <option value="Fortnight">Quincena</option>
+                  <option value="Month">Mes</option>
+                  <option value="Quarter">Trimestre</option>
+                  <option value="Year">Ano</option>
+                </select>
+              </label>
+            </div>
+
+            @if (filterDashboardUserId() || filterStartDate() || filterEndDate() || filterDashboardPeriod()) {
+              <button class="ops-clear-filter" type="button" (click)="clearAuditFilters()">
+                <span class="material-icons notranslate" translate="no">restart_alt</span>
+                Limpiar filtros
+              </button>
+            }
+
+            @if (filterDashboardUserId()) {
+              <div class="ops-support-summary">
+                <span>
+                  <b>{{ auditTotalOrders() }}</b>
+                  <small>Ordenes</small>
+                </span>
+                <span>
+                  @if (auditAmountsByCurrency().length === 0) {
+                    <b>$0.00</b>
+                  } @else {
+                    @for (c of auditAmountsByCurrency(); track c.symbol) {
+                      <b>{{ c.symbol }} {{ c.amount | number:'1.2-2' }}</b>
+                    }
+                  }
+                  <small>Procesado</small>
+                </span>
+                <span>
+                  @if (auditCancelledByCurrency().length === 0) {
+                    <b>$0.00</b>
+                  } @else {
+                    @for (c of auditCancelledByCurrency(); track c.symbol) {
+                      <b>{{ c.symbol }} {{ c.amount | number:'1.2-2' }}</b>
+                    }
+                  }
+                  <small>Cancelado</small>
+                </span>
+              </div>
+            }
+          </section>
+        </div>
+
+        <aside class="dashboard-side-stack">
+        <div class="ops-payment-column">
+          <div class="ops-section-label">Pagos por estado</div>
+          <div class="ops-payment-list">
+            @if (comparativeTable().length === 0) {
+              <div class="ops-empty">Cargando comparativa...</div>
+            }
+            @for (row of comparativeTable(); track row.methodName) {
+              <article class="ops-payment-row notranslate" translate="no">
+                <header>
+                  <span class="material-icons notranslate" translate="no">account_balance_wallet</span>
+                  <strong>{{ row.methodName }}</strong>
+                  <em>{{ row.total | number:'1.2-2' }}</em>
+                </header>
+                <div class="ops-status-track">
+                  @for (s of statusList(); track s) {
+                    <span>
+                      <i class="status-dot" [ngClass]="statusCssClass(s)"></i>
+                      <b>{{ s }}</b>
+                      <em>{{ row.statuses[s] ? (row.statuses[s] | number:'1.2-2') : '-' }}</em>
+                    </span>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        </div>
+
+        </aside>
+      </section>
+      }
+
+      @if (isSupportUser()) {
+      <section class="ops-analytics-panel">
+        <div class="card-header">
+          <div class="header-left">
+            <span class="material-icons notranslate" translate="no">query_stats</span>
+            <h3>Inteligencia de Negocios Dinamica</h3>
+          </div>
+        </div>
+        <div class="analytics-grid">
+          <!-- 1. Revenue por Estado (index 0) -->
+          <div class="chart-box">
+            <h4 class="chart-title">Revenue por Estado y Metodo</h4>
+            <div class="chart-container"><canvas #dynamicChart></canvas></div>
+          </div>
+
+          <!-- 2. Volumen por Estado (index 1) -->
+          <div class="chart-box">
+            <h4 class="chart-title">Volumen por Estado y Metodo</h4>
+            <div class="chart-container"><canvas #dynamicChart></canvas></div>
+          </div>
+
+          <!-- 3. Tendencia Diaria (index 2) - WIDE -->
+          <div class="chart-box wide-chart">
+            <div class="chart-header-flex">
+              <h4 class="chart-title">Conteo de Recargas Diarias</h4>
+              <div class="chart-badge">
+                <span class="badge-label">TOTAL</span>
+                <span class="badge-value">{{ totalHistoricoRecargas() }}</span>
+              </div>
+            </div>
+            <div class="chart-container"><canvas #dynamicChart></canvas></div>
+          </div>
+
+          <!-- 4. Ingresos Diarios (index 3) - WIDE -->
+          <div class="chart-box wide-chart">
+            <h4 class="chart-title">Ingresos Diarios por Metodo</h4>
+            <div class="chart-container"><canvas #dynamicChart></canvas></div>
+          </div>
+        </div>
+      </section>
+      }
+
+      }
+
+      @if (vistaActual() === 'categorias') {
+      <app-category-manager></app-category-manager>
+      }
+
+      @if (vistaActual() === 'monedas') {
+      <app-coin-manager></app-coin-manager>
+      }
+
+      @if (vistaActual() === 'paises') {
+      <app-country-manager></app-country-manager>
+      }
+
+      @if (vistaActual() === 'pagos') {
+      <app-payment-manager></app-payment-manager>
+      }
+
+      @if (vistaActual() === 'productos') {
+      <app-product-manager></app-product-manager>
+      }
+
+      @if (vistaActual() === 'recargas') {
+      <app-recharge-manager></app-recharge-manager>
+      }
+
+      @if (vistaActual() === 'precios') {
+      <app-price-manager></app-price-manager>
+      }
+
+      @if (vistaActual() === 'cupones') {
+      <app-coupon-manager></app-coupon-manager>
+      }
+
+      @if (vistaActual() === 'ordenes') {
+      <app-order-manager [filterUserId]="usuarioSeleccionadoForOrders()"
+        (viewClient)="verClienteDesdeOrden($event)"></app-order-manager>
+      }
+
+      @if (vistaActual() === 'clientes') {
+      <app-user-manager [filterName]="clienteSeleccionadoFilter()"
+        (viewOrders)="verOrdenesDeUsuario($event)"></app-user-manager>
+      }
+
+      @if (vistaActual() === 'perfil') {
+      <app-user-profile></app-user-profile>
+      }
+
+      @if (vistaActual() === 'configuracion') {
+      <app-config-manager></app-config-manager>
+      }
+
+      @if (vistaActual() !== 'dashboard' && vistaActual() !== 'perfil' && vistaActual() !== 'categorias' &&
+      vistaActual() !== 'monedas' && vistaActual() !== 'paises' && vistaActual() !== 'pagos'&& vistaActual() !==
+      'productos' && vistaActual() !== 'recargas' && vistaActual() !== 'precios' && vistaActual() !== 'cupones' && vistaActual() !== 'ordenes'&&
+      vistaActual() !== 'clientes' && vistaActual() !== 'configuracion') {
+      <section class="main-card empty-view">
+        <div class="card-header">
+          <h3>Gestion de {{ vistaActual() | titlecase }}</h3>
+        </div>
+        <div class="empty-state">No hay registros en {{ vistaActual() }} todavia.</div>
+      </section>
+      }
+    </div>
+  </main>
+</div>
+}
