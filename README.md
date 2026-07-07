@@ -1,22 +1,16 @@
-# NovasPlay
-Plataforma web intuitiva para la recarga de videojuegos. Interfaz Front-End desarrollada con Angular y TypeScript, enfocada en una navegación fluida y experiencia de usuario (UX).
+🎮 NovasPlay - Front-End
+NovasPlay es una plataforma web intuitiva diseñada para facilitar la recarga de videojuegos. Este repositorio contiene el desarrollo de toda la interfaz visual y la experiencia del usuario.
 
-NovasPlay - Front-End
+✨ ¿Qué destaca de este proyecto?
+Diseño Adaptable: Interfaz moderna que se ajusta a celulares, tablets y computadoras.
 
-NovasPlay es una plataforma web intuitiva diseñada para facilitar la recarga de videojuegos. Este espacio contiene el desarrollo de toda la interfaz visual y la experiencia del usuario.
+Integración Funcional: Conexión exitosa con el Back-End para asegurar la sincronización de datos y el flujo de recargas.
 
-¿Qué destaca de este proyecto?
+Identidad Visual: Creación de una marca con diseño interactivo enfocado en el sector gaming.
 
-Tiene un diseño moderno y adaptable a celulares, tablets y computadoras.
+🛠️ Tecnologías que utilicé
+Framework: Angular
 
-Está integrado exitosamente con el Back-End para asegurar que los datos fluyan y las recargas funcionen correctamente.
+Lenguajes: TypeScript y JavaScript
 
-Muestra la nueva identidad visual y diseño interactivo de la marca.
-
-Tecnologías que utilicé:
-
-Angular
-
-TypeScript y JavaScript
-
-HTML5 y CSS3
+Maquetación: HTML5 y CSS3
