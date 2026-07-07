@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # YonaStore
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
@@ -57,3 +58,22 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+=======
+🎮 NovasPlay - Front-End
+
+NovasPlay es una plataforma web intuitiva diseñada para facilitar la recarga de videojuegos. Este repositorio contiene el desarrollo de toda la interfaz visual y la experiencia del usuario.
+
+✨ ¿Qué destaca de este proyecto?
+Diseño Adaptable: Interfaz moderna que se ajusta a celulares, tablets y computadoras.
+
+Integración Funcional: Conexión exitosa con el Back-End para asegurar la sincronización de datos y el flujo de recargas.
+
+Identidad Visual: Creación de una marca con diseño interactivo enfocado en el sector gaming.
+
+🛠️ Tecnologías que utilicé
+Framework: Angular
+
+Lenguajes: TypeScript y JavaScript
+
+Maquetación: HTML5 y CSS3
+>>>>>>> ffcfa464c25ab84eb4c876a7e11730ccde794c41
