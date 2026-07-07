@@ -1,4 +1,5 @@
 🎮 NovasPlay - Front-End
+
 NovasPlay es una plataforma web intuitiva diseñada para facilitar la recarga de videojuegos. Este repositorio contiene el desarrollo de toda la interfaz visual y la experiencia del usuario.
 
 ✨ ¿Qué destaca de este proyecto?
