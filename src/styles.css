@@ -812,3 +812,44 @@ body::after {
     font-size: 0.86rem;
   }
 }
+
+@media (max-width: 420px) {
+  .novasplay-chat-launcher {
+    right: 10px;
+    bottom: 10px;
+    width: 66px;
+    height: 66px;
+  }
+
+  .novasplay-chat-launcher__bot,
+  .novasplay-chat-launcher img {
+    width: 66px;
+    height: 66px;
+  }
+
+  .novasplay-chat-launcher__visor {
+    gap: 7px;
+  }
+
+  .novasplay-chat-launcher__eye {
+    font-size: 0.58rem;
+  }
+
+  .novasplay-chat-launcher__pulse {
+    inset: 9px;
+  }
+
+  .novasplay-chat-launcher__badge {
+    right: 8px;
+    top: 9px;
+    min-width: 17px;
+    height: 17px;
+    font-size: 0.64rem;
+  }
+
+  .novasplay-chat-greeting {
+    right: 76px;
+    bottom: 72px;
+    width: min(220px, calc(100vw - 96px));
+  }
+}

@@ -39,6 +39,7 @@ export class App implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.updateLayoutVisibility(event.urlAfterRedirects);
         this.updateSeo(event.urlAfterRedirects);
+        this.scrollToTopOnRouteChange(event.urlAfterRedirects);
       });
 
     this.authService.openAuthModal.subscribe((mode: 'login' | 'register') => {
@@ -109,26 +110,44 @@ export class App implements OnInit {
     }
     return this.router.url || '';
   }
+  private scrollToTopOnRouteChange(url: string) {
+    if (typeof window === 'undefined' || url.includes('#')) return;
 
+    const goTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(goTop);
+      return;
+    }
+
+    setTimeout(goTop, 0);
+  }
   private checkUrlClaims() {
-    this.route.queryParams.subscribe((params: Record<string, string | undefined>) => {
-      let claims = params['claims'];
-      if (claims) {
-        claims = claims.replace(/^"|"$/g, '');
-        localStorage.setItem('CookieTokenClaims', decodeURIComponent(claims));
-        this.router
-          .navigate([], {
-            queryParams: { claims: null },
-            queryParamsHandling: 'merge',
-            replaceUrl: true,
-          })
-          .then(() => {
-            this.authService.authChanged.next();
-          });
-      }
+    this.route.queryParams.subscribe((params: Record<string, string | string[] | undefined>) => {
+      const rawClaims = params['claims'] ?? params['token'] ?? params['CookieTokenClaims'];
+      const claims = this.decodeAuthClaim(rawClaims);
+      if (!claims) return;
+
+      localStorage.setItem('CookieTokenClaims', claims);
+      localStorage.setItem('token', claims);
+
+      const returnPath = this.authService.consumeGoogleReturnPath();
+      this.router.navigateByUrl(returnPath || '/', { replaceUrl: true }).then(() => {
+        this.authService.authChanged.next();
+      });
     });
   }
 
+  private decodeAuthClaim(rawValue: string | string[] | undefined): string {
+    const raw = Array.isArray(rawValue) ? rawValue[0] : rawValue;
+    if (!raw) return '';
+
+    const clean = String(raw).trim().replace(/^"|"$/g, '');
+    try {
+      return decodeURIComponent(clean);
+    } catch {
+      return clean;
+    }
+  }
   validarEntrada() {
     if (this.sessionRefreshed) return;
     const hasToken =
@@ -154,6 +173,7 @@ export class App implements OnInit {
 
   handleAuthClose() {
     this.showAuthModal = false;
+    this.authService.clearAuthModalNotice();
     document.body.style.overflow = 'auto';
   }
 }

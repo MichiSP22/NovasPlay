@@ -24,18 +24,18 @@
       </p>
 
       <div class="welcome-flyer-badges" aria-label="Beneficios de inauguracion">
-        <span>
+        <div class="welcome-flyer-badge">
           <span class="material-icons notranslate" translate="no" aria-hidden="true">redeem</span>
-          Bienvenida especial
-        </span>
-        <span>
+          <strong>Bienvenida especial</strong>
+        </div>
+        <div class="welcome-flyer-badge">
           <span class="material-icons notranslate" translate="no" aria-hidden="true">local_offer</span>
-          Descuentos activos
-        </span>
-        <span>
+          <strong>Descuentos activos</strong>
+        </div>
+        <div class="welcome-flyer-badge">
           <span class="material-icons notranslate" translate="no" aria-hidden="true">verified_user</span>
-          Recargas seguras
-        </span>
+          <strong>Recargas seguras</strong>
+        </div>
       </div>
 
       <div class="welcome-flyer-actions">
@@ -101,6 +101,27 @@
 
 <div [class.page-locked]="configService.maintenanceMode()">
   <app-nav-bar></app-nav-bar>
+
+  <section class="launch-notice scroll-reveal" aria-labelledby="launch-notice-title">
+    <div class="launch-notice-shell">
+      <div class="launch-notice-icon">
+        <span class="material-icons notranslate" translate="no">campaign</span>
+      </div>
+      <div class="launch-notice-copy">
+        <span class="section-kicker">Aviso de inauguracion</span>
+        <h2 id="launch-notice-title">Estamos estrenando NovasPlay contigo.</h2>
+        <p>
+          Durante estos primeros dias puede aparecer algun bug, error visual o detalle en el proceso de compra.
+          Si notas algo raro, escribenos directamente por NovaBot para revisarlo contigo lo antes posible.
+        </p>
+      </div>
+      <button type="button" class="launch-notice-action" (click)="openNovabot()">
+        <span class="material-icons notranslate" translate="no">support_agent</span>
+        Hablar con NovaBot
+      </button>
+    </div>
+  </section>
+
   <app-features></app-features>
   <app-catalogo id="catalogo" [isMaintenance]="configService.maintenanceMode()"></app-catalogo>
   <section class="trust-section scroll-reveal">

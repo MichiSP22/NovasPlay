@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
 import { NotificationService } from '../../shared/ui/toast/notification.service';
+import { AuthService } from '../auth/auth.service';
 import { API_ROUTES } from '../../routes';
 
 const appStartTime = Date.now();
@@ -10,6 +11,7 @@ const appStartTime = Date.now();
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notify = inject(NotificationService);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   // NUEVO: 1. Define un arreglo con los fragmentos de URL que quieres ignorar
   const endpointsSilenciosos = [
@@ -101,14 +103,24 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // 401: Si viene del Login, mostramos el error al usuario.
       if (error.status === 401) {
         if (req.url.includes('/Access/Login')) {
-          const loginMsg = getErrorMessage(error) || 'Usuario o contraseña incorrectos';
+          const loginMsg = getErrorMessage(error) || 'Usuario o contrasena incorrectos';
           notify.show('error', loginMsg, true);
         } else {
-          router.navigate(['/']);
+          const currentUrl = router.url || '';
+          const isCheckoutFlow = currentUrl.includes('/checkout') || currentUrl.includes('/cart-checkout');
+
+          if (isCheckoutFlow) {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.removeItem('token');
+              localStorage.removeItem('CookieTokenClaims');
+            }
+            authService.openAuth('login', 'Tu sesion expiro. Inicia sesion de nuevo para continuar con esta compra sin perder el carrito.');
+          } else {
+            router.navigate(['/']);
+          }
         }
         return throwError(() => error);
       }
-
       // 403: Cuenta inactiva, bloqueada o baneada
       if (error.status === 403) {
         if (typeof localStorage !== 'undefined') {

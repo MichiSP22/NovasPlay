@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoCachePipe } from '../../shared/pipes/no-cache.pipe';
 import { ProductService, Product } from '../../entities/product';
@@ -48,6 +49,7 @@ export class Chekout implements OnInit, OnDestroy {
   private configService = inject(CompanyConfigService);
 
   telefonoInvalido = signal<boolean>(false);
+  authRequiredNotice = signal<boolean>(false);
   idAttention = signal<boolean>(false);
   novixMessageIndex = signal<number>(0);
   novixPrompt = signal<string | null>(null);
@@ -55,6 +57,7 @@ export class Chekout implements OnInit, OnDestroy {
   novixPulse = signal<number>(0);
   private novixMessageTimer: number | null = null;
   private novixReactionTimer: number | null = null;
+  private authChangedSubscription: Subscription | null = null;
 
   juego = signal<Product | null>(null);
   juegoNombre = computed(() => this.juego()?.name || 'Cargando...');
@@ -110,6 +113,10 @@ export class Chekout implements OnInit, OnDestroy {
       window.addEventListener('novasplay:country-changed', this.countryChangeHandler);
       this.startNovixMessageLoop();
     }
+    this.authChangedSubscription = this.authService.authChanged.subscribe(() => {
+      this.authRequiredNotice.set(false);
+      this.loadCurrentUserPhoneStatus();
+    });
 
     this.loadSelectedCountryConfig();
 
@@ -119,13 +126,7 @@ export class Chekout implements OnInit, OnDestroy {
     } else {
       this.volver();
     }
-
-    this.userService.getMe().subscribe(res => {
-      if (res?.success && res.value) {
-        const phone = (res.value.phone || '').replace(/\s/g, '');
-        this.telefonoInvalido.set(/^\+0+$/.test(phone) || phone === '');
-      }
-    });
+    this.loadCurrentUserPhoneStatus();
   }
 
   ngOnDestroy() {
@@ -140,6 +141,8 @@ export class Chekout implements OnInit, OnDestroy {
         this.novixReactionTimer = null;
       }
     }
+    this.authChangedSubscription?.unsubscribe();
+    this.authChangedSubscription = null;
   }
 
   cargarDatosCompletos(productoId: number) {
@@ -543,24 +546,49 @@ export class Chekout implements OnInit, OnDestroy {
       return;
     }
 
-    if (typeof window !== 'undefined') {
-      const tokenClaims = localStorage.getItem('CookieTokenClaims');
-      const legacyToken = localStorage.getItem('token');
-      const hasCookie = document.cookie.includes('CookieTokenClaims=');
-
-      if (!tokenClaims && !hasCookie && !legacyToken) {
-        this.notificationService.show('error', 'Debes iniciar sesion antes de realizar cualquier compra.');
-        this.authService.openAuthModal.next('login');
-        return;
-      }
+    if (!this.authService.hasSession()) {
+      this.requestPurchaseAuth();
+      return;
     }
 
     if (this.carrito().length === 0) {
       this.notificationService.show('error', 'Tu lista de recargas esta vacia.');
       return;
     }
-
     this.router.navigate(['/cart-checkout']);
+  }
+
+  openAuthFromCheckout(mode: 'login' | 'register' = 'register') {
+    this.authRequiredNotice.set(true);
+    const notice = mode === 'register'
+      ? 'Crea tu cuenta para continuar con esta compra. Tu recarga queda lista mientras completas el registro.'
+      : 'Inicia sesion para continuar con esta compra. Tu recarga sigue guardada aqui.';
+    this.authService.openAuth(mode, notice);
+  }
+
+  private requestPurchaseAuth() {
+    this.authRequiredNotice.set(true);
+    this.triggerNovixReaction('warn', 'Crea tu cuenta para continuar la compra aqui mismo.');
+    this.authService.openAuth('register', 'Crea tu cuenta para seguir con tu compra. Tu seleccion se queda aqui y podras continuar sin empezar de nuevo.');
+  }
+
+  private loadCurrentUserPhoneStatus() {
+    if (!this.authService.hasSession()) {
+      this.telefonoInvalido.set(false);
+      return;
+    }
+
+    this.userService.getMe().subscribe({
+      next: (res) => {
+        if (res?.success && res.value) {
+          const phone = (res.value.phone || '').replace(/\s/g, '');
+          this.telefonoInvalido.set(/^\+0+$/.test(phone) || phone === '');
+        }
+      },
+      error: () => {
+        this.telefonoInvalido.set(false);
+      }
+    });
   }
 
   novixMessages(): string[] {

@@ -15,6 +15,21 @@
       </div>
     </header>
 
+    @if (authRequiredNotice()) {
+      <section class="auth-checkout-alert" aria-live="polite">
+        <span class="material-icons notranslate auth-alert-icon" translate="no">lock_person</span>
+        <div class="auth-alert-copy">
+          <span class="panel-kicker">Cuenta requerida</span>
+          <strong>Necesitas una cuenta para confirmar esta compra.</strong>
+          <p>Tu carrito sigue guardado. Registrate o inicia sesion y vuelve directo a completar el pago.</p>
+        </div>
+        <div class="auth-alert-actions">
+          <button class="auth-alert-action" type="button" (click)="openAuthFromCheckout('register')">Crear cuenta</button>
+          <button class="auth-alert-secondary" type="button" (click)="openAuthFromCheckout('login')">Ya tengo cuenta</button>
+        </div>
+      </section>
+    }
+
     @if (cartService.itemCount() === 0) {
       <div class="empty-cart-message">
         <span class="material-icons notranslate" translate="no">remove_shopping_cart</span>
@@ -45,17 +60,26 @@
                 </header>
 
                 <div class="method-signal-row">
-                  <span>
+                  <span class="method-signal">
                     <span class="material-icons notranslate" translate="no">verified_user</span>
-                    Pago protegido
+                    <span class="method-signal-copy">
+                      <b>Pago seguro</b>
+                      <small>Protegido</small>
+                    </span>
                   </span>
-                  <span>
+                  <span class="method-signal">
                     <span class="material-icons notranslate" translate="no">receipt_long</span>
-                    Revision manual
+                    <span class="method-signal-copy">
+                      <b>Revision</b>
+                      <small>Manual</small>
+                    </span>
                   </span>
-                  <span>
+                  <span class="method-signal">
                     <span class="material-icons notranslate" translate="no">bolt</span>
-                    Orden al confirmar
+                    <span class="method-signal-copy">
+                      <b>Orden</b>
+                      <small>Al confirmar</small>
+                    </span>
                   </span>
                 </div>
 

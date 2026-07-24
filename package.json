@@ -1,5 +1,5 @@
 {
-  "name": "yona-store",
+  "name": "novasplay",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -9,7 +9,7 @@
     "build": "npm run config && npm run check:env && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:YonaStore": "node dist/YonaStore/server/server.mjs"
+    "serve:ssr:NovasPlay": "node dist/NovasPlay/server/server.mjs"
   },
   "prettier": {
     "printWidth": 100,

@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { CartService } from '../../core/state/cart.service';
 import { ItemCarrito } from '../../core/state/cart.model';
@@ -20,7 +21,7 @@ import { CouponPreviewLine, CouponPreviewResult, CouponService } from '../../ent
   templateUrl: './cart-checkout.html',
   styleUrls: ['./cart-checkout.css']
 })
-export class CartCheckoutComponent implements OnInit {
+export class CartCheckoutComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   public cartService = inject(CartService);
   private paymentService = inject(PaymentService);
@@ -71,6 +72,8 @@ export class CartCheckoutComponent implements OnInit {
 
   cargando = signal<boolean>(true);
   procesando = signal<boolean>(false);
+  authRequiredNotice = signal<boolean>(false);
+  private authChangedSubscription: Subscription | null = null;
 
   ngOnInit() {
     if (this.cartService.itemCount() === 0) {
@@ -78,23 +81,35 @@ export class CartCheckoutComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
+    this.authChangedSubscription = this.authService.authChanged.subscribe(() => {
+      this.authRequiredNotice.set(false);
+      this.loadBankDataForAllMethods();
+    });
 
-    this.checkSession();
+    if (!this.checkSession()) return;
+
     this.loadBankDataForAllMethods();
   }
 
-  checkSession() {
-    if (typeof window !== 'undefined') {
-      const tokenClaims = localStorage.getItem('CookieTokenClaims');
-      const legacyToken = localStorage.getItem('token');
-      const hasCookie = document.cookie.includes('CookieTokenClaims=');
+  ngOnDestroy() {
+    this.authChangedSubscription?.unsubscribe();
+    this.authChangedSubscription = null;
+  }
 
-      if (!tokenClaims && !hasCookie && !legacyToken) {
-        this.notify.show('error', 'Debes iniciar sesión para finalizar la compra.');
-        this.authService.openAuthModal.next('login');
-        this.router.navigate(['/']);
-      }
-    }
+  checkSession(): boolean {
+    if (this.authService.hasSession()) return true;
+    this.authRequiredNotice.set(true);
+    this.cargando.set(false);
+    this.authService.openAuth('register', 'Crea tu cuenta para confirmar esta compra. Tu carrito sigue guardado y podras completar el pago al terminar.');
+    return false;
+  }
+
+  openAuthFromCheckout(mode: 'login' | 'register' = 'register') {
+    this.authRequiredNotice.set(true);
+    const notice = mode === 'register'
+      ? 'Crea tu cuenta para confirmar esta compra. Tu carrito sigue guardado y podras completar el pago al terminar.'
+      : 'Inicia sesion para confirmar esta compra. Tu carrito sigue guardado aqui.';
+    this.authService.openAuth(mode, notice);
   }
 
   loadBankDataForAllMethods() {
@@ -252,6 +267,8 @@ export class CartCheckoutComponent implements OnInit {
       this.notify.show('error', 'El sistema se encuentra en mantenimiento. No es posible procesar pedidos en este momento.');
       return;
     }
+
+    if (!this.checkSession()) return;
 
     // Validar referencias
     let missingRef = false;

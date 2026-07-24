@@ -815,3 +815,261 @@
     justify-items: start;
   }
 }
+
+/* Separacion visual entre ordenes del perfil */
+.orders-feed {
+  gap: clamp(20px, 2.6vw, 28px);
+  padding-top: 4px;
+}
+
+.order-card {
+  position: relative;
+  border-radius: 20px;
+  border-color: rgba(121, 215, 207, 0.18);
+  background:
+    radial-gradient(520px 220px at 92% 8%, rgba(121, 215, 207, 0.105), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.024)),
+    rgba(9, 14, 23, 0.94);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.order-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--secondary-400), rgba(231, 200, 115, 0.68), transparent);
+  opacity: 0.85;
+}
+
+.order-card:nth-child(even) {
+  border-color: rgba(231, 200, 115, 0.19);
+  background:
+    radial-gradient(520px 220px at 8% 4%, rgba(231, 200, 115, 0.105), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)),
+    rgba(12, 14, 20, 0.95);
+}
+
+.order-card:nth-child(even)::before {
+  background: linear-gradient(180deg, var(--primary-300), rgba(121, 215, 207, 0.62), transparent);
+}
+
+.order-card-header {
+  position: relative;
+  padding: 22px 22px 20px;
+  background:
+    linear-gradient(90deg, rgba(121, 215, 207, 0.065), transparent 58%),
+    rgba(255, 255, 255, 0.012);
+  border-bottom-color: rgba(255, 255, 255, 0.075);
+}
+
+.order-card:nth-child(even) .order-card-header {
+  background:
+    linear-gradient(90deg, rgba(231, 200, 115, 0.06), transparent 58%),
+    rgba(255, 255, 255, 0.01);
+}
+
+.order-card-header h3 {
+  font-size: 1.28rem;
+  letter-spacing: 0;
+}
+
+.order-total {
+  min-width: 176px;
+  border-color: rgba(231, 200, 115, 0.28);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(231, 200, 115, 0.14), transparent 52%),
+    rgba(231, 200, 115, 0.082);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.order-items-list {
+  gap: 13px;
+  padding: 20px 22px 22px;
+}
+
+.order-item-row {
+  border-color: rgba(121, 215, 207, 0.12);
+  background:
+    linear-gradient(135deg, rgba(121, 215, 207, 0.045), rgba(255, 255, 255, 0.018)),
+    rgba(8, 12, 20, 0.72);
+}
+
+.order-card:nth-child(even) .order-item-row {
+  border-color: rgba(231, 200, 115, 0.12);
+  background:
+    linear-gradient(135deg, rgba(231, 200, 115, 0.04), rgba(255, 255, 255, 0.016)),
+    rgba(8, 12, 20, 0.72);
+}
+
+.admin-notes-container {
+  margin-inline: 22px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 680px) {
+  .orders-feed {
+    gap: 18px;
+  }
+
+  .order-card {
+    border-radius: 18px;
+  }
+
+  .order-card::before {
+    width: 3px;
+  }
+
+  .order-card-header {
+    padding: 20px 18px 18px;
+  }
+
+  .order-total {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 14px;
+  }
+
+  .order-items-list {
+    padding: 16px;
+  }
+
+  .order-item-row {
+    padding: 14px;
+  }
+
+  .admin-notes-container {
+    margin-inline: 16px;
+    margin-bottom: 16px;
+  }
+}
+/* Separacion fuerte entre compras: cada orden debe leerse como bloque independiente */
+.orders-feed {
+  gap: 0;
+  padding-top: 8px;
+}
+
+.order-break {
+  height: clamp(38px, 5vw, 52px);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.order-break::before {
+  content: "";
+  position: absolute;
+  left: clamp(16px, 5vw, 54px);
+  right: clamp(16px, 5vw, 54px);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(121, 215, 207, 0.7), rgba(231, 200, 115, 0.75), transparent);
+  box-shadow: 0 0 18px rgba(121, 215, 207, 0.24);
+}
+
+.order-break span {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--secondary-400), var(--primary-300));
+  box-shadow:
+    0 0 0 8px rgba(7, 10, 16, 0.95),
+    0 0 22px rgba(121, 215, 207, 0.45);
+}
+
+.order-card {
+  overflow: hidden;
+  border-width: 2px;
+  border-color: rgba(121, 215, 207, 0.42);
+  background:
+    radial-gradient(680px 280px at 100% 0%, rgba(121, 215, 207, 0.22), transparent 64%),
+    linear-gradient(135deg, rgba(18, 53, 61, 0.82), rgba(12, 18, 30, 0.96) 48%, rgba(8, 11, 18, 0.98)),
+    #08111c;
+  box-shadow:
+    0 28px 58px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(121, 215, 207, 0.1),
+    0 0 34px rgba(121, 215, 207, 0.08);
+}
+
+.order-card::before {
+  width: 8px;
+  background: linear-gradient(180deg, #7de1d7, #e7c873, rgba(125, 225, 215, 0.45));
+  box-shadow: 0 0 18px rgba(121, 215, 207, 0.35);
+  opacity: 1;
+}
+
+.order-card:nth-of-type(even) {
+  border-color: rgba(231, 200, 115, 0.46);
+  background:
+    radial-gradient(680px 280px at 0% 0%, rgba(231, 200, 115, 0.24), transparent 64%),
+    linear-gradient(135deg, rgba(67, 55, 30, 0.86), rgba(20, 21, 25, 0.97) 50%, rgba(9, 11, 17, 0.98)),
+    #11100d;
+  box-shadow:
+    0 28px 58px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(231, 200, 115, 0.12),
+    0 0 34px rgba(231, 200, 115, 0.08);
+}
+
+.order-card:nth-of-type(even)::before {
+  background: linear-gradient(180deg, #e7c873, #7de1d7, rgba(231, 200, 115, 0.45));
+  box-shadow: 0 0 18px rgba(231, 200, 115, 0.34);
+}
+
+.order-card-header {
+  padding-left: 26px;
+  background:
+    linear-gradient(90deg, rgba(121, 215, 207, 0.16), rgba(121, 215, 207, 0.045) 54%, transparent),
+    rgba(2, 8, 14, 0.24);
+  border-bottom-color: rgba(121, 215, 207, 0.18);
+}
+
+.order-card:nth-of-type(even) .order-card-header {
+  background:
+    linear-gradient(90deg, rgba(231, 200, 115, 0.16), rgba(231, 200, 115, 0.045) 54%, transparent),
+    rgba(10, 9, 6, 0.28);
+  border-bottom-color: rgba(231, 200, 115, 0.2);
+}
+
+.order-items-list {
+  background: rgba(2, 6, 12, 0.18);
+}
+
+.order-item-row {
+  border-color: rgba(121, 215, 207, 0.2);
+  background: rgba(3, 9, 16, 0.72);
+}
+
+.order-card:nth-of-type(even) .order-item-row {
+  border-color: rgba(231, 200, 115, 0.21);
+  background: rgba(9, 8, 7, 0.64);
+}
+
+@media (max-width: 680px) {
+  .order-break {
+    height: 34px;
+  }
+
+  .order-break::before {
+    left: 20px;
+    right: 20px;
+  }
+
+  .order-break span {
+    width: 9px;
+    height: 9px;
+    box-shadow:
+      0 0 0 7px rgba(7, 10, 16, 0.95),
+      0 0 18px rgba(121, 215, 207, 0.42);
+  }
+
+  .order-card::before {
+    width: 6px;
+  }
+
+  .order-card-header {
+    padding-left: 22px;
+  }
+}

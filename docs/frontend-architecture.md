@@ -1,6 +1,6 @@
-# Arquitectura Frontend - Yona Store
+# Arquitectura Frontend - NovasPlay
 
-Yona Store usa Angular standalone con SSR. La arquitectura recomendada para este proyecto es una variante feature-first inspirada en Feature-Sliced Design, adaptada a Angular:
+NovasPlay usa Angular standalone con SSR. La arquitectura recomendada para este proyecto es una variante feature-first inspirada en Feature-Sliced Design, adaptada a Angular:
 
 - `app`: arranque de Angular, configuracion global y rutas raiz.
 - `core`: servicios singleton, guards, interceptors, clientes HTTP y configuracion transversal.

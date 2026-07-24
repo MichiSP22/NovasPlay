@@ -367,13 +367,20 @@ export class Header implements OnInit {
   closeCart() {
     this.isCartOpen.set(false);
   }
-
-
   processCart() {
     this.isCartOpen.set(false);
+
+    if (!this.authService.hasSession()) {
+      this.authService.openAuth(
+        'register',
+        'Crea tu cuenta para finalizar esta compra. Tu carrito sigue guardado y avanzaras al pago al iniciar sesion.',
+        '/cart-checkout'
+      );
+      return;
+    }
+
     this.router.navigate(['/cart-checkout']);
   }
-
   goHomeTop(event?: Event) {
     if (event) event.preventDefault();
     this.isMobileMenuOpen.set(false);
@@ -429,7 +436,6 @@ export class Header implements OnInit {
     }
     this.hasToken.set(false);
     this.currentUser.set(null);
-    this.cartService.clearCart();
     this.router.navigate(['/']);
   }
 

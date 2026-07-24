@@ -388,7 +388,7 @@
 
         <aside class="dashboard-side-stack">
         <div class="ops-payment-column">
-          <div class="ops-section-label">Pagos por estado</div>
+          <div class="ops-section-label">Metodos con mas ventas</div>
           <div class="ops-payment-list">
             @if (comparativeTable().length === 0) {
               <div class="ops-empty">Cargando comparativa...</div>
@@ -398,7 +398,7 @@
                 <header>
                   <span class="material-icons notranslate" translate="no">account_balance_wallet</span>
                   <strong>{{ row.methodName }}</strong>
-                  <em>{{ row.total | number:'1.2-2' }}</em>
+                  <em>{{ row.salesTotal | number:'1.2-2' }}</em>
                 </header>
                 <div class="ops-status-track">
                   @for (s of statusList(); track s) {

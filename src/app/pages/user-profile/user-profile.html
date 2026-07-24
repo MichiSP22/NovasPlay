@@ -179,7 +179,12 @@
             </div>
 
             <div class="orders-feed">
-              @for (order of userOrders(); track order.id) {
+              @for (order of userOrders(); track order.id; let i = $index) {
+                @if (i > 0) {
+                  <div class="order-break" aria-hidden="true">
+                    <span></span>
+                  </div>
+                }
                 <article class="order-card">
                   <header class="order-card-header">
                     <div>

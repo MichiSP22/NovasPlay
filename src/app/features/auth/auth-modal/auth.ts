@@ -7,6 +7,7 @@ import { NotificationService } from '../../../shared/ui/toast/notification.servi
 import { RegisterRequest, LoginRequest } from '../../../core/auth/auth.model';
 import { GenericResponse } from '../../../core/http/http.models';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Country {
   name: string;
@@ -33,6 +34,8 @@ export class Auth implements OnInit {
   private cd = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
   private notify = inject(NotificationService);
+  private router = inject(Router);
+  authNotice = this.authService.authModalNotice;
 
   isRecoveryMode = false;
   recoveryStep = 1;
@@ -296,8 +299,12 @@ export class Auth implements OnInit {
             localStorage.setItem('token', token);
             localStorage.setItem('CookieTokenClaims', token);
           }
+          const returnPath = this.authService.consumeAuthReturnPath();
           this.close();
           this.authService.authChanged.next();
+          if (returnPath) {
+            this.router.navigateByUrl(returnPath);
+          }
         },
         error: () => {},
       });

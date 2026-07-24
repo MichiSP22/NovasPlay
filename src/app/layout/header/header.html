@@ -81,16 +81,16 @@
       </button>
     </div>
 
-    @if (hasToken()) {
-      <div class="cart-dropdown-container">
-        <button class="user-account-btn cart-btn" (click)="toggleCart()" aria-label="Abrir carrito">
-          <span class="material-icons notranslate" translate="no">shopping_cart</span>
-          @if (cartService.itemCount() > 0) {
-            <span class="cart-badge">{{ cartService.itemCount() }}</span>
-          }
-        </button>
-      </div>
+    <div class="cart-dropdown-container">
+      <button class="user-account-btn cart-btn" (click)="toggleCart()" aria-label="Abrir carrito">
+        <span class="material-icons notranslate" translate="no">shopping_cart</span>
+        @if (cartService.itemCount() > 0) {
+          <span class="cart-badge">{{ cartService.itemCount() }}</span>
+        }
+      </button>
+    </div>
 
+    @if (hasToken()) {
       <div class="profile-dropdown-container">
         <button class="user-account-btn" (click)="toggleDropdown()">
           <span class="material-icons notranslate" translate="no">account_circle</span>
@@ -163,7 +163,7 @@
   </div>
 </header>
 
-@if (hasToken() && isCartOpen()) {
+@if (isCartOpen()) {
   <div class="cart-drawer-layer notranslate" translate="no">
     <button class="cart-drawer-backdrop" aria-label="Cerrar carrito" (click)="closeCart()"></button>
 

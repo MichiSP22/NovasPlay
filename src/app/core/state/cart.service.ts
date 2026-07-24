@@ -51,35 +51,13 @@ export class CartService {
   });
 
   constructor() {
-    this.initHeartbeat();
     this.loadCartFromStorage();
     this.initStorageListener();
   }
 
-  private initHeartbeat() {
-    if (typeof window === 'undefined') return;
-    
-    // Establecer latido inicial
-    localStorage.setItem('yona_cart_last_active', Date.now().toString());
-    
-    // Actualizarlatido cada segundo para indicar que esta pestaña sigue activa
-    setInterval(() => {
-      localStorage.setItem('yona_cart_last_active', Date.now().toString());
-    }, 1000);
-  }
-
   private loadCartFromStorage() {
     if (typeof window !== 'undefined' && localStorage) {
-      const lastActive = localStorage.getItem('yona_cart_last_active');
-      const now = Date.now();
-      
-      // Si el último latido fue hace más de 5 segundos, consideramos que todas las pestañas 
-      // anteriores se cerraron y es una sesión nueva, por lo que limpiamos el carrito.
-      if (lastActive && (now - parseInt(lastActive)) > 5000) {
-        localStorage.removeItem('yona_cart');
-      }
-
-      const saved = localStorage.getItem('yona_cart');
+      const saved = localStorage.getItem('novasplay_cart');
       if (saved) {
         try {
           this.cartItems.set(JSON.parse(saved));
@@ -95,7 +73,7 @@ export class CartService {
     
     // Escuchar cambios en otras pestañas para mantener el carrito sincronizado
     window.addEventListener('storage', (event) => {
-      if (event.key === 'yona_cart') {
+      if (event.key === 'novasplay_cart') {
         const saved = event.newValue;
         try {
           if (saved) {
@@ -112,7 +90,7 @@ export class CartService {
 
   private saveCartToStorage() {
     if (typeof window !== 'undefined' && localStorage) {
-      localStorage.setItem('yona_cart', JSON.stringify(this.cartItems()));
+      localStorage.setItem('novasplay_cart', JSON.stringify(this.cartItems()));
     }
   }
 

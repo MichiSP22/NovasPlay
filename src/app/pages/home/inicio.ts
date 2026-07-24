@@ -86,6 +86,20 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 80);
   }
 
+  openNovabot() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const launcher = document.getElementById('novasplay-chat-launcher') as HTMLButtonElement | null;
+    if (launcher) {
+      launcher.click();
+      return;
+    }
+
+    const tawkApi = (window as any).Tawk_API;
+    if (tawkApi?.showWidget) tawkApi.showWidget();
+    if (tawkApi?.maximize) tawkApi.maximize();
+  }
+
   private lockBodyScroll() {
     if (typeof document === 'undefined' || this.bodyScrollLocked) return;
 

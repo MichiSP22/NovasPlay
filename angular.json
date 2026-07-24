@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "YonaStore": {
+    "NovasPlay": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/YonaStore",
+            "outputPath": "dist/NovasPlay",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "YonaStore:build:production"
+              "buildTarget": "NovasPlay:build:production"
             },
             "development": {
-              "buildTarget": "YonaStore:build:development"
+              "buildTarget": "NovasPlay:build:development"
             }
           },
           "defaultConfiguration": "development"

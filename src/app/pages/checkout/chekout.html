@@ -85,6 +85,21 @@
 
     </section>
 
+    @if (authRequiredNotice()) {
+      <section class="auth-checkout-alert" aria-live="polite">
+        <span class="material-icons notranslate auth-alert-icon" translate="no">lock_person</span>
+        <div class="auth-alert-copy">
+          <span class="panel-kicker">Cuenta requerida</span>
+          <strong>Necesitas una cuenta para continuar la compra.</strong>
+          <p>Tu recarga sigue aqui. Registrate o inicia sesion y podras terminar el pago sin volver a empezar.</p>
+        </div>
+        <div class="auth-alert-actions">
+          <button class="auth-alert-action" type="button" (click)="openAuthFromCheckout('register')">Crear cuenta</button>
+          <button class="auth-alert-secondary" type="button" (click)="openAuthFromCheckout('login')">Ya tengo cuenta</button>
+        </div>
+      </section>
+    }
+
     <div class="purchase-layout">
       <main class="flow-column">
         @if (juego()?.internalProcess) {

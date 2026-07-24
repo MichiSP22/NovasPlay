@@ -1,5 +1,5 @@
-<div class="modal-overlay">
-  <div class="auth-card" (click)="$event.stopPropagation()">
+<div class="modal-overlay" [class.checkout-auth-overlay]="authNotice()">
+  <div class="auth-card" [class.checkout-auth-card]="authNotice()" (click)="$event.stopPropagation()">
     <button class="close-btn" (click)="close()" type="button">&times;</button>
 
     <div class="auth-header">
@@ -13,7 +13,12 @@
         }
       </h2>
     </div>
-
+    @if (authNotice()) {
+      <div class="auth-flow-notice" role="status">
+        <span class="material-icons notranslate" translate="no">shopping_cart_checkout</span>
+        <p>{{ authNotice() }}</p>
+      </div>
+    }
     @if (!isRecoveryMode && isLogin) {
       <button class="google-btn" type="button" (click)="loginWithGoogle()">
         <div class="google-icon-wrapper">

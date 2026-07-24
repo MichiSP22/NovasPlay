@@ -1,17 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "yonastore.neocharge.app"
-        }
-      ],
-      "destination": "https://novasplay.neocharge.app/:path*",
-      "permanent": true
-    }
-  ],
   "headers": [
     {
       "source": "/(.*).(jpg|jpeg|png|gif|webp|svg|ico|css|js|woff|woff2)",

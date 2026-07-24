@@ -39,6 +39,7 @@ interface Balance {
 interface StatusMethodRow {
   methodName: string;
   statuses: { [status: string]: number };
+  salesTotal: number;
   total: number;
 }
 
@@ -69,7 +70,7 @@ type Secciones = 'dashboard' | 'clientes' | 'recargas' | 'productos' | 'monedas'
   styleUrl: './admin-dashboard.css'
 })
 export class AdminDashboard implements OnInit {
-  private readonly adminSectionStorageKey = 'yona_admin_active_section';
+  private readonly adminSectionStorageKey = 'novasplay_admin_active_section';
   private readonly validSections: Secciones[] = ['dashboard', 'clientes', 'recargas', 'productos', 'monedas', 'paises', 'categorias', 'pagos', 'precios', 'cupones', 'ordenes', 'perfil', 'configuracion'];
   private readonly supportSections = new Set<Secciones>(['dashboard', 'clientes', 'ordenes', 'perfil']);
   protected Math = Math;
@@ -95,6 +96,29 @@ export class AdminDashboard implements OnInit {
     'failed': 'Anulado',
   };
   private statusOrder = ['Pendiente', 'Aprobado', 'En Proceso', 'Completado', 'Anulado', 'Reembolsado'];
+  private readonly successfulDashboardStatuses = new Set(['confirmated', 'confirmed', 'processing', 'completed']);
+  private readonly dashboardStatusAliases: { [key: string]: string } = {
+    pending: 'pending',
+    pendiente: 'pending',
+    confirmated: 'confirmated',
+    confirmed: 'confirmed',
+    aprobado: 'confirmated',
+    aprobada: 'confirmated',
+    processing: 'processing',
+    procesando: 'processing',
+    'en proceso': 'processing',
+    completed: 'completed',
+    completado: 'completed',
+    completada: 'completed',
+    refunded: 'refunded',
+    reembolsado: 'refunded',
+    reembolsada: 'refunded',
+    cancelled: 'cancelled',
+    canceled: 'cancelled',
+    failed: 'failed',
+    anulado: 'cancelled',
+    anulada: 'cancelled'
+  };
 
 
   // ðŸ‘¤ SeÃ±ales para el usuario
@@ -288,131 +312,215 @@ export class AdminDashboard implements OnInit {
     return [resValue];
   }
 
+  private normalizeReport(raw: any): { labels: string[]; series: { name: string; values: number[] }[]; data: any[]; total: number } {
+    const labels = this.readArray(raw, 'labels', 'Labels').map((label: any) => String(label ?? ''));
+    const rawSeries = this.readArray(raw, 'series', 'Series');
+    const series = rawSeries.map((serie: any) => ({
+      name: String(this.findIgnoreCase(serie, 'name') ?? ''),
+      values: this.readArray(serie, 'values', 'Values').map((value: any) => Number(value || 0))
+    }));
+
+    return {
+      labels,
+      series,
+      data: this.readArray(raw, 'data', 'Data'),
+      total: Number(this.findIgnoreCase(raw, 'total') ?? 0)
+    };
+  }
+
+  private readArray(source: any, ...keys: string[]): any[] {
+    if (!source) return [];
+    if (Array.isArray(source)) return source;
+
+    for (const key of keys) {
+      const value = this.findIgnoreCase(source, key);
+      if (Array.isArray(value)) return value;
+    }
+
+    return [];
+  }
+
+  private normalizeDashboardStatusKey(value: string): string {
+    const key = String(value || '').trim().toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ');
+    return this.dashboardStatusAliases[key] || '';
+  }
+
+  private getSeriesParts(seriesName: string): string[] {
+    return String(seriesName || '')
+      .split(' - ')
+      .map(part => part.trim())
+      .filter(Boolean);
+  }
+
+  private getSeriesStatusKey(seriesName: string): string {
+    const parts = this.getSeriesParts(seriesName);
+    for (const part of parts) {
+      const status = this.normalizeDashboardStatusKey(part);
+      if (status) return status;
+    }
+
+    return this.normalizeDashboardStatusKey(seriesName);
+  }
+
+  private isSuccessfulDashboardSeries(seriesName: string): boolean {
+    const status = this.getSeriesStatusKey(seriesName);
+    return status ? this.successfulDashboardStatuses.has(status) : true;
+  }
+
+  private getStatusDisplayName(seriesName: string): string {
+    const status = this.getSeriesStatusKey(seriesName);
+    if (status) return this.statusTranslation[status] || seriesName;
+
+    const direct = this.statusTranslation[String(seriesName || '').toLowerCase()];
+    return direct || seriesName || 'Sin estado';
+  }
+  private isSalesStatusName(statusName: string): boolean {
+    const status = this.getSeriesStatusKey(statusName);
+    if (status) return this.successfulDashboardStatuses.has(status);
+
+    const normalized = this.normalizeDashboardStatusKey(statusName);
+    return normalized ? this.successfulDashboardStatuses.has(normalized) : false;
+  }
+
+  private getPaymentMethodFromSeries(seriesName: string): string {
+    const parts = this.getSeriesParts(seriesName);
+    const statusIndex = parts.findIndex(part => !!this.normalizeDashboardStatusKey(part));
+
+    if (statusIndex >= 0 && statusIndex < parts.length - 1) {
+      return parts.slice(statusIndex + 1).join(' - ');
+    }
+
+    if (statusIndex >= 0) return 'Total ingresos';
+    return parts.length ? parts[parts.length - 1] : 'Total ingresos';
+  }
   private loadAnalytics() {
-    // 1. Ingresos Completados/Aprobados por Moneda
     this.dashboardService.getReport(this.injectFilters({
-      entity: "OrderDetails", aggregation: "Sum", valueField: "Price", seriesField: "Status", groupField: "Payment_Coin_Code", period: 0
-    })).subscribe(res => {
-      this.ingresosCargados.set(true);
-      if (res.success && res.value) {
-        const raw = res.value;
-        const labels: string[] = raw.labels || [];
-        const seriesData: { name: string; values: number[] }[] = raw.series || [];
+      entity: 'OrderDetails', aggregation: 'Sum', valueField: 'Price', seriesField: 'Status', groupField: 'Payment_Coin_Code', period: 0
+    })).subscribe({
+      next: (res) => {
+        this.ingresosCargados.set(true);
+        if (res.success && res.value) {
+          const report = this.normalizeReport(res.value);
+          const labels = report.labels;
+          const validSeries = report.series.filter(s => this.isSuccessfulDashboardSeries(s.name));
 
-        // Buscamos todas las series que representen un ingreso exitoso (Completado o Aprobado)
-        const successStatuses = ['completed', 'completado', 'confirmed', 'confirmated', 'aprobado'];
-        const validSeries = seriesData.filter(s => successStatuses.includes(s.name.toLowerCase().trim()));
+          if (validSeries.length > 0 && labels.length > 0) {
+            const result = labels.map((moneda: string, i: number) => {
+              const total = validSeries.reduce((acc, s) => acc + (s.values[i] || 0), 0);
+              return { moneda, total };
+            }).filter(item => item.total > 0);
 
-        if (validSeries.length > 0 && labels.length > 0) {
-          const result = labels.map((moneda: string, i: number) => {
-            // Sumamos los valores de todas las series vÃ¡lidas para esta moneda
-            const total = validSeries.reduce((acc, s) => acc + (s.values[i] || 0), 0);
-            return { moneda, total };
-          }).filter(item => item.total > 0);
-
-          this.ingresosPorMoneda.set(result);
+            this.ingresosPorMoneda.set(result);
+          } else {
+            this.ingresosPorMoneda.set([]);
+          }
         } else {
           this.ingresosPorMoneda.set([]);
         }
-      } else {
+      },
+      error: () => {
+        this.ingresosCargados.set(true);
         this.ingresosPorMoneda.set([]);
       }
     });
 
-    // 2. [ELIMINADO] - Conteo de Ã³rdenes (Ya se maneja en el Summary)
-
-    // 3. Promedio por Ã“rdenes (Solo Ã³rdenes completadas)
     this.dashboardService.getReport(this.injectFilters({
-      entity: "OrderDetails",
-      aggregation: "Average",
-      valueField: "Price",
-      seriesField: "Status",
-      groupField: "Payment_Coin_Code",
+      entity: 'OrderDetails',
+      aggregation: 'Average',
+      valueField: 'Price',
+      seriesField: 'Status',
+      groupField: 'Payment_Coin_Code',
       period: 0
-    })).subscribe(res => {
-      this.promedioCargado.set(true);
-      if (res.success && res.value) {
-        const raw = res.value;
-        const labels: string[] = raw.labels || [];
-        const seriesData: { name: string; values: number[] }[] = raw.series || [];
+    })).subscribe({
+      next: (res) => {
+        this.promedioCargado.set(true);
+        if (res.success && res.value) {
+          const report = this.normalizeReport(res.value);
+          const labels = report.labels;
+          const completedSeries = report.series.filter(s => this.isSuccessfulDashboardSeries(s.name));
 
-        // Buscamos especÃ­ficamente la serie de Ã³rdenes 'Completed' o 'Completado'
-        const completedSeries = seriesData.find(s =>
-          ['completed', 'completado'].includes(s.name.toLowerCase().trim())
-        );
+          if (completedSeries.length > 0 && labels.length > 0) {
+            const result = labels.map((moneda: string, i: number) => {
+              const values = completedSeries
+                .map(s => s.values[i] || 0)
+                .filter(value => value > 0);
+              const total = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+              return { moneda, total };
+            }).filter(item => item.total > 0);
 
-        if (completedSeries && labels.length > 0) {
-          const values = completedSeries.values || [];
-          const result = labels.map((moneda: string, i: number) => {
-            return { moneda, total: values[i] || 0 };
-          }).filter(item => item.total > 0);
-
-          this.promedioPorMoneda.set(result);
+            this.promedioPorMoneda.set(result);
+          } else {
+            this.promedioPorMoneda.set([]);
+          }
         } else {
           this.promedioPorMoneda.set([]);
         }
-      } else {
+      },
+      error: () => {
+        this.promedioCargado.set(true);
         this.promedioPorMoneda.set([]);
       }
     });
 
-    // 4. [ELIMINADO] - Ingresos por MÃ©todo de Pago (Balances) - No se utiliza en el front actual
-
-    // 5. Comparativa MÃ©todo de Pago vs Estado (Filas = mÃ©todos, Columnas = estados)
     this.dashboardService.getReport(this.injectFilters({
-      entity: "OrderDetails", aggregation: "Sum", valueField: "Price", seriesField: "Status", groupField: "Payment_Name", period: 0
-    })).subscribe(res => {
-      if (res.success && res.value) {
-        const raw = res.value;
+      entity: 'OrderDetails', aggregation: 'Sum', valueField: 'Price', seriesField: 'Status', groupField: 'Payment_Name', period: 0
+    })).subscribe({
+      next: (res) => {
+        if (res.success && res.value) {
+          const report = this.normalizeReport(res.value);
+          const labels = report.labels;
+          const translatedSeries = report.series.map((s: any) => ({
+            ...s,
+            name: this.getStatusDisplayName(s.name)
+          }));
 
-        const labels: string[] = raw.labels || [];
-        const seriesData: { name: string; values: number[] }[] = raw.series || [];
-
-        // Traducir nombres de serie
-        const translatedSeries = seriesData.map((s: any) => ({
-          ...s,
-          name: this.statusTranslation[s.name.toLowerCase()] || s.name
-        }));
-
-        // Siempre mostrar todas las columnas del orden definido
-        const allTranslatedNames = translatedSeries.map((s: any) => s.name);
-        const orderedStatusNames = [...this.statusOrder];
-        // Agregar cualquier status no contemplado al final
-        allTranslatedNames.forEach((name: string) => {
-          if (!orderedStatusNames.includes(name)) orderedStatusNames.push(name);
-        });
-
-        this.statusList.set(orderedStatusNames);
-
-        const table: StatusMethodRow[] = [];
-        const footers: { [s: string]: number } = {};
-        let grand = 0;
-
-        labels.forEach((methodName: string, i: number) => {
-          const statuses: { [status: string]: number } = {};
-          let rowTotal = 0;
-
-          translatedSeries.forEach((serie: any) => {
-            const val = serie.values[i] || 0;
-            statuses[serie.name] = (statuses[serie.name] || 0) + val;
-            rowTotal += val;
-            footers[serie.name] = (footers[serie.name] || 0) + val;
+          const allTranslatedNames = translatedSeries.map((s: any) => s.name);
+          const orderedStatusNames = [...this.statusOrder];
+          allTranslatedNames.forEach((name: string) => {
+            if (!orderedStatusNames.includes(name)) orderedStatusNames.push(name);
           });
 
-          grand += rowTotal;
-          table.push({ methodName, statuses, total: rowTotal });
-        });
+          this.statusList.set(orderedStatusNames);
 
-        this.comparativeTable.set(table);
-        this.comparativeFooters.set(footers);
-        this.comparativeGrandTotal.set(grand);
+          const table: StatusMethodRow[] = [];
+          const footers: { [s: string]: number } = {};
+          let grand = 0;
 
-        // EXTRA: Alimentamos tambiÃ©n la primera grÃ¡fica (Revenue) con estos mismos datos
-        this.renderRevenueChartFromTable(raw);
+          labels.forEach((methodName: string, i: number) => {
+            const statuses: { [status: string]: number } = {};
+            let rowTotal = 0;
+            let salesTotal = 0;
+
+            translatedSeries.forEach((serie: any) => {
+              const val = serie.values[i] || 0;
+              statuses[serie.name] = (statuses[serie.name] || 0) + val;
+              rowTotal += val;
+              if (this.isSalesStatusName(serie.name)) salesTotal += val;
+              footers[serie.name] = (footers[serie.name] || 0) + val;
+            });
+
+            grand += rowTotal;
+            table.push({ methodName, statuses, salesTotal, total: rowTotal });
+          });
+
+          table.sort((a, b) => (b.salesTotal - a.salesTotal) || (b.total - a.total) || a.methodName.localeCompare(b.methodName));
+          this.comparativeTable.set(table);
+          this.comparativeFooters.set(footers);
+          this.comparativeGrandTotal.set(grand);
+          this.renderRevenueChartFromTable(report);
+        } else {
+          this.comparativeTable.set([]);
+          this.comparativeFooters.set({});
+          this.comparativeGrandTotal.set(0);
+        }
+      },
+      error: () => {
+        this.comparativeTable.set([]);
+        this.comparativeFooters.set({});
+        this.comparativeGrandTotal.set(0);
       }
     });
   }
-
   private renderRevenueChartFromTable(raw: any) {
     const checkAndRender = (attempts: number) => {
       const canvases = this.chartCanvases?.toArray() || [];
@@ -461,8 +569,8 @@ export class AdminDashboard implements OnInit {
         this.dashboardService.getReport(finalQ).subscribe({
           next: (res) => {
             // index 0: Volumen (Stacked + Count) -> Canvas 1
-            if (index === 0 && res.value && res.value.labels) {
-              this.buildStatusMethodChart(targetCanvas.nativeElement, chartTitles[index], res.value, true, false);
+            if (index === 0 && res.value && this.normalizeReport(res.value).labels.length) {
+              this.buildStatusMethodChart(targetCanvas.nativeElement, chartTitles[index], this.normalizeReport(res.value), true, false);
               return;
             }
 
@@ -474,8 +582,8 @@ export class AdminDashboard implements OnInit {
 
             // index 2: Tendencia Multi-serie (Area + Currency) -> Canvas 3
             if (index === 2) {
-              if (res.value && res.value.labels) {
-                this.buildMultiTrendChart(targetCanvas.nativeElement, chartTitles[index], res.value);
+              if (res.value && this.normalizeReport(res.value).labels.length) {
+                this.buildMultiTrendChart(targetCanvas.nativeElement, chartTitles[index], this.normalizeReport(res.value));
               }
               return;
             }
@@ -577,13 +685,12 @@ export class AdminDashboard implements OnInit {
 
     let labels: string[] = [];
     let values: number[] = [];
+    const report = this.normalizeReport(data);
 
-    if (data && data.labels && data.series) {
-      const rawLabels = (data.labels as string[]);
-      labels = rawLabels.map((raw: string) => this.formatChartLabel(raw));
-      const seriesArr: { name: string; values: number[] }[] = data.series || [];
-      values = rawLabels.map((_: string, i: number) => {
-        return seriesArr.reduce((sum: number, s: any) => sum + (s.values[i] || 0), 0);
+    if (report.labels.length > 0 && report.series.length > 0) {
+      labels = report.labels.map((raw: string) => this.formatChartLabel(raw));
+      values = report.labels.map((_: string, i: number) => {
+        return report.series.reduce((sum: number, s: any) => sum + (s.values[i] || 0), 0);
       });
     } else {
       const list = this.extractArray(data);
@@ -591,7 +698,6 @@ export class AdminDashboard implements OnInit {
       values = list.map((item: any) => Number(this.getDynamicValue(item, 'value') || 0));
     }
 
-    // Actualizar el conteo total para la UI
     const totalCount = values.reduce((acc, v) => acc + v, 0);
     this.totalHistoricoRecargas.set(totalCount);
 
@@ -647,7 +753,6 @@ export class AdminDashboard implements OnInit {
 
     this.charts.push(chart);
   }
-
   /**
    * GrÃ¡fica especializada: Tendencia multi-serie (Ãrea Mate + Moneda)
    * Eje X: Fecha, Leyenda: MÃ©todo de Pago
@@ -660,71 +765,31 @@ export class AdminDashboard implements OnInit {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const rawLabels: string[] = raw.labels || [];
-    const seriesArr: { name: string; values: number[] }[] = raw.series || [];
-
-    // Formatear las fechas para el eje X
-    const labels = rawLabels.map(raw => this.formatChartLabel(raw));
-
+    const report = this.normalizeReport(raw);
+    const rawLabels = report.labels;
+    const labels = rawLabels.map(label => this.formatChartLabel(label));
     const labelCount = labels.length;
 
-    // Detectar si las series son estados. Si TODAS las series tienen nombres
-    // que coinciden con estados conocidos, el backend no respetÃ³ Payment_Name
-    // y devolviÃ³ Status como serie. En ese caso sumamos todo en una sola lÃ­nea.
-    const knownStatuses = ['completed', 'pending', 'confirmated', 'confirmed', 'processing',
-      'refunded', 'cancelled', 'canceled', 'failed',
-      'completado', 'pendiente', 'aprobado', 'en proceso', 'anulado', 'reembolsado'];
+    const hasStatusSeries = report.series.some(s => !!this.getSeriesStatusKey(s.name));
+    const seriesArr = hasStatusSeries
+      ? report.series.filter(s => this.isSuccessfulDashboardSeries(s.name))
+      : report.series;
 
-    const seriesAreStatuses = seriesArr.length > 0 && seriesArr.every(s =>
-      knownStatuses.includes(s.name.toLowerCase().trim())
-    );
+    const consolidatedMap = new Map<string, number[]>();
 
-    let consolidatedMap: Map<string, number[]>;
+    seriesArr.forEach(s => {
+      const name = this.getPaymentMethodFromSeries(s.name);
+      const vals = s.values || [];
+      if (!consolidatedMap.has(name)) {
+        consolidatedMap.set(name, new Array(labelCount).fill(0));
+      }
 
-    if (seriesAreStatuses) {
-      // CASO B: El backend devolviÃ³ estados como series.
-      // Sumamos TODOS los valores de todas las series (estados) en una sola lÃ­nea "Total Ingresos"
-      // Ya que no tenemos el desglose por mÃ©todo, mostramos una lÃ­nea consolidada.
-      console.log('[Chart 3] Backend devolviÃ³ estados como series. Consolidando en una sola lÃ­nea.');
-      consolidatedMap = new Map<string, number[]>();
-      const totalValues = new Array(labelCount).fill(0);
-
-      seriesArr.forEach(s => {
-        const vals = s.values || [];
-        vals.forEach((v, i) => {
-          if (i < labelCount) {
-            totalValues[i] += (v || 0);
-          }
-        });
+      const existing = consolidatedMap.get(name)!;
+      vals.forEach((v, i) => {
+        if (i < labelCount) existing[i] += (v || 0);
       });
+    });
 
-      consolidatedMap.set('Total Ingresos', totalValues);
-    } else {
-      // CASO A: El backend devolviÃ³ "Status - MÃ©todo" como nombre de serie.
-      // Extraemos el MÃ‰TODO (parte derecha): "Completed - Zelle" â†’ "Zelle"
-      console.log('[Chart 3] Agrupando por mÃ©todo de pago (parte derecha del nombre de serie).');
-      consolidatedMap = new Map<string, number[]>();
-
-      seriesArr.forEach(s => {
-        const parts = s.name.split(' - ');
-        // El mÃ©todo de pago es la parte DESPUÃ‰S del guiÃ³n (index 1+)
-        const name = parts.length > 1 ? parts.slice(1).join(' - ').trim() : s.name.trim();
-
-        const vals = s.values || [];
-        if (!consolidatedMap.has(name)) {
-          consolidatedMap.set(name, new Array(labelCount).fill(0));
-        }
-
-        const existing = consolidatedMap.get(name)!;
-        vals.forEach((v, i) => {
-          if (i < labelCount) {
-            existing[i] += (v || 0);
-          }
-        });
-      });
-    }
-
-    // Construir datasets para Chart.js
     const methodColors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316'];
     const datasets = Array.from(consolidatedMap.entries()).map(([name, values], sIdx) => {
       const color = methodColors[sIdx % methodColors.length];
@@ -784,7 +849,6 @@ export class AdminDashboard implements OnInit {
 
     this.charts.push(chart);
   }
-
   /**
    * GrÃ¡fica especializada: Estado (eje X) agrupado por MÃ©todo de Pago (datasets/leyenda).
    */
@@ -792,18 +856,21 @@ export class AdminDashboard implements OnInit {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const paymentMethods: string[] = raw.labels || [];
-    const statusSeries: { name: string; values: number[] }[] = raw.series || [];
+    const report = this.normalizeReport(raw);
+    const paymentMethods = report.labels;
+    const statusSeries = report.series;
 
     const methodColors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316'];
 
     const translatedStatusMap: { backendIdx: number; name: string }[] = [];
     statusSeries.forEach((s, idx) => {
-      const translated = this.statusTranslation[s.name.toLowerCase()] || s.name;
-      translatedStatusMap.push({ backendIdx: idx, name: translated });
+      translatedStatusMap.push({ backendIdx: idx, name: this.getStatusDisplayName(s.name) });
     });
 
     const orderedLabels = [...this.statusOrder];
+    translatedStatusMap.forEach(entry => {
+      if (!orderedLabels.includes(entry.name)) orderedLabels.push(entry.name);
+    });
 
     const datasets = paymentMethods.map((method, mIdx) => {
       const color = methodColors[mIdx % methodColors.length];
@@ -869,7 +936,6 @@ export class AdminDashboard implements OnInit {
 
     this.charts.push(chart);
   }
-
   private buildChart(canvas: HTMLCanvasElement, title: string, query: ReportQuery, data: any) {
     const list = this.extractArray(data);
     let labels: string[] = [];
@@ -1118,10 +1184,15 @@ export class AdminDashboard implements OnInit {
   private reloadDashboardReports() {
     this.ingresosCargados.set(false);
     this.promedioCargado.set(false);
+    this.ingresosPorMoneda.set([]);
+    this.promedioPorMoneda.set([]);
+    this.comparativeTable.set([]);
+    this.comparativeFooters.set({});
+    this.comparativeGrandTotal.set(0);
+    this.totalHistoricoRecargas.set(0);
     this.loadAnalytics();
     this.loadAdvancedAnalytics();
   }
-
   clearAuditFilters() {
     this.filterStartDate.set('');
     this.filterEndDate.set('');
