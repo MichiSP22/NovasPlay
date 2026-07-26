@@ -1,0 +1,26 @@
+/admin
+  X-Robots-Tag: noindex, nofollow
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+
+/profile
+  X-Robots-Tag: noindex, nofollow
+
+/profile/*
+  X-Robots-Tag: noindex, nofollow
+
+/checkout
+  X-Robots-Tag: noindex, nofollow
+
+/checkout/*
+  X-Robots-Tag: noindex, nofollow
+
+/cart-checkout
+  X-Robots-Tag: noindex, nofollow
+
+/cart-checkout/*
+  X-Robots-Tag: noindex, nofollow
+
+/Access/*
+  X-Robots-Tag: noindex, nofollow
