@@ -1,11 +1,7 @@
 User-agent: *
 Allow: /
 
-# Private and checkout flows
-Disallow: /admin
-Disallow: /profile
-Disallow: /checkout
-Disallow: /cart-checkout
-Disallow: /Access
+# Private HTML is controlled with meta/X-Robots-Tag noindex so Google can read it.
+# We do not block HTML routes here because robots.txt would hide the noindex signal.
 
 Sitemap: https://novasplay.neocharge.app/sitemap.xml

@@ -11,6 +11,11 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+const privateRoutePattern = /^\/(admin|profile|checkout|cart-checkout|Access)(\/|$)/i;
+const prerenderedPages = new Map([
+  ['/', 'index.html'],
+  ['/terms-view', 'terms-view/index.html'],
+]);
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -24,6 +29,29 @@ const angularApp = new AngularNodeAppEngine();
  * ```
  */
 
+
+app.use((req, res, next) => {
+  if (privateRoutePattern.test(req.path)) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  }
+  next();
+});
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    next();
+    return;
+  }
+
+  const pagePath = req.path.length > 1 ? req.path.replace(/\/+$/, '') : req.path;
+  const htmlFile = prerenderedPages.get(pagePath);
+  if (!htmlFile) {
+    next();
+    return;
+  }
+
+  res.sendFile(join(browserDistFolder, htmlFile));
+});
 /**
  * Serve static files from /browser
  */
