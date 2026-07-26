@@ -25,6 +25,14 @@ export const API_ROUTES = {
   companyConfig: {
     root: '/configuration',
   },
+  contentImage: {
+    search: '/content-image',
+    create: '/content-image',
+    update: (imageId: number | string) => `/content-image/${imageId}`,
+    delete: (ids: number[] | number | string) =>
+      `/content-image/${Array.isArray(ids) ? ids.join(',') : ids}`,
+    active: (category: string) => `/content-image/active/${category}`,
+  },
   coupon: {
     search: '/coupon',
     create: '/coupon',

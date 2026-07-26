@@ -14,6 +14,7 @@ import { OrderManagerComponent } from '../admin/order-manager/order-manager';
 import { UserManagerComponent } from '../admin/user-manager/user-manager';
 import { UserProfileComponent } from '../user-profile/user-profile';
 import { ConfigManagerComponent } from '../admin/config-manager/config-manager';
+import { ContentImageManagerComponent } from '../admin/content-image-manager/content-image-manager';
 import { FormsModule } from '@angular/forms';
 import { User, UserService } from '../../entities/user';
 import { CartService } from '../../core/state/cart.service';
@@ -43,7 +44,7 @@ interface StatusMethodRow {
   total: number;
 }
 
-type Secciones = 'dashboard' | 'clientes' | 'recargas' | 'productos' | 'monedas' | 'paises' | 'categorias' | 'pagos' | 'precios' | 'cupones' | 'ordenes' | 'perfil' | 'configuracion';
+type Secciones = 'dashboard' | 'clientes' | 'recargas' | 'productos' | 'monedas' | 'paises' | 'categorias' | 'pagos' | 'precios' | 'cupones' | 'anuncios' | 'ordenes' | 'perfil' | 'configuracion';
 
 
 @Component({
@@ -60,6 +61,7 @@ type Secciones = 'dashboard' | 'clientes' | 'recargas' | 'productos' | 'monedas'
     RechargeManagerComponent,
     PriceManagerComponent,
     CouponManagerComponent,
+    ContentImageManagerComponent,
     OrderManagerComponent,
     UserManagerComponent,
     UserProfileComponent,
@@ -71,7 +73,7 @@ type Secciones = 'dashboard' | 'clientes' | 'recargas' | 'productos' | 'monedas'
 })
 export class AdminDashboard implements OnInit {
   private readonly adminSectionStorageKey = 'novasplay_admin_active_section';
-  private readonly validSections: Secciones[] = ['dashboard', 'clientes', 'recargas', 'productos', 'monedas', 'paises', 'categorias', 'pagos', 'precios', 'cupones', 'ordenes', 'perfil', 'configuracion'];
+  private readonly validSections: Secciones[] = ['dashboard', 'clientes', 'recargas', 'productos', 'monedas', 'paises', 'categorias', 'pagos', 'precios', 'cupones', 'anuncios', 'ordenes', 'perfil', 'configuracion'];
   private readonly supportSections = new Set<Secciones>(['dashboard', 'clientes', 'ordenes', 'perfil']);
   protected Math = Math;
   private router = inject(Router);
@@ -1473,6 +1475,7 @@ export class AdminDashboard implements OnInit {
       pagos: 'Metodos de pago',
       precios: 'Lista de precios',
       cupones: 'Cupones',
+      anuncios: 'Anuncios del sitio',
       ordenes: 'Historial de ordenes',
       perfil: 'Mi perfil',
       configuracion: 'Configuracion del sistema'

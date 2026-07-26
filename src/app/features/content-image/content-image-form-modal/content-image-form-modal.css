@@ -1,0 +1,332 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.modal-container {
+  width: min(900px, 100%);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(142, 241, 225, 0.26);
+  border-radius: 10px;
+  background: linear-gradient(145deg, #101621 0%, #0b1019 58%, #081016 100%);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 34px rgba(104, 224, 213, 0.08);
+  animation: modalFadeIn 0.22s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-bottom: 1px solid rgba(142, 241, 225, 0.12);
+  background: rgba(8, 12, 20, 0.72);
+}
+
+.modal-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: #8ef1e1;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.28rem;
+  line-height: 1.1;
+}
+
+.close-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8deea;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  border-color: rgba(255, 92, 92, 0.44);
+  color: #ff9a9a;
+}
+
+.neon-form {
+  flex: 1;
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.form-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+  gap: 18px;
+}
+
+.preview-panel {
+  min-height: 420px;
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid rgba(142, 241, 225, 0.18);
+  border-radius: 8px;
+  background: radial-gradient(circle at 18% 14%, rgba(231, 200, 115, 0.14), transparent 32%), linear-gradient(150deg, rgba(21, 40, 46, 0.82), rgba(8, 13, 22, 0.96));
+}
+
+.preview-label {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 1;
+  padding: 6px 10px;
+  border: 1px solid rgba(142, 241, 225, 0.22);
+  border-radius: 999px;
+  background: rgba(2, 8, 12, 0.62);
+  color: #8ef1e1;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.preview-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 28px;
+  color: #aeb8c8;
+  text-align: center;
+}
+
+.preview-empty .material-icons {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(142, 241, 225, 0.22);
+  border-radius: 8px;
+  background: rgba(142, 241, 225, 0.08);
+  color: #8ef1e1;
+  font-size: 2rem;
+}
+
+.preview-empty p {
+  margin: 0;
+  max-width: 220px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.form-fields {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #8ef1e1;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.neon-input,
+.neon-select {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.34);
+  color: #fff;
+  font: inherit;
+  color-scheme: dark;
+}
+
+.neon-input:focus,
+.neon-select:focus {
+  border-color: #8ef1e1;
+  box-shadow: 0 0 0 4px rgba(142, 241, 225, 0.11);
+}
+
+.category-help {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(142, 241, 225, 0.16);
+  border-radius: 8px;
+  background: rgba(142, 241, 225, 0.06);
+  color: #b9c4d5;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.category-help .material-icons {
+  color: #e7c873;
+}
+
+.category-help p {
+  margin: 0;
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.toggle-card {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid rgba(142, 241, 225, 0.18);
+  border-radius: 8px;
+  background: rgba(142, 241, 225, 0.06);
+  color: #eef4fb;
+  cursor: pointer;
+}
+
+.toggle-card input {
+  width: 18px;
+  height: 18px;
+  accent-color: #8ef1e1;
+}
+
+.toggle-card .material-icons {
+  color: #e7c873;
+}
+
+.inline-clear {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  color: #8ef1e1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(142, 241, 225, 0.12);
+}
+
+.btn-ghost,
+.btn-neon-action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: #aeb8c8;
+}
+
+.btn-neon-action {
+  border: 0;
+  background: linear-gradient(135deg, #e7d37a, #8ef1e1);
+  color: #061017;
+}
+
+.btn-neon-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 780px) {
+  .modal-backdrop {
+    padding: 0;
+  }
+
+  .modal-container {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .modal-header,
+  .neon-form {
+    padding-inline: 16px;
+  }
+
+  .form-layout,
+  .date-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-panel {
+    min-height: 220px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .btn-ghost,
+  .btn-neon-action {
+    width: 100%;
+  }
+}

@@ -1,0 +1,179 @@
+<div class="manager-container">
+  <div class="main-card table-section">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-icons notranslate" translate="no">campaign</span>
+        <div>
+          <h3>Gestion de Anuncios</h3>
+          <p>Imagenes dinamicas para popups, novedades y promociones.</p>
+        </div>
+      </div>
+      <button class="btn-neon-action" type="button" (click)="openModal()">
+        <span class="material-icons notranslate" translate="no">add</span>
+        Nuevo anuncio
+      </button>
+    </div>
+
+    <div class="manager-filters">
+      <div class="neon-input-group search-filter">
+        <label class="neon-label">Buscar</label>
+        <div class="search-container">
+          <span class="material-icons notranslate" translate="no">search</span>
+          <input
+            class="neon-input"
+            type="text"
+            placeholder="Categoria, imagen o destino"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onFilterChange()">
+        </div>
+      </div>
+
+      <div class="neon-input-group">
+        <label class="neon-label">Categoria</label>
+        <select class="neon-select" [(ngModel)]="categoryFilter" (change)="onFilterChange()">
+          <option value="all">Todas</option>
+          @for (category of categories; track category.value) {
+            <option [value]="category.value">{{ category.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="neon-input-group">
+        <label class="neon-label">Estado</label>
+        <select class="neon-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="scheduled">Programados</option>
+          <option value="expired">Expirados</option>
+          <option value="inactive">Inactivos</option>
+        </select>
+      </div>
+
+      <button class="btn-ghost-filter" type="button" title="Limpiar filtros" (click)="clearFilters()">
+        <span class="material-icons notranslate" translate="no">restart_alt</span>
+      </button>
+    </div>
+
+    <div class="table-frame">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th style="width: 17%">PREVIEW</th>
+            <th style="width: 20%">CATEGORIA</th>
+            <th style="width: 19%">ESTADO</th>
+            <th style="width: 24%">VIGENCIA</th>
+            <th class="text-right" style="width: 20%">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+          } @else if (images().length === 0) {
+            <tr><td colspan="5" class="empty-state">No hay anuncios registrados.</td></tr>
+          } @else {
+            @for (image of images(); track image.id || image.link) {
+              <tr>
+                <td>
+                  <div class="image-preview">
+                    @if (image.link) {
+                      <img [src]="image.link" [alt]="categoryLabel(image)">
+                    } @else {
+                      <span class="material-icons notranslate" translate="no">image</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="content-summary">
+                    <div class="category-pill notranslate" translate="no">{{ categoryLabel(image) }}</div>
+                    <div class="source-chip" [title]="image.link || 'Sin imagen'">
+                      <span class="material-icons notranslate" translate="no">image</span>
+                      {{ imageSourceLabel(image) }}
+                    </div>
+                    <small class="destination-line" [title]="image.targetLink || '#catalogo'">Destino: {{ targetLabel(image) }}</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-pill" [ngClass]="statusClass(image)">{{ statusLabel(image) }}</span>
+                </td>
+                <td>{{ dateRangeLabel(image) }}</td>
+                <td class="text-right">
+                  <button class="action-btn edit" type="button" title="Editar" (click)="openModal(image)">
+                    <span class="material-icons notranslate" translate="no">edit</span>
+                  </button>
+                  <button class="action-btn delete" type="button" title="Eliminar" (click)="requestDeleteImage(image)">
+                    <span class="material-icons notranslate" translate="no">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination-container">
+        <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span>
+          Anterior
+        </button>
+
+        <div class="pagination-info">
+          Pagina <b>{{ currentPage() }}</b> de <b>{{ totalPages() }}</b>
+        </div>
+
+        <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          Siguiente
+          <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-content-image-form-modal
+    [imageToEdit]="selectedImage()"
+    (onClose)="closeModal()"
+    (onSave)="onSaveSuccess()">
+  </app-content-image-form-modal>
+}
+@if (imageToDelete()) {
+  <div class="delete-modal-backdrop" (click)="closeDeleteModal()">
+    <section class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-announcement-title" (click)="$event.stopPropagation()">
+      <button type="button" class="delete-modal-close" aria-label="Cerrar" [disabled]="deletingImage()" (click)="closeDeleteModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+
+      <div class="delete-modal-icon">
+        <span class="material-icons notranslate" translate="no">warning</span>
+      </div>
+
+      <div class="delete-modal-copy">
+        <span class="delete-modal-kicker">Confirmar accion</span>
+        <h3 id="delete-announcement-title">Eliminar anuncio</h3>
+        <p>Este anuncio dejara de mostrarse en la pagina. Puedes crear otro cuando lo necesites.</p>
+      </div>
+
+      <div class="delete-modal-preview">
+        @if (imageToDelete()?.link) {
+          <img [src]="imageToDelete()?.link || ''" [alt]="categoryLabel(imageToDelete()!)">
+        } @else {
+          <span class="material-icons notranslate" translate="no">image_not_supported</span>
+        }
+        <div>
+          <strong>{{ categoryLabel(imageToDelete()!) }}</strong>
+          <small>Destino: {{ targetLabel(imageToDelete()!) }}</small>
+        </div>
+      </div>
+
+      <div class="delete-modal-actions">
+        <button type="button" class="btn-ghost" [disabled]="deletingImage()" (click)="closeDeleteModal()">Cancelar</button>
+        <button type="button" class="btn-danger" [disabled]="deletingImage()" (click)="confirmDeleteImage()">
+          <span class="material-icons notranslate" translate="no">delete</span>
+          {{ deletingImage() ? 'Eliminando...' : 'Si, eliminar' }}
+        </button>
+      </div>
+    </section>
+  </div>
+}

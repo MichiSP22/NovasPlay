@@ -1,0 +1,114 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">Contenido visual</span>
+        <h3>{{ imageToEdit ? 'Editar anuncio' : 'Nuevo anuncio' }}</h3>
+      </div>
+      <button class="close-btn" type="button" aria-label="Cerrar" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form class="neon-form" (ngSubmit)="saveImage()">
+      <div class="form-layout">
+        <div class="preview-panel">
+          <span class="preview-label">Vista previa</span>
+          @if (previewUrl) {
+            <img [src]="previewUrl" alt="Vista previa del anuncio">
+          } @else {
+            <div class="preview-empty">
+              <span class="material-icons notranslate" translate="no">image</span>
+              <p>Sube una imagen para verla aqui.</p>
+            </div>
+          }
+        </div>
+
+        <div class="form-fields">
+          <div class="form-group">
+            <label for="category">Categoria</label>
+            <select id="category" class="neon-select" name="category" [(ngModel)]="image.category" required>
+              @for (category of categories; track category.value) {
+                <option [ngValue]="category.value">{{ category.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="category-help">
+            @for (category of categories; track category.value) {
+              @if (image.category === category.value) {
+                <span class="material-icons notranslate" translate="no">info</span>
+                <p>{{ category.description }}</p>
+              }
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="imageFile">Imagen</label>
+            <input
+              #fileInput
+              id="imageFile"
+              class="neon-input"
+              type="file"
+              accept="image/*"
+              [required]="!image.id && !image.link"
+              (change)="onImageSelected($event)">
+            @if (selectedImage) {
+              <button class="inline-clear" type="button" (click)="clearSelectedImage(fileInput)">
+                Quitar seleccion
+              </button>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="link">Imagen por link opcional</label>
+            <input
+              id="link"
+              class="neon-input"
+              type="url"
+              name="link"
+              [(ngModel)]="image.link"
+              placeholder="https://.../anuncio.png">
+          </div>
+
+          <div class="form-group">
+            <label for="targetLink">Destino al hacer click</label>
+            <input
+              id="targetLink"
+              class="neon-input"
+              type="text"
+              name="targetLink"
+              [(ngModel)]="image.targetLink"
+              placeholder="#catalogo, /catalogo o https://...">
+          </div>
+
+          <div class="date-grid">
+            <div class="form-group">
+              <label for="startsAt">Inicio</label>
+              <input id="startsAt" class="neon-input" type="date" name="startsAt" [(ngModel)]="image.startsAt">
+            </div>
+
+            <div class="form-group">
+              <label for="expiresAt">Fin</label>
+              <input id="expiresAt" class="neon-input" type="date" name="expiresAt" [(ngModel)]="image.expiresAt">
+            </div>
+          </div>
+
+          <label class="toggle-card">
+            <input type="checkbox" name="active" [(ngModel)]="image.active">
+            <span class="material-icons notranslate" translate="no">campaign</span>
+            <strong>Anuncio activo</strong>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action" [disabled]="saving">
+          <span class="material-icons notranslate" translate="no">save</span>
+          {{ saving ? 'Guardando...' : 'Guardar anuncio' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

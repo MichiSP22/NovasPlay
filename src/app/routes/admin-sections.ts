@@ -9,6 +9,7 @@ export const ADMIN_SECTIONS = {
   payments: 'pagos',
   prices: 'precios',
   coupons: 'cupones',
+  announcements: 'anuncios',
   orders: 'ordenes',
   profile: 'perfil',
   settings: 'configuracion',

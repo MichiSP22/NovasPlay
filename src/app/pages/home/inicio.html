@@ -7,6 +7,46 @@
 </div>
 }
 
+@if (showAnnouncementPopup() && activeAnnouncement()) {
+<div class="announcement-popup-backdrop" (click)="closeAnnouncementPopup()">
+  <section class="announcement-popup" [class.is-square]="announcementImageLayout() === 'square'" [class.is-landscape]="announcementImageLayout() === 'landscape'" role="dialog" aria-modal="true" aria-label="Anuncio NovasPlay"
+    (click)="$event.stopPropagation()">
+    <button type="button" class="announcement-popup-close" aria-label="Cerrar anuncio" (click)="closeAnnouncementPopup()">
+      <span class="material-icons notranslate" translate="no">close</span>
+    </button>
+    <button
+      type="button"
+      class="announcement-image-button"
+      aria-label="Abrir anuncio"
+      (click)="openAnnouncementTarget(activeAnnouncement())">
+      <img [src]="activeAnnouncement().link || ''" alt="Anuncio de NovasPlay" (load)="syncAnnouncementImageLayout($event)">
+    </button>
+
+    @if (announcementImages().length > 1) {
+      <div class="announcement-popup-actions" (click)="$event.stopPropagation()">
+        <button type="button" class="announcement-nav-btn" aria-label="Anuncio anterior" (click)="previousAnnouncement()">
+          <span class="material-icons notranslate" translate="no">chevron_left</span>
+        </button>
+
+        <div class="announcement-dots" aria-label="Selector de anuncio">
+          @for (announcement of announcementImages(); track announcement.id || announcement.link; let index = $index) {
+            <button
+              type="button"
+              [class.active]="index === activeAnnouncementIndex()"
+              [attr.aria-label]="'Ver anuncio ' + (index + 1)"
+              (click)="selectAnnouncement(index)">
+            </button>
+          }
+        </div>
+
+        <button type="button" class="announcement-nav-btn" aria-label="Siguiente anuncio" (click)="nextAnnouncement()">
+          <span class="material-icons notranslate" translate="no">chevron_right</span>
+        </button>
+      </div>
+    }
+  </section>
+</div>
+}
 @if (showWelcomeFlyer()) {
 <div class="welcome-flyer-backdrop" (click)="closeWelcomeFlyer()">
   <section class="welcome-flyer" role="dialog" aria-modal="true" aria-labelledby="welcome-flyer-title"

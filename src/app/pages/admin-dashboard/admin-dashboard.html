@@ -70,6 +70,9 @@
       <a class="nav-link" [class.active]="vistaActual() === 'monedas'" (click)="cambiarVista('monedas')">
         <span class="material-icons notranslate" translate="no">paid</span> Monedas
       </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'anuncios'" (click)="cambiarVista('anuncios')">
+        <span class="material-icons notranslate" translate="no">campaign</span> Anuncios
+      </a>
       <a class="nav-link" [class.active]="vistaActual() === 'configuracion'" (click)="cambiarVista('configuracion')">
         <span class="material-icons notranslate" translate="no">settings_suggest</span> Configuracion
       </a>
@@ -494,6 +497,10 @@
       <app-coupon-manager></app-coupon-manager>
       }
 
+      @if (vistaActual() === 'anuncios') {
+      <app-content-image-manager></app-content-image-manager>
+      }
+
       @if (vistaActual() === 'ordenes') {
       <app-order-manager [filterUserId]="usuarioSeleccionadoForOrders()"
         (viewClient)="verClienteDesdeOrden($event)"></app-order-manager>
@@ -514,7 +521,7 @@
 
       @if (vistaActual() !== 'dashboard' && vistaActual() !== 'perfil' && vistaActual() !== 'categorias' &&
       vistaActual() !== 'monedas' && vistaActual() !== 'paises' && vistaActual() !== 'pagos'&& vistaActual() !==
-      'productos' && vistaActual() !== 'recargas' && vistaActual() !== 'precios' && vistaActual() !== 'cupones' && vistaActual() !== 'ordenes'&&
+      'productos' && vistaActual() !== 'recargas' && vistaActual() !== 'precios' && vistaActual() !== 'cupones' && vistaActual() !== 'anuncios' && vistaActual() !== 'ordenes'&&
       vistaActual() !== 'clientes' && vistaActual() !== 'configuracion') {
       <section class="main-card empty-view">
         <div class="card-header">
