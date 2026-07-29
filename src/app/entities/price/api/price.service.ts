@@ -79,7 +79,7 @@ export class PriceService {
   private formatDecimalForApi(value: number | string | null | undefined): string {
     const parsed = this.parseDecimal(value);
     const safeValue = Number.isFinite(parsed) ? parsed : 0;
-    return safeValue.toFixed(2).replace('.', ',');
+    return safeValue.toFixed(2);
   }
 
   private parseDecimal(value: number | string | null | undefined): number {

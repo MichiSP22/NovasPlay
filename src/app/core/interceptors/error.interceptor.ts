@@ -81,6 +81,28 @@ function getErrorMessage(err: any): string {
   return '';
 }
 
+function isFailedApiBody(body: any): boolean {
+  if (!body || typeof body !== 'object') return false;
+
+  if (body.success === false) return true;
+  if (typeof body.statusCode === 'number' && body.statusCode >= 400) return true;
+  if (readErrors(body.errors)) return true;
+
+  if (typeof body.response === 'string' && isGenericBackendWord(body.response) && !body.value) {
+    return true;
+  }
+
+  return false;
+}
+
+function hasLoginToken(body: any): boolean {
+  if (!body) return false;
+  if (typeof body === 'string') return body.trim().length > 0;
+  if (typeof body !== 'object' || isFailedApiBody(body)) return false;
+
+  const token = body.value ?? body.token ?? body.accessToken;
+  return typeof token === 'string' && token.trim().length > 0;
+}
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notify = inject(NotificationService);
   const router = inject(Router);
@@ -105,7 +127,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       const body = event.body as any;
       if (isLoginRequest) {
-        notify.show('success', 'Bienvenido a NovasPlay.', true);
+        if (hasLoginToken(body)) {
+          notify.show('success', 'Bienvenido a NovasPlay.', true);
+        }
         return;
       }
 

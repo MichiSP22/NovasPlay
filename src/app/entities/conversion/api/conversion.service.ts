@@ -81,7 +81,7 @@ export class ConversionService {
   private formatDecimalForApi(value: number | string | null | undefined): string {
     const parsed = this.parseDecimal(value);
     const safeValue = Number.isFinite(parsed) ? parsed : 0;
-    return safeValue.toFixed(8).replace('.', ',');
+    return safeValue.toFixed(8);
   }
 
   private parseDecimal(value: number | string | null | undefined): number {
