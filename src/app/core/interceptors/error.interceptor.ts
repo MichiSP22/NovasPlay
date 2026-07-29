@@ -8,163 +8,192 @@ import { API_ROUTES } from '../../routes';
 
 const appStartTime = Date.now();
 
+function normalizePayload(value: any): any {
+  let data = value?.error ?? value;
+
+  if (typeof data === 'string') {
+    const text = data.trim();
+    if ((text.startsWith('{') && text.endsWith('}')) || (text.startsWith('[') && text.endsWith(']'))) {
+      try {
+        return JSON.parse(text);
+      } catch {
+        return data;
+      }
+    }
+  }
+
+  return data;
+}
+
+function isGenericBackendWord(value: string): boolean {
+  const normalized = value.trim().toLowerCase();
+  return normalized === 'error' || normalized === 'errors' || normalized === 'fail' || normalized === 'failed';
+}
+
+function readErrors(errors: any): string {
+  if (!errors) return '';
+
+  if (typeof errors === 'string') return errors.trim();
+
+  if (Array.isArray(errors)) {
+    for (const item of errors) {
+      const message = getErrorMessage(item);
+      if (message) return message;
+    }
+    return '';
+  }
+
+  if (typeof errors === 'object') {
+    for (const key of Object.keys(errors)) {
+      const message = readErrors(errors[key]);
+      if (message) return message;
+    }
+  }
+
+  return '';
+}
+
+function getErrorMessage(err: any): string {
+  const data = normalizePayload(err);
+
+  if (!data) return '';
+
+  if (typeof data === 'string') return data.trim();
+
+  if (Array.isArray(data)) return readErrors(data);
+
+  if (typeof data === 'object') {
+    const errorsMessage = readErrors(data.errors);
+    if (errorsMessage) return errorsMessage;
+
+    const valueMessage = data.value?.message || data.Value?.Message;
+    if (typeof valueMessage === 'string' && valueMessage.trim()) return valueMessage.trim();
+
+    if (typeof data.message === 'string' && data.message.trim()) return data.message.trim();
+
+    if (typeof data.response === 'string' && data.response.trim() && !isGenericBackendWord(data.response)) {
+      return data.response.trim();
+    }
+
+    if (typeof data.title === 'string' && data.title.trim()) return data.title.trim();
+  }
+
+  return '';
+}
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notify = inject(NotificationService);
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  // NUEVO: 1. Define un arreglo con los fragmentos de URL que quieres ignorar
-  const endpointsSilenciosos = [
+  const silentEndpoints = [
     API_ROUTES.access.refresh.toLowerCase(),
-    API_ROUTES.user.me.toLowerCase()
+    API_ROUTES.user.me.toLowerCase(),
   ];
 
-  // NUEVO: 2. Verifica si la petición actual incluye alguno de esos endpoints
   const reqUrlLower = (req.url || '').toLowerCase();
-  const ignorarNotificacion = endpointsSilenciosos.some(url => reqUrlLower.includes(url));
+  const ignoreNotification = silentEndpoints.some((url) => reqUrlLower.includes(url));
+  const isAccessRequest = reqUrlLower.includes('/access/');
+  const isLoginRequest =
+    reqUrlLower.includes(API_ROUTES.access.login.toLowerCase()) &&
+    !reqUrlLower.includes(API_ROUTES.access.googleLogin.toLowerCase());
 
   return next(req).pipe(
     tap((event) => {
-      if (event instanceof HttpResponse && (event.status === 200 || event.status === 201)) {
-        
-        // NUEVO: 3. Si es un endpoint silencioso, no hace nada y sigue su camino
-        if (ignorarNotificacion) return;
+      if (!(event instanceof HttpResponse) || (event.status !== 200 && event.status !== 201)) return;
+      if (ignoreNotification) return;
 
-        if (req.url.includes('/Access/Login')) {
-          notify.show('success', '¡Bienvenido!');
-        } else if ((event.body as any)?.message) {
-          notify.show('success', (event.body as any).message);
-        }
+      const body = event.body as any;
+      if (isLoginRequest) {
+        notify.show('success', 'Bienvenido a NovasPlay.', true);
+        return;
+      }
+
+      if (typeof body?.message === 'string' && body.message.trim()) {
+        notify.show('success', body.message.trim());
       }
     }),
     catchError((error) => {
-      // NUEVO: 4. Si es un endpoint silencioso, lanzamos el error para que el componente 
-      // lo maneje si quiere, pero NO mostramos la notificación global.
-      if (ignorarNotificacion) {
+      if (ignoreNotification) {
         return throwError(() => error);
       }
 
-      // Función auxiliar para extraer el mensaje de error de forma robusta
-      const getErrorMessage = (err: any): string => {
-        let data = err?.error || err;
-        
-        // Si es un string que parece un objeto o array JSON, intentamos parsearlo
-        if (typeof data === 'string' && (data.trim().startsWith('{') || data.trim().startsWith('['))) {
-          try {
-            data = JSON.parse(data);
-          } catch (e) {}
-        }
+      const isCloudflareTimeout = error?.status === 522;
+      const isBackgroundOrStartupRequest =
+        req.method === 'GET' || req.method === 'HEAD' || Date.now() - appStartTime < 15000;
+      if (isCloudflareTimeout && isBackgroundOrStartupRequest) {
+        return throwError(() => error);
+      }
 
-        // Si es un string directo, lo devolvemos
-        if (typeof data === 'string') return data;
-
-        // Si es un array, tomamos el primer elemento (común en errores de validación)
-        if (Array.isArray(data) && data.length > 0) {
-          const first = data[0];
-          return typeof first === 'string' ? first : getErrorMessage(first);
-        }
-
-        // Si es un objeto, buscamos propiedades comunes de error
-        if (typeof data === 'object' && data !== null) {
-          // Contrato GenericResponse del backend
-          if (typeof data.response === 'string' && data.response.trim()) {
-            return data.response;
-          }
-
-          if (Array.isArray(data.errors) && data.errors.length > 0) {
-            const firstError = data.errors.find((item: unknown) => typeof item === 'string' && item.trim());
-            if (firstError) return firstError;
-          }
-
-          // .message es el más estándar
-          if (data.message) return data.message;
-          
-          // .errors suele contener un objeto con arrays de validación o un array directo
-          if (data.errors) {
-            if (Array.isArray(data.errors) && data.errors.length > 0) {
-              return typeof data.errors[0] === 'string' ? data.errors[0] : getErrorMessage(data.errors[0]);
-            }
-            if (typeof data.errors === 'object') {
-              const firstKey = Object.keys(data.errors)[0];
-              if (firstKey && Array.isArray(data.errors[firstKey]) && data.errors[firstKey].length > 0) {
-                return data.errors[firstKey][0];
-              }
-            }
-            if (typeof data.errors === 'string') return data.errors;
-          }
-          
-          // .title se usa en algunos errores de ASP.NET Core
-          if (data.title) return data.title;
-        }
-        
-        return '';
-      };
-
-      // 401: Si viene del Login, mostramos el error al usuario.
       if (error.status === 401) {
-        if (req.url.includes('/Access/Login')) {
-          const loginMsg = getErrorMessage(error) || 'Usuario o contrasena incorrectos';
+        if (isLoginRequest) {
+          const loginMsg = getErrorMessage(error) || 'Usuario o contrasena incorrectos.';
           notify.show('error', loginMsg, true);
         } else {
           const currentUrl = router.url || '';
           const isCheckoutFlow = currentUrl.includes('/checkout') || currentUrl.includes('/cart-checkout');
 
+          if (typeof localStorage !== 'undefined') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('CookieTokenClaims');
+          }
+
           if (isCheckoutFlow) {
-            if (typeof localStorage !== 'undefined') {
-              localStorage.removeItem('token');
-              localStorage.removeItem('CookieTokenClaims');
-            }
-            authService.openAuth('login', 'Tu sesion expiro. Inicia sesion de nuevo para continuar con esta compra sin perder el carrito.');
+            authService.openAuth(
+              'login',
+              'Tu sesion expiro. Inicia sesion de nuevo para continuar con esta compra sin perder el carrito.'
+            );
           } else {
+            const msg = getErrorMessage(error) || 'Tu sesion expiro. Inicia sesion nuevamente.';
+            notify.show('warning', msg, true);
             router.navigate(['/']);
           }
         }
         return throwError(() => error);
       }
-      // 403: Cuenta inactiva, bloqueada o baneada
+
       if (error.status === 403) {
         if (typeof localStorage !== 'undefined') {
           localStorage.removeItem('token');
           localStorage.removeItem('CookieTokenClaims');
         }
-        const forbiddenMsg = getErrorMessage(error) || 'Acceso denegado. Tu cuenta puede estar bloqueada o baneada, por favor contacte con un administrador.';
+        const forbiddenMsg =
+          getErrorMessage(error) ||
+          'Acceso denegado. Tu cuenta puede estar bloqueada o baneada, por favor contacta con un administrador.';
         notify.show('error', forbiddenMsg, true);
         router.navigate(['/']);
         return throwError(() => error);
       }
 
-      // 429: Demasiadas solicitudes al mismo endpoint (spam)
       if (error.status === 429) {
         const retryAfterRaw = error?.headers?.get?.('Retry-After');
         const retryAfterSeconds = Number.parseInt(retryAfterRaw ?? '', 10);
         const waitHint = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
           ? ` Por favor, espera ${retryAfterSeconds} segundos antes de volver a intentar y evita recargar varias veces seguidas.`
           : ' Por favor, espera un momento antes de volver a intentar y evita recargar varias veces seguidas.';
-        notify.show('warning', `Estás intentando consultar demasiadas veces en muy poco tiempo.${waitHint}`, true);
+        notify.show('warning', `Estas intentando consultar demasiadas veces en muy poco tiempo.${waitHint}`, true);
         return throwError(() => error);
       }
 
-      // 500+: Error interno del servidor — nunca mostrar mensajes técnicos al usuario completos
       if (error.status >= 500) {
         let snippet = getErrorMessage(error) || '';
         if (typeof snippet === 'string' && snippet.length > 0) {
           snippet = snippet.replace(/<[^>]*>?/gm, '').trim().split('\n')[0].substring(0, 50);
         }
-        const msg = snippet 
-          ? `Ocurrió un error. Por favor intenta de nuevo. (${snippet}...)`
-          : 'Ocurrió un error. Por favor intenta de nuevo.';
+        const msg = snippet
+          ? `Ocurrio un error. Por favor intenta de nuevo. (${snippet}...)`
+          : 'Ocurrio un error. Por favor intenta de nuevo.';
         notify.show('error', msg);
         return throwError(() => error);
       }
 
-      // Para otros errores (400, 422, etc.) mostramos el mensaje del backend
-      let finalMessage = getErrorMessage(error) || 'Ocurrió un error';
+      let finalMessage = getErrorMessage(error) || 'Ocurrio un error';
       if (typeof finalMessage === 'string' && finalMessage.length > 200) {
         finalMessage = finalMessage.replace(/<[^>]*>?/gm, '').trim().split('\n')[0].substring(0, 80) + '...';
       }
-      
+
       if (finalMessage) {
-        notify.show('error', finalMessage.toString());
+        notify.show('error', finalMessage.toString(), isAccessRequest);
       }
 
       return throwError(() => error);

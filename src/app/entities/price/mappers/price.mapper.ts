@@ -5,6 +5,9 @@ export interface PriceApiItem {
   DetailID: number;
   PaymentID?: number;
   CoinID?: number;
+  ReferenceCurrencyID?: number;
+  FKReferenceCurrency_Symbol?: string;
+  ReferenceCurrency_Symbol?: string;
   Price?: number | string;
   Amount?: number | string;
   Value?: number | string;
@@ -19,12 +22,19 @@ export function mapPriceApiItem(item: PriceApiItem): Price {
     id: item.Id,
     detailID: item.DetailID,
     paymentID: item.PaymentID || item.CoinID || 0,
+    referenceCurrencyID: numberOrNull(item.ReferenceCurrencyID),
     price: readDecimal(item.Price, item.Amount, item.Value),
     promotion: item.Promotion || false,
     promotionPrice: readDecimal(item.PromotionPrice),
     productName: item.Detail_Name || '',
     coinSymbol: item.Payment_Coin_Symbol || '',
+    referenceCurrencySymbol: item.ReferenceCurrency_Symbol || item.FKReferenceCurrency_Symbol || '',
   };
+}
+
+function numberOrNull(value: unknown): number | null {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
 function readDecimal(...values: Array<number | string | null | undefined>): number {

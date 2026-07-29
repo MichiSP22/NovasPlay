@@ -33,6 +33,13 @@ export const API_ROUTES = {
       `/content-image/${Array.isArray(ids) ? ids.join(',') : ids}`,
     active: (category: string) => `/content-image/active/${category}`,
   },
+  conversion: {
+    search: '/conversions',
+    history: '/conversions/history',
+    create: '/conversions',
+    update: '/conversions',
+    delete: (conversionId: number | string) => `/conversions/${conversionId}`,
+  },
   coupon: {
     search: '/coupon',
     create: '/coupon',

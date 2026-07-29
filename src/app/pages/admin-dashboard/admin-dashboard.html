@@ -53,6 +53,9 @@
       <a class="nav-link" [class.active]="vistaActual() === 'precios'" (click)="cambiarVista('precios')">
         <span class="material-icons notranslate" translate="no">sell</span> Precios
       </a>
+      <a class="nav-link" [class.active]="vistaActual() === 'conversiones'" (click)="cambiarVista('conversiones')">
+        <span class="material-icons notranslate" translate="no">currency_exchange</span> Conversiones
+      </a>
       <a class="nav-link" [class.active]="vistaActual() === 'cupones'" (click)="cambiarVista('cupones')">
         <span class="material-icons notranslate" translate="no">confirmation_number</span> Cupones
       </a>
@@ -491,6 +494,10 @@
 
       @if (vistaActual() === 'precios') {
       <app-price-manager></app-price-manager>
+      }
+
+      @if (vistaActual() === 'conversiones') {
+      <app-conversion-manager></app-conversion-manager>
       }
 
       @if (vistaActual() === 'cupones') {

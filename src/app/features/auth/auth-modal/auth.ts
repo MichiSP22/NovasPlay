@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { NotificationService } from '../../../shared/ui/toast/notification.service';
-import { RegisterRequest, LoginRequest } from '../../../core/auth/auth.model';
+import { RegisterRequest, LoginRequest, AuthResponse } from '../../../core/auth/auth.model';
 import { GenericResponse } from '../../../core/http/http.models';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -51,6 +51,10 @@ export class Auth implements OnInit {
   defaultCountry: Country = { code: '+58', flag: 'https://flagcdn.com/w40/ve.png', name: 'Venezuela' };
   calendarView = new Date(new Date().getFullYear() - 16, new Date().getMonth(), 1);
   readonly weekDays = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
+  private readonly minNameLength = 2;
+  private readonly minUsernameLength = 3;
+  private readonly minPasswordLength = 6;
+  private readonly minPhoneLength = 6;
 
   readonly birthdayMonthOptions = [
     { value: '01', label: 'Enero' },
@@ -155,16 +159,20 @@ export class Auth implements OnInit {
       } else if (this.recoveryStep === 2) {
         controls['recoveryCode'].setValidators([Validators.required]);
       } else if (this.recoveryStep === 3) {
-        controls['password'].setValidators([Validators.required]);
-        controls['confirmPassword'].setValidators([Validators.required]);
+        controls['password'].setValidators([Validators.required, Validators.minLength(this.minPasswordLength)]);
+        controls['confirmPassword'].setValidators([Validators.required, Validators.minLength(this.minPasswordLength)]);
       }
     } else if (this.isLogin) {
       controls['username'].setValidators([Validators.required]);
       controls['password'].setValidators([Validators.required]);
     } else {
-      ['firstName', 'lastName', 'username', 'password', 'confirmPassword', 'phone', 'birthday'].forEach((key) => {
-        controls[key].setValidators([Validators.required]);
-      });
+      controls['firstName'].setValidators([Validators.required, Validators.minLength(this.minNameLength)]);
+      controls['lastName'].setValidators([Validators.required, Validators.minLength(this.minNameLength)]);
+      controls['username'].setValidators([Validators.required, Validators.minLength(this.minUsernameLength)]);
+      controls['password'].setValidators([Validators.required, Validators.minLength(this.minPasswordLength)]);
+      controls['confirmPassword'].setValidators([Validators.required, Validators.minLength(this.minPasswordLength)]);
+      controls['phone'].setValidators([Validators.required, Validators.minLength(this.minPhoneLength)]);
+      controls['birthday'].setValidators([Validators.required]);
       controls['email'].setValidators([Validators.required, Validators.email]);
       controls['acceptTerms'].setValidators([Validators.requiredTrue]);
     }
@@ -274,7 +282,7 @@ export class Auth implements OnInit {
   submit() {
     if (this.authForm.invalid) {
       this.authForm.markAllAsTouched();
-      this.notify.show('error', 'Por favor, rellena los campos requeridos');
+      this.notify.show('error', this.getValidationMessage(), true);
       return;
     }
 
@@ -294,11 +302,19 @@ export class Auth implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: (response: GenericResponse<string>) => {
-          const token = response?.value;
-          if (token) {
-            localStorage.setItem('token', token);
-            localStorage.setItem('CookieTokenClaims', token);
+          if (response?.success === false) {
+            this.notify.show('error', this.extractAuthMessage(response, 'Usuario o contrasena incorrectos.'), true);
+            return;
           }
+
+          const token = response?.value;
+          if (!token) {
+            this.notify.show('error', 'No se pudo iniciar sesion. Intenta nuevamente.', true);
+            return;
+          }
+
+          localStorage.setItem('token', token);
+          localStorage.setItem('CookieTokenClaims', token);
           const returnPath = this.authService.consumeAuthReturnPath();
           this.close();
           this.authService.authChanged.next();
@@ -310,7 +326,7 @@ export class Auth implements OnInit {
       });
     } else {
       if (val.password !== val.confirmPassword) {
-        this.notify.show('error', 'Las contrasenas no coinciden');
+        this.notify.show('error', 'Las contrasenas no coinciden', true);
         return;
       }
 
@@ -326,12 +342,83 @@ export class Auth implements OnInit {
       };
 
       this.authService.register(registerData).subscribe({
-        next: () => {
+        next: (response: GenericResponse<AuthResponse>) => {
+          if (response?.success === false) {
+            this.notify.show('error', this.extractAuthMessage(response, 'No se pudo completar el registro.'), true);
+            return;
+          }
+
+          this.notify.show('success', this.extractAuthMessage(response, 'Registro exitoso. Ahora puedes iniciar sesion.'), true);
           this.toggleMode();
         },
         error: () => {},
       });
     }
+  }
+
+  private getValidationMessage(): string {
+    const firstRequired = this.firstFieldWithError('required');
+    if (firstRequired) return `${this.fieldLabel(firstRequired)} es requerido.`;
+
+    const firstMinLength = this.firstFieldWithError('minlength');
+    if (firstMinLength) {
+      const requiredLength = this.authForm.get(firstMinLength)?.getError('minlength')?.requiredLength;
+      return `${this.fieldLabel(firstMinLength)} debe tener al menos ${requiredLength} caracteres.`;
+    }
+
+    if (this.authForm.get('email')?.hasError('email')) return 'Ingresa un email valido.';
+    if (this.authForm.get('acceptTerms')?.hasError('required')) return 'Debes aceptar los terminos y condiciones.';
+
+    return 'Por favor, revisa los datos del formulario.';
+  }
+
+  private firstFieldWithError(errorName: string): string {
+    const order = this.isRecoveryMode
+      ? ['email', 'recoveryCode', 'password', 'confirmPassword']
+      : this.isLogin
+        ? ['username', 'password']
+        : ['firstName', 'lastName', 'username', 'email', 'password', 'confirmPassword', 'phone', 'birthday', 'acceptTerms'];
+
+    return order.find((key) => this.authForm.get(key)?.hasError(errorName)) || '';
+  }
+
+  private fieldLabel(field: string): string {
+    const labels: Record<string, string> = {
+      firstName: 'El nombre',
+      lastName: 'El apellido',
+      username: this.isLogin ? 'El usuario o email' : 'El usuario',
+      email: 'El email',
+      password: 'La contrasena',
+      confirmPassword: 'La confirmacion de contrasena',
+      phone: 'El telefono',
+      birthday: 'La fecha de nacimiento',
+      recoveryCode: 'El codigo de recuperacion',
+      acceptTerms: 'Los terminos y condiciones',
+    };
+
+    return labels[field] || 'Este campo';
+  }
+
+  private extractAuthMessage(response: any, fallback: string): string {
+    const errors = response?.errors;
+    if (Array.isArray(errors)) {
+      const first = errors.find((item) => typeof item === 'string' && item.trim());
+      if (first) return first.trim();
+    }
+
+    const valueMessage = response?.value?.message;
+    if (typeof valueMessage === 'string' && valueMessage.trim()) return valueMessage.trim();
+
+    const responseText = response?.response;
+    if (typeof responseText === 'string' && responseText.trim()) {
+      const normalized = responseText.trim().toLowerCase();
+      if (!['error', 'success', 'ok'].includes(normalized)) return responseText.trim();
+    }
+
+    const message = response?.message;
+    if (typeof message === 'string' && message.trim()) return message.trim();
+
+    return fallback;
   }
 
   private handleRecovery(val: any) {
@@ -353,13 +440,13 @@ export class Auth implements OnInit {
       });
     } else if (this.recoveryStep === 3) {
       if (val.password !== val.confirmPassword) {
-        this.notify.show('error', 'Las contrasenas no coinciden');
+        this.notify.show('error', 'Las contrasenas no coinciden', true);
         return;
       }
 
       this.authService.setLostPassword(val.password).subscribe({
         next: () => {
-          this.notify.show('success', 'Contrasena restablecida correctamente');
+          this.notify.show('success', 'Contrasena restablecida correctamente', true);
           this.toggleMode();
         },
         error: () => {},

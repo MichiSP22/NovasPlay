@@ -5,6 +5,7 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -49,8 +50,13 @@ app.use((req, res, next) => {
     next();
     return;
   }
+  const absoluteHtmlFile = join(browserDistFolder, htmlFile);
+  if (!existsSync(absoluteHtmlFile)) {
+    next();
+    return;
+  }
 
-  res.sendFile(join(browserDistFolder, htmlFile));
+  res.sendFile(absoluteHtmlFile);
 });
 /**
  * Serve static files from /browser

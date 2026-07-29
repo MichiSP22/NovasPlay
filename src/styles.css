@@ -462,10 +462,16 @@ body::after {
   mix-blend-mode: normal !important;
 }
 
+:root {
+  --novabot-right: 24px;
+  --novabot-bottom: 132px;
+  --novabot-greeting-right: 132px;
+  --novabot-greeting-bottom: 216px;
+}
 .novasplay-chat-launcher {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: var(--novabot-right);
+  bottom: var(--novabot-bottom);
   z-index: 2147483000;
   display: grid;
   place-items: center;
@@ -659,8 +665,8 @@ body::after {
 
 .novasplay-chat-greeting {
   position: fixed;
-  right: 132px;
-  bottom: 108px;
+  right: var(--novabot-greeting-right);
+  bottom: var(--novabot-greeting-bottom);
   z-index: 2147482999;
   display: grid;
   gap: 6px;
@@ -763,9 +769,14 @@ body::after {
 }
 
 @media (max-width: 640px) {
+  :root {
+    --novabot-right: 14px;
+    --novabot-bottom: 104px;
+    --novabot-greeting-right: 96px;
+    --novabot-greeting-bottom: 174px;
+  }
+
   .novasplay-chat-launcher {
-    right: 16px;
-    bottom: 16px;
     width: 82px;
     height: 82px;
   }
@@ -801,8 +812,6 @@ body::after {
   }
 
   .novasplay-chat-greeting {
-    right: 88px;
-    bottom: 86px;
     width: min(242px, calc(100vw - 112px));
     padding: 13px 14px;
   }
@@ -813,9 +822,14 @@ body::after {
 }
 
 @media (max-width: 420px) {
+  :root {
+    --novabot-right: 10px;
+    --novabot-bottom: 88px;
+    --novabot-greeting-right: 76px;
+    --novabot-greeting-bottom: 144px;
+  }
+
   .novasplay-chat-launcher {
-    right: 10px;
-    bottom: 10px;
     width: 66px;
     height: 66px;
   }
@@ -847,8 +861,6 @@ body::after {
   }
 
   .novasplay-chat-greeting {
-    right: 76px;
-    bottom: 72px;
     width: min(220px, calc(100vw - 96px));
   }
 }

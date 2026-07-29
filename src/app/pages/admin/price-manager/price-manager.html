@@ -69,15 +69,16 @@
             <th>PRODUCTO</th>
             <th>RECARGA</th>
             <th>MÉTODO DE PAGO</th>
-            <th>PRECIO ESTABLECIDO</th>
+            <th>MONEDA BASE</th>
+            <th>PRECIO DE COBRO</th>
             <th class="text-right">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           @if (loading()) {
-            <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+            <tr><td colspan="7" class="text-center">Cargando...</td></tr>
           } @else if (prices().length === 0) {
-            <tr><td colspan="4" class="empty-state">No hay precios registrados.</td></tr>
+            <tr><td colspan="7" class="empty-state">No hay precios registrados.</td></tr>
           } @else {
             @for (p of prices(); track p.id) {
               <tr>
@@ -86,11 +87,16 @@
                 <td style="color: #00d4ff;" class="font-bold notranslate" translate="no">{{ p.productName || 'Producto no disp.' }}</td>
                 <td style="color: #e0e0e0;" class="notranslate" translate="no">{{ getRechargeName(p.detailID) }}</td>
                 <td style="color: #b0b0b0;" class="notranslate" translate="no">{{ getPaymentName(p.paymentID) }}</td>
+                <td class="notranslate" translate="no">
+                  <span class="reference-chip" [class.direct]="!p.referenceCurrencyID">{{ getReferenceCurrencyLabel(p) }}</span>
+                  @if (p.referenceCurrencyID) {
+                    <small class="base-price-line">Base: {{ p.referenceCurrencySymbol || '' }} {{ p.price | number:'1.2-2' }}</small>
+                  }
+                </td>
                 <td class="font-bold notranslate" translate="no" style="color: #00ffcc;">
-                  <!-- Usamos getCoinSymbol como fallback manual -->
-                  {{ p.coinSymbol || '$' }} {{ p.price | number:'1.2-2' }}
+                  {{ p.coinSymbol || '$' }} {{ (p.displayPrice ?? p.price) | number:'1.2-2' }}
                   @if(p.promotion) {
-                    <span style="font-size: 0.8em; color: #ff0077; display: block;" class="notranslate" translate="no">Promoción: {{ p.coinSymbol || '$' }} {{ p.promotionPrice | number:'1.2-2' }}</span>
+                    <span style="font-size: 0.8em; color: #ff0077; display: block;" class="notranslate" translate="no">PromociÃ³n: {{ p.coinSymbol || '$' }} {{ (p.displayPromotionPrice ?? p.promotionPrice) | number:'1.2-2' }}</span>
                   }
                 </td>
                 <td class="text-right">
@@ -132,6 +138,8 @@
     [availableRecharges]="rechargesList()"
     [availablePayments]="paymentsList()"
     [availableProducts]="productsList()"
+    [availableCoins]="coinsList()"
+    [availableConversions]="conversionsList()"
     (onClose)="closeModal()"
     (onSave)="onSaveSuccess()">
   </app-price-form-modal>

@@ -513,11 +513,16 @@ input:focus,
   cursor: pointer;
 }
 
-.submit-btn:disabled,
-.btn-disabled {
+.submit-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   filter: grayscale(0.6);
+}
+
+.submit-btn.btn-disabled {
+  opacity: 0.72;
+  cursor: pointer;
+  filter: saturate(0.75);
 }
 
 .auth-switch {

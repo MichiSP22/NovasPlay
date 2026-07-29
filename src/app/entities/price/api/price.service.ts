@@ -23,11 +23,13 @@ export class PriceService {
         'Id', 
         'DetailID', 
         'PaymentID', 
+        'ReferenceCurrencyID',
         'Price', 
         'Promotion', 
         'PromotionPrice',
         'Detail_Name',
-        'Payment_Coin_Symbol'
+        'Payment_Coin_Symbol',
+        'ReferenceCurrency_Symbol'
       ]
     };
     
@@ -60,6 +62,9 @@ export class PriceService {
       // Usamos el prefijo 'priceData' asumiendo que el parámetro en C# se llama 'priceData'
       formData.append(`priceData[${index}].DetailID`, item.detailID.toString());
       formData.append(`priceData[${index}].PaymentID`, item.paymentID.toString());
+      if (item.referenceCurrencyID) {
+        formData.append(`priceData[${index}].ReferenceCurrencyID`, item.referenceCurrencyID.toString());
+      }
       formData.append(`priceData[${index}].Price`, this.formatDecimalForApi(item.price));
       formData.append(`priceData[${index}].Promotion`, item.promotion ? 'true' : 'false');
       formData.append(`priceData[${index}].PromotionPrice`, this.formatDecimalForApi(item.promotionPrice));

@@ -1656,60 +1656,111 @@
   }
 }
 
-/* Novix responsive: acompana sin invadir en tablets y pantallas intermedias */
-@media (min-width: 981px) and (max-width: 1399px) {
-  .hero-showcase {
-    overflow: visible;
-    padding-right: clamp(24px, 4vw, 62px);
-  }
+/* Novix responsive: anclado al frame del producto */
+.hero-command {
+  overflow-x: clip;
+}
 
-  .hero-novix-peek {
-    display: block !important;
-    right: clamp(-28px, -2.2vw, -12px) !important;
-    top: 51% !important;
-    width: clamp(168px, 16vw, 238px) !important;
-    opacity: 0.72 !important;
-    transform: translate3d(0, -50%, 0) rotate(1deg) scale(0.96) !important;
-  }
+.hero-showcase {
+  overflow: visible;
+  padding-right: 0 !important;
+}
 
-  .hero-novix-peek-front {
-    opacity: 0.42 !important;
-    filter:
-      brightness(0.84)
-      saturate(0.92)
-      drop-shadow(0 8px 12px rgba(0, 0, 0, 0.22)) !important;
+.hero-stage {
+  --stage-width: min(490px, 100%);
+  --novix-size: clamp(260px, 16vw, 360px);
+  --novix-right: clamp(-178px, -8vw, -122px);
+  --novix-top: 51%;
+  --novix-opacity: 0.86;
+  --novix-front-opacity: 0.48;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: var(--stage-width);
+  max-width: 100%;
+}
+
+.hero-stage .showcase-frame {
+  width: 100% !important;
+}
+
+.hero-stage .hero-novix-peek {
+  left: auto !important;
+  right: var(--novix-right) !important;
+  top: var(--novix-top) !important;
+  width: var(--novix-size) !important;
+  opacity: var(--novix-opacity) !important;
+  transform: translate3d(0, -50%, 0) rotate(1.4deg) !important;
+}
+
+.hero-stage .hero-novix-peek-front {
+  opacity: var(--novix-front-opacity) !important;
+  filter:
+    brightness(0.84)
+    saturate(0.92)
+    drop-shadow(0 8px 12px rgba(0, 0, 0, 0.22)) !important;
+}
+
+@media (min-width: 1600px) {
+  .hero-stage {
+    --stage-width: min(500px, 100%);
+    --novix-size: clamp(285px, 15vw, 380px);
+    --novix-right: clamp(-210px, -9vw, -150px);
+    --novix-opacity: 0.84;
+    --novix-front-opacity: 0.44;
+  }
+}
+
+@media (max-width: 1440px) {
+  .hero-stage {
+    --stage-width: min(460px, 100%);
+    --novix-size: clamp(240px, 18vw, 330px);
+    --novix-right: clamp(-150px, -8.5vw, -92px);
+    --novix-opacity: 0.78;
+    --novix-front-opacity: 0.36;
+  }
+}
+
+@media (min-width: 981px) and (max-width: 1320px) {
+  .hero-stage {
+    --stage-width: min(430px, 94%);
+    --novix-size: clamp(190px, 16vw, 250px);
+    --novix-right: clamp(-118px, -7.5vw, -72px);
+    --novix-top: 52%;
+    --novix-opacity: 0.68;
+    --novix-front-opacity: 0.26;
   }
 }
 
 @media (min-width: 900px) and (max-height: 820px) {
-  .hero-novix-peek {
-    right: clamp(-18px, -1.8vw, -10px) !important;
-    top: 53% !important;
-    width: clamp(154px, 14.5vw, 198px) !important;
-    opacity: 0.62 !important;
-  }
-
-  .hero-novix-peek-front {
-    opacity: 0.28 !important;
+  .hero-stage {
+    --stage-width: min(390px, 88%);
+    --novix-size: clamp(185px, 16vw, 245px);
+    --novix-right: clamp(-112px, -7vw, -72px);
+    --novix-top: 53%;
+    --novix-opacity: 0.66;
+    --novix-front-opacity: 0.22;
   }
 }
 
 @media (min-width: 701px) and (max-width: 980px) {
   .hero-showcase {
-    overflow: visible !important;
-    padding-right: clamp(34px, 8vw, 78px);
+    width: min(680px, 100%) !important;
+    justify-self: center !important;
+    overflow: hidden !important;
+    padding-inline: 0 !important;
   }
 
-  .hero-novix-peek {
-    display: block !important;
-    right: clamp(-48px, -4.8vw, -26px) !important;
-    top: 52% !important;
-    width: clamp(172px, 25vw, 242px) !important;
-    opacity: 0.62 !important;
-    transform: translate3d(0, -50%, 0) rotate(2deg) scale(0.92) !important;
+  .hero-stage {
+    --stage-width: min(520px, 92vw);
+    --novix-size: clamp(170px, 24vw, 250px);
+    --novix-right: clamp(-118px, -9vw, -72px);
+    --novix-top: 53%;
+    --novix-opacity: 0.52;
   }
 
-  .hero-novix-peek-front {
+  .hero-stage .hero-novix-peek-front {
     display: none !important;
   }
 }
@@ -1717,24 +1768,27 @@
 @media (min-width: 621px) and (max-width: 700px) {
   .hero-showcase {
     overflow: hidden !important;
-    padding-right: 28px !important;
+    padding-inline: 0 !important;
   }
 
-  .hero-novix-peek {
-    display: block !important;
-    right: 8px !important;
-    top: 54% !important;
-    width: clamp(128px, 24vw, 156px) !important;
-    opacity: 0.38 !important;
-    transform: translate3d(0, -50%, 0) rotate(2deg) scale(0.9) !important;
+  .hero-stage {
+    --stage-width: min(460px, 92vw);
+    --novix-size: clamp(132px, 21vw, 170px);
+    --novix-right: clamp(-58px, -7vw, -30px);
+    --novix-top: 56%;
+    --novix-opacity: 0.38;
   }
 
-  .hero-novix-peek-front {
+  .hero-stage .hero-novix-peek-front {
     display: none !important;
   }
 }
 
 @media (max-width: 620px) {
+  .hero-stage {
+    --stage-width: min(100%, 420px);
+  }
+
   .hero-novix-peek,
   .coin-burst,
   .side-arcade {

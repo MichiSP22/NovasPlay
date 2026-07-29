@@ -1,14 +1,16 @@
 import { Component, OnInit, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime, forkJoin } from 'rxjs';
 import { PriceService, Price, mapPriceApiItem } from '../../../entities/price';
 import { RechargeService, Recharge } from '../../../entities/recharge';
 import { PaymentService, Payment } from '../../../entities/payment';
+import { Coin, CoinService, mapCoinApiItem } from '../../../entities/coin';
+import { Conversion, ConversionService, mapConversionApiItem, rateBetween } from '../../../entities/conversion';
 import { ProductService, Product } from '../../../entities/product';
 import { PriceFormModalComponent } from '../../../features/price/price-form-modal/price-form-modal';
 import { SearchRequest } from '../../../core/http/http.models';
 import { ResponsiveService } from '../../../core/platform/responsive.service';
-import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-price-manager',
@@ -21,28 +23,25 @@ export class PriceManagerComponent implements OnInit {
   private priceService = inject(PriceService);
   private rechargeService = inject(RechargeService);
   private paymentService = inject(PaymentService);
+  private coinService = inject(CoinService);
+  private conversionService = inject(ConversionService);
   private productService = inject(ProductService);
   private responsiveService = inject(ResponsiveService);
-  
+
   prices = signal<Price[]>([]);
   loading = signal<boolean>(false);
-  
-  // Listas de soporte para los dropdowns y la tabla
+
   rechargesList = signal<Recharge[]>([]);
   paymentsList = signal<Payment[]>([]);
   productsList = signal<Product[]>([]);
+  coinsList = signal<Coin[]>([]);
+  conversionsList = signal<Conversion[]>([]);
 
   selectedProductFilter = signal<number>(0);
   selectedPaymentFilter = signal<number>(0);
-  searchTerm: string = '';
-  searchProductTerm: string = '';
+  searchTerm = '';
+  searchProductTerm = '';
   private filterSubject = new Subject<void>();
-
-  constructor() {
-    this.filterSubject.pipe(debounceTime(350)).subscribe(() => {
-      this.loadPrices();
-    });
-  }
 
   showModal = signal<boolean>(false);
   selectedPrice = signal<Price | null>(null);
@@ -52,11 +51,16 @@ export class PriceManagerComponent implements OnInit {
   currentPage = signal<number>(1);
   pageSize = signal<number>(10);
 
+  constructor() {
+    this.filterSubject.pipe(debounceTime(350)).subscribe(() => {
+      this.loadPrices();
+    });
+  }
+
   ngOnInit() {
     this.updatePageSize(false);
     if (this.responsiveService.isBrowser) {
       this.loadSupportData();
-      this.loadPrices();
     }
   }
 
@@ -92,41 +96,65 @@ export class PriceManagerComponent implements OnInit {
     }
   }
 
-  // Cargamos Monedas y Recargas para pasarlas al modal
   loadSupportData() {
     const params: Partial<SearchRequest> = { pageNumber: 1, pageSize: 100 };
-    
-    this.rechargeService.search(params).subscribe(res => {
-      if (res?.success && res.value) {
-        const recs = (res.value.items as any[]).map(item => ({ id: item.Id, name: item.Name, productID: item.ProductID, description: '', soldOut: false }));
-        this.rechargesList.set(recs);
-      }
-    });
 
-    this.paymentService.search(1, 100).subscribe(res => {
-      if (res?.success && res.value) {
-        const payments = (res.value.items as any[]).map(item => ({ 
-          id: item.Id, 
-          coinID: item.CoinID,
-          name: item.Name, 
-          description: item.Description,
-          international: item.International
-        }));
-        this.paymentsList.set(payments);
-      }
-    });
+    forkJoin({
+      recharges: this.rechargeService.search(params),
+      payments: this.paymentService.search(1, 100),
+      coins: this.coinService.search({ pageNumber: 1, pageSize: 100, orderByField: 'Code', orderByAscending: true }),
+      conversions: this.conversionService.search({ pageNumber: 1, pageSize: 100, orderByField: 'ID', orderByAscending: false }),
+      products: this.productService.search({ pageNumber: 1, pageSize: 100 }),
+    }).subscribe({
+      next: ({ recharges, payments, coins, conversions, products }) => {
+        if (recharges?.success && recharges.value) {
+          this.rechargesList.set((recharges.value.items as any[]).map(item => ({
+            id: item.Id,
+            name: item.Name,
+            productID: item.ProductID,
+            description: '',
+            soldOut: false,
+          })));
+        }
 
-    this.productService.search({ pageNumber: 1, pageSize: 100 }).subscribe(res => {
-      if (res?.success && res.value) {
-        const prods = (res.value.items as any[]).map(item => ({ id: item.Id, name: item.Name, description: item.Description, timeMinRecharge: item.TimeMinDetail, timeMaxRecharge: item.TimeMaxDetail, soldOut: item.SoldOut }));
-        this.productsList.set(prods);
-      }
+        if (payments?.success && payments.value) {
+          this.paymentsList.set((payments.value.items as any[]).map(item => ({
+            id: item.Id,
+            coinID: item.CoinID,
+            name: item.Name,
+            description: item.Description,
+            international: item.International,
+          })));
+        }
+
+        if (coins?.success && coins.value) {
+          this.coinsList.set((coins.value.items as any[]).map(mapCoinApiItem));
+        }
+
+        if (conversions?.success && conversions.value) {
+          this.conversionsList.set((conversions.value.items as any[]).map(mapConversionApiItem));
+        }
+
+        if (products?.success && products.value) {
+          this.productsList.set((products.value.items as any[]).map(item => ({
+            id: item.Id,
+            name: item.Name,
+            description: item.Description,
+            timeMinRecharge: item.TimeMinDetail,
+            timeMaxRecharge: item.TimeMaxDetail,
+            soldOut: item.SoldOut,
+          })));
+        }
+
+        this.loadPrices();
+      },
+      error: () => this.loadPrices(),
     });
   }
 
   loadPrices() {
     this.loading.set(true);
-    
+
     const searchCriteria: Partial<SearchRequest> = {
       pageNumber: this.currentPage(),
       pageSize: this.pageSize(),
@@ -142,18 +170,11 @@ export class PriceManagerComponent implements OnInit {
         .filter(Boolean);
 
       if (detailIdsByProduct.length === 0) {
-        this.prices.set([]);
-        this.totalItems.set(0);
-        this.totalPages.set(1);
-        this.loading.set(false);
+        this.setEmptyPrices();
         return;
       }
 
-      searchCriteria.filters!.push({
-        field: 'DetailID',
-        operator: 9, // In
-        value: detailIdsByProduct
-      });
+      searchCriteria.filters!.push({ field: 'DetailID', operator: 9, value: detailIdsByProduct });
     }
 
     if (this.searchTerm.trim()) {
@@ -164,18 +185,11 @@ export class PriceManagerComponent implements OnInit {
         .filter(Boolean);
 
       if (detailIdsByRechargeName.length === 0) {
-        this.prices.set([]);
-        this.totalItems.set(0);
-        this.totalPages.set(1);
-        this.loading.set(false);
+        this.setEmptyPrices();
         return;
       }
 
-      searchCriteria.filters!.push({
-        field: 'DetailID',
-        operator: 9, // In
-        value: detailIdsByRechargeName
-      });
+      searchCriteria.filters!.push({ field: 'DetailID', operator: 9, value: detailIdsByRechargeName });
     }
 
     if (this.searchProductTerm.trim()) {
@@ -191,66 +205,54 @@ export class PriceManagerComponent implements OnInit {
         .filter(Boolean);
 
       if (detailIdsByProductName.length === 0) {
-        this.prices.set([]);
-        this.totalItems.set(0);
-        this.totalPages.set(1);
-        this.loading.set(false);
+        this.setEmptyPrices();
         return;
       }
 
-      searchCriteria.filters!.push({
-        field: 'DetailID',
-        operator: 9, // In
-        value: detailIdsByProductName
-      });
+      searchCriteria.filters!.push({ field: 'DetailID', operator: 9, value: detailIdsByProductName });
     }
 
-    // Filtro por Método de Pago
     if (this.selectedPaymentFilter() > 0) {
-      searchCriteria.filters!.push({
-        field: 'PaymentID',
-        operator: 0, // Equal
-        value: this.selectedPaymentFilter()
-      });
+      searchCriteria.filters!.push({ field: 'PaymentID', operator: 0, value: this.selectedPaymentFilter() });
     }
 
     this.priceService.search(searchCriteria).subscribe({
-      next: (res) => { 
-        console.log("Respuesta del search de precios:", res);
+      next: (res) => {
         if (res?.success && res.value) {
           const rechargeById = new Map(this.rechargesList().map(r => [r.id, r]));
           const productById = new Map(this.productsList().map(p => [p.id, p]));
           const paymentById = new Map(this.paymentsList().map(p => [p.id, p]));
+          const coinById = new Map(this.coinsList().map(c => [c.id, c]));
 
           const mapped: Price[] = (res.value.items as any[]).map(item => {
-            const p = mapPriceApiItem(item);
-            const recharge = rechargeById.get(p.detailID);
+            const price = mapPriceApiItem(item);
+            const recharge = rechargeById.get(price.detailID);
             const product = productById.get(recharge?.productID || 0);
-            const payment = paymentById.get(p.paymentID);
+            const payment = paymentById.get(price.paymentID);
 
             return {
-              ...p,
-              productName: p.productName || product?.name || '',
-              coinSymbol: p.coinSymbol || (payment as any)?.symbol || (payment as any)?.coinSymbol || '$'
+              ...this.enrichPriceForConversion(price, payment, coinById),
+              productName: price.productName || product?.name || '',
+              coinSymbol: price.coinSymbol || this.coinSymbolForPayment(payment) || '$'
             };
           });
+
           this.prices.set(mapped);
           this.totalItems.set(res.value.totalItems);
           this.totalPages.set(res.value.totalPages);
         } else {
           this.prices.set([]);
         }
-        this.loading.set(false); 
+        this.loading.set(false);
       },
-      error: (err) => { 
-        console.error("Error cargando precios:", err);
-        this.loading.set(false); 
-        this.prices.set([]); 
+      error: (err) => {
+        console.error('Error cargando precios:', err);
+        this.loading.set(false);
+        this.prices.set([]);
       }
     });
   }
 
-  // Helpers para la tabla
   getRechargeName(id: number): string {
     return this.rechargesList().find(r => r.id === id)?.name || `Recarga #${id}`;
   }
@@ -259,8 +261,14 @@ export class PriceManagerComponent implements OnInit {
     return this.paymentsList().find(p => p.id === id)?.name || '';
   }
 
+  getReferenceCurrencyLabel(price: Price): string {
+    if (!price.referenceCurrencyID) return 'Directo';
+    const coin = this.coinsList().find(c => c.id === price.referenceCurrencyID);
+    return coin ? `${coin.code} (${coin.symbol})` : price.referenceCurrencySymbol || `Moneda #${price.referenceCurrencyID}`;
+  }
+
   openModal(price: Price | null = null) {
-    this.selectedPrice.set(price);
+    this.selectedPrice.set(price ? { ...price, price: price.price, promotionPrice: price.promotionPrice } : null);
     this.showModal.set(true);
   }
 
@@ -275,18 +283,18 @@ export class PriceManagerComponent implements OnInit {
   }
 
   deletePrice(id: number | undefined) {
-    if (!id || !confirm('¿Estás seguro de eliminar este precio?')) return;
+    if (!id || !confirm('Estas seguro de eliminar este precio?')) return;
     this.priceService.delete(id).subscribe(() => this.loadPrices());
   }
 
-  onProductFilterChange(event: any) {
-    this.selectedProductFilter.set(Number(event.target.value));
+  onProductFilterChange(event: Event) {
+    this.selectedProductFilter.set(Number((event.target as HTMLSelectElement).value));
     this.currentPage.set(1);
     this.filterSubject.next();
   }
 
-  onPaymentFilterChange(event: any) {
-    this.selectedPaymentFilter.set(Number(event.target.value));
+  onPaymentFilterChange(event: Event) {
+    this.selectedPaymentFilter.set(Number((event.target as HTMLSelectElement).value));
     this.currentPage.set(1);
     this.filterSubject.next();
   }
@@ -295,5 +303,47 @@ export class PriceManagerComponent implements OnInit {
     this.currentPage.set(1);
     this.filterSubject.next();
   }
-}
 
+  private setEmptyPrices() {
+    this.prices.set([]);
+    this.totalItems.set(0);
+    this.totalPages.set(1);
+    this.loading.set(false);
+  }
+
+  private coinSymbolForPayment(payment: Payment | undefined): string {
+    if (!payment) return '';
+    return this.coinsList().find(c => c.id === payment.coinID)?.symbol || '';
+  }
+
+  private enrichPriceForConversion(price: Price, payment: Payment | undefined, coinById: Map<number | undefined, Coin>): Price {
+    const displayPrice = price.price;
+    const displayPromotionPrice = price.promotionPrice;
+    const referenceCurrencyID = price.referenceCurrencyID || null;
+    const paymentCoinID = payment?.coinID || 0;
+    const referenceCoin = coinById.get(referenceCurrencyID || undefined);
+    const rate = referenceCurrencyID && paymentCoinID
+      ? rateBetween(this.conversionsList(), referenceCurrencyID, paymentCoinID)
+      : null;
+
+    if (referenceCurrencyID && rate && rate > 0 && referenceCurrencyID !== paymentCoinID) {
+      return {
+        ...price,
+        referenceCurrencyID,
+        referenceCurrencySymbol: price.referenceCurrencySymbol || referenceCoin?.symbol || '',
+        displayPrice,
+        displayPromotionPrice,
+        price: Number((displayPrice / rate).toFixed(2)),
+        promotionPrice: Number((displayPromotionPrice / rate).toFixed(2)),
+      };
+    }
+
+    return {
+      ...price,
+      referenceCurrencyID,
+      referenceCurrencySymbol: price.referenceCurrencySymbol || referenceCoin?.symbol || '',
+      displayPrice,
+      displayPromotionPrice,
+    };
+  }
+}

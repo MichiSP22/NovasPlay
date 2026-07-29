@@ -1,0 +1,87 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ conversionToEdit ? 'Editar' : 'Nueva' }} Conversion</h3>
+      <button class="close-btn" type="button" (click)="closeModal()">
+        <span class="material-icons notranslate" translate="no">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="saveConversion()" class="neon-form">
+      <section class="conversion-preview">
+        <span class="material-icons notranslate" translate="no">currency_exchange</span>
+        <div>
+          <small>Equivalencia configurada</small>
+          <strong>{{ directPreview() }}</strong>
+          <em>{{ reversePreview() }}</em>
+        </div>
+      </section>
+
+      <div class="currency-builder">
+        <div class="form-group">
+          <label>Moneda origen</label>
+          <select [(ngModel)]="conversion.fromCoinID" name="fromCoinID" required class="neon-select">
+            <option [ngValue]="0" disabled>Selecciona origen</option>
+            @for (coin of availableCoins; track coin.id) {
+              <option [ngValue]="coin.id" class="notranslate" translate="no">{{ coin.code }} - {{ coin.name }}</option>
+            }
+          </select>
+        </div>
+
+        <button class="swap-btn" type="button" title="Intercambiar monedas" (click)="swapCoins()">
+          <span class="material-icons notranslate" translate="no">swap_horiz</span>
+        </button>
+
+        <div class="form-group">
+          <label>Moneda destino</label>
+          <select [(ngModel)]="conversion.toCoinID" name="toCoinID" required class="neon-select">
+            <option [ngValue]="0" disabled>Selecciona destino</option>
+            @for (coin of availableCoins; track coin.id) {
+              <option [ngValue]="coin.id" class="notranslate" translate="no">{{ coin.code }} - {{ coin.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <section class="rate-card">
+        <div class="rate-equation">
+          <span class="rate-token notranslate" translate="no">1 {{ coinCode(conversion.fromCoinID) }}</span>
+          <span class="equals">=</span>
+          <input
+            type="text"
+            inputmode="decimal"
+            [(ngModel)]="fromToRateInput"
+            (blur)="normalizeFromToRateInput()"
+            name="fromToRate"
+            required
+            placeholder="Ej: 740"
+            class="neon-input rate-input">
+          <span class="rate-token notranslate" translate="no">{{ coinCode(conversion.toCoinID) }}</span>
+        </div>
+        <small class="field-hint">Solo ingresa esta equivalencia. NovasPlay calcula y guarda el reverso automaticamente.</small>
+      </section>
+
+      <section class="reverse-card">
+        <span class="material-icons notranslate" translate="no">auto_awesome</span>
+        <div>
+          <small>Reverso calculado</small>
+          <strong>{{ reversePreview() }}</strong>
+        </div>
+      </section>
+
+      <label class="active-toggle">
+        <input type="checkbox" [(ngModel)]="conversion.isActive" name="isActive">
+        <span class="material-icons notranslate" translate="no">toggle_on</span>
+        Conversion activa
+      </label>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-neon-action">
+          <span class="material-icons notranslate" translate="no">save</span>
+          Guardar Conversion
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

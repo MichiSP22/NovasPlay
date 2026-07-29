@@ -279,7 +279,7 @@
         }
       }
       
-      <button type="submit" class="submit-btn" [disabled]="authForm.invalid" [class.btn-disabled]="authForm.invalid">
+      <button type="submit" class="submit-btn" [class.btn-disabled]="authForm.invalid">
         {{ isRecoveryMode ? 'CONTINUAR' : (isLogin ? 'INGRESAR' : 'REGISTRARSE') }}
       </button>
     </form>

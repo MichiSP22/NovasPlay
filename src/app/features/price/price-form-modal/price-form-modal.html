@@ -1,6 +1,5 @@
 <div class="modal-backdrop" (click)="closeModal()">
   <div class="modal-container" (click)="$event.stopPropagation()">
-    
     <div class="modal-header">
       <h3>{{ priceToEdit ? 'Editar' : 'Nuevo' }} Precio</h3>
       <button class="close-btn" (click)="closeModal()">
@@ -9,10 +8,9 @@
     </div>
 
     <form (ngSubmit)="savePrice()" class="neon-form">
-      
-      <div class="form-row" style="display: flex; gap: 1rem;">
-        <div class="form-group" style="flex: 1;">
-          <label>1. Filtrar por Producto</label>
+      <div class="form-row">
+        <div class="form-group">
+          <label>1. Filtrar por producto</label>
           <select [(ngModel)]="selectedProductID" name="productID" class="neon-select" (change)="onProductChange()">
             <option [ngValue]="0" disabled>Selecciona un producto</option>
             @for (prod of availableProducts; track prod.id) {
@@ -21,8 +19,8 @@
           </select>
         </div>
 
-        <div class="form-group" style="flex: 1;">
-          <label>2. Recarga Asociada</label>
+        <div class="form-group">
+          <label>2. Recarga asociada</label>
           <select [(ngModel)]="price.detailID" name="detailID" required class="neon-select">
             <option [ngValue]="0" disabled>Selecciona una recarga</option>
             @for (rec of filteredRecharges; track rec.id) {
@@ -32,14 +30,14 @@
         </div>
       </div>
 
-      <hr class="neon-divider" style="margin: 1.5rem 0; border: none; border-top: 1px solid rgba(0,255,204,0.3);" />
+      <hr class="neon-divider" />
 
-      <h4 style="margin-bottom: 1rem; color: #00d4ff;">Datos de Cobro</h4>
+      <h4 class="form-section-title">Datos de cobro</h4>
 
       <div class="form-group">
-        <label>Método de Pago</label>
-        <select [(ngModel)]="price.paymentID" name="paymentID" required class="neon-select">
-          <option [ngValue]="0" disabled>Selecciona un método de pago</option>
+        <label>Metodo de pago</label>
+        <select [(ngModel)]="price.paymentID" name="paymentID" required class="neon-select" (change)="onPaymentChange()">
+          <option [ngValue]="0" disabled>Selecciona un metodo de pago</option>
           @for (payment of availablePayments; track payment.id) {
             <option [ngValue]="payment.id" class="notranslate" translate="no">{{ payment.name }}</option>
           }
@@ -47,18 +45,36 @@
       </div>
 
       <div class="form-group">
-        <label>Precio Regular</label>
+        <label>Moneda base del precio</label>
+        <select [(ngModel)]="price.referenceCurrencyID" name="referenceCurrencyID" class="neon-select" (change)="onReferenceCurrencyChange()">
+          <option [ngValue]="null">Directo en {{ selectedPaymentCoinLabel() }}</option>
+          @for (coin of availableCoins; track coin.id) {
+            @if (coin.id !== selectedPaymentCoinID()) {
+              <option [ngValue]="coin.id" class="notranslate" translate="no">{{ coin.code }} ({{ coin.symbol }})</option>
+            }
+          }
+        </select>
+        <small class="field-hint">Usalo cuando guardes el precio en una moneda y el metodo cobre en otra.</small>
+      </div>
+
+      <div class="form-group">
+        <label>Precio regular</label>
         <input type="text" inputmode="decimal" [(ngModel)]="regularPriceInput" (blur)="normalizeRegularPriceInput()" name="price" required placeholder="Ej: 9,99 o 9.99" class="neon-input">
       </div>
 
-      <div class="form-check" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+      <div class="conversion-hint" [class.warning]="price.referenceCurrencyID && conversionPreview().startsWith('Falta')">
+        <span class="material-icons notranslate" translate="no">currency_exchange</span>
+        <p>{{ conversionPreview() }}</p>
+      </div>
+
+      <div class="form-check">
         <input type="checkbox" id="promotionCheck" [(ngModel)]="price.promotion" name="promotion" class="neon-checkbox">
-        <label for="promotionCheck" style="margin: 0; cursor: pointer;">¿Tiene Promoción?</label>
+        <label for="promotionCheck">Tiene promocion</label>
       </div>
 
       @if(price.promotion) {
         <div class="form-group">
-          <label>Precio de Promoción</label>
+          <label>Precio de promocion</label>
           <input type="text" inputmode="decimal" [(ngModel)]="promotionPriceInput" (blur)="normalizePromotionPriceInput()" name="promotionPrice" required placeholder="Ej: 7,99 o 7.99" class="neon-input">
         </div>
       }
