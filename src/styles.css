@@ -464,9 +464,9 @@ body::after {
 
 :root {
   --novabot-right: 24px;
-  --novabot-bottom: 132px;
+  --novabot-bottom: 24px;
   --novabot-greeting-right: 132px;
-  --novabot-greeting-bottom: 216px;
+  --novabot-greeting-bottom: 108px;
 }
 .novasplay-chat-launcher {
   position: fixed;
@@ -771,9 +771,9 @@ body::after {
 @media (max-width: 640px) {
   :root {
     --novabot-right: 14px;
-    --novabot-bottom: 104px;
+    --novabot-bottom: 16px;
     --novabot-greeting-right: 96px;
-    --novabot-greeting-bottom: 174px;
+    --novabot-greeting-bottom: 86px;
   }
 
   .novasplay-chat-launcher {
@@ -824,9 +824,9 @@ body::after {
 @media (max-width: 420px) {
   :root {
     --novabot-right: 10px;
-    --novabot-bottom: 88px;
+    --novabot-bottom: 10px;
     --novabot-greeting-right: 76px;
-    --novabot-greeting-bottom: 144px;
+    --novabot-greeting-bottom: 72px;
   }
 
   .novasplay-chat-launcher {
