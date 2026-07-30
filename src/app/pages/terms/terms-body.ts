@@ -10,7 +10,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
       <div class="terms-hero">
         <span class="badge">Plataforma de Recargas</span>
         <h1>Términos y Condiciones <span class="highlight">de Uso</span></h1>
-        <p class="hero-sub">NeoCharge · Última actualización: 2026</p>
+        <p class="hero-sub">NovasPlay · Última actualización: 2026</p>
       </div>
 
       <div class="terms-grid">
@@ -19,7 +19,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
           <div class="term-num">01</div>
           <div class="term-body">
             <h2>Introducción</h2>
-            <p>El presente documento establece los Términos y Condiciones que regulan el acceso y uso de la plataforma de recargas desarrollada por el equipo de NeoCharge. El uso de la plataforma implica la aceptación plena y sin reservas de estos Términos y Condiciones.</p>
+            <p>El presente documento establece los Términos y Condiciones que regulan el acceso y uso de la plataforma de recargas desarrollada por el equipo de NovasPlay. El uso de la plataforma implica la aceptación plena y sin reservas de estos Términos y Condiciones.</p>
           </div>
         </div>
 
@@ -161,7 +161,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
       </div>
 
       <footer class="terms-footer">
-        <p><strong>© 2026 NeoCharge</strong> – Todos los derechos reservados.</p>
+        <p><strong>© 2026 NovasPlay</strong> – Todos los derechos reservados.</p>
       </footer>
 
     </div>

@@ -74,18 +74,18 @@ export class App implements OnInit {
     });
 
     if (isTerms) {
-      this.titleService.setTitle('Terminos y condiciones | NovasPlay');
+      this.titleService.setTitle('Términos y condiciones | NovasPlay');
       this.meta.updateTag({
         name: 'description',
-        content: 'Consulta los terminos y condiciones de uso de NovasPlay para compras, pagos y recargas online.',
+        content: 'Consulta los términos y condiciones de uso de NovasPlay para compras, pagos y recargas online.',
       });
       return;
     }
 
-    this.titleService.setTitle('NovasPlay | Recargas Online');
+    this.titleService.setTitle('NovasPlay | Recargas online para juegos');
     this.meta.updateTag({
       name: 'description',
-      content: 'NovasPlay es una plataforma de recargas online para juegos, con catalogo gamer, pagos verificados y soporte directo.',
+      content: 'NovasPlay es una tienda de recargas online para juegos. Compra diamantes, monedas, pases y saldo gamer con pagos verificados, soporte directo y seguimiento de tu orden.',
     });
   }
 
