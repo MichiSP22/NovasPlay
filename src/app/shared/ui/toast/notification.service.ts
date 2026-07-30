@@ -21,11 +21,23 @@ export class NotificationService {
   public toasts = this.toastsSignal.asReadonly();
 
   show(type: 'success' | 'error' | 'warning', message: string, force: boolean = false, duration: number = 4000) {
-    // Si estamos en los primeros 3 segundos de carga de la aplicación,
-    // ignoramos cualquier notificación para evitar parpadeos de errores iniciales.
+    // Si estamos en los primeros 3 segundos de carga de la aplicacion,
+    // ignoramos cualquier notificacion para evitar parpadeos de errores iniciales.
     if (!force && Date.now() - this.startTime < 3000) return;
 
-    const newToast: Toast = { id: this.nextToastId++, type, message, duration };
+    const normalizedMessage = message.trim();
+    const duplicatedToast = this.toastsSignal().find(toast =>
+      toast.type === type && toast.message.trim() === normalizedMessage
+    );
+    if (duplicatedToast) {
+      const timer = this.toastTimers.get(duplicatedToast.id);
+      if (timer) clearTimeout(timer);
+      this.toastTimers.delete(duplicatedToast.id);
+      this.startAutoClose(duplicatedToast.id, duration);
+      return;
+    }
+
+    const newToast: Toast = { id: this.nextToastId++, type, message: normalizedMessage, duration };
     
     
     this.toastsSignal.update(all => [...all, newToast]);

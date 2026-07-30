@@ -78,7 +78,7 @@ export class ConversionFormModalComponent implements OnInit {
 
         this.notify.show('error', this.extractErrorMessage(res));
       },
-      error: (err) => this.notify.show('error', this.extractErrorMessage(err?.error)),
+      error: () => {},
     });
   }
 

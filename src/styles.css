@@ -768,17 +768,59 @@ body::after {
   }
 }
 
-@media (max-width: 640px) {
+
+
+@media (max-width: 1040px) and (min-width: 641px) {
   :root {
     --novabot-right: 14px;
     --novabot-bottom: 16px;
-    --novabot-greeting-right: 96px;
-    --novabot-greeting-bottom: 86px;
+    --novabot-greeting-right: 100px;
+    --novabot-greeting-bottom: 88px;
   }
 
   .novasplay-chat-launcher {
     width: 82px;
     height: 82px;
+  }
+
+  .novasplay-chat-launcher__bot,
+  .novasplay-chat-launcher img {
+    width: 82px;
+    height: 82px;
+  }
+
+  .novasplay-chat-launcher__visor {
+    gap: 9px;
+  }
+
+  .novasplay-chat-launcher__eye {
+    font-size: 0.72rem;
+  }
+
+  .novasplay-chat-launcher__pulse {
+    inset: 12px;
+  }
+
+  .novasplay-chat-launcher__badge {
+    right: 10px;
+    top: 12px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --novabot-right: 8px;
+    --novabot-bottom: 10px;
+    --novabot-greeting-right: 84px;
+    --novabot-greeting-bottom: 76px;
+  }
+
+  .novasplay-chat-launcher {
+    width: 72px;
+    height: 72px;
   }
 
   .novasplay-chat-launcher::after {
@@ -787,8 +829,8 @@ body::after {
 
   .novasplay-chat-launcher__bot,
   .novasplay-chat-launcher img {
-    width: 82px;
-    height: 82px;
+    width: 72px;
+    height: 72px;
   }
 
   .novasplay-chat-launcher__visor {
@@ -823,21 +865,21 @@ body::after {
 
 @media (max-width: 420px) {
   :root {
-    --novabot-right: 10px;
-    --novabot-bottom: 10px;
-    --novabot-greeting-right: 76px;
-    --novabot-greeting-bottom: 72px;
+    --novabot-right: 4px;
+    --novabot-bottom: 6px;
+    --novabot-greeting-right: 56px;
+    --novabot-greeting-bottom: 58px;
   }
 
   .novasplay-chat-launcher {
-    width: 66px;
-    height: 66px;
+    width: 46px;
+    height: 46px;
   }
 
   .novasplay-chat-launcher__bot,
   .novasplay-chat-launcher img {
-    width: 66px;
-    height: 66px;
+    width: 46px;
+    height: 46px;
   }
 
   .novasplay-chat-launcher__visor {

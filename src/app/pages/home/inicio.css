@@ -3745,3 +3745,24 @@
     top: 6px;
   }
 }
+/* Reserva visual para que NovaBot no tape el CTA del aviso de inauguracion */
+@media (min-width: 761px) {
+  .launch-notice-shell {
+    padding-inline-end: clamp(116px, 10vw, 148px);
+  }
+
+  .launch-notice-action {
+    justify-self: start;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1240px) {
+  .launch-notice-shell {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .launch-notice-action {
+    grid-column: 2;
+    width: min(240px, 100%);
+  }
+}
