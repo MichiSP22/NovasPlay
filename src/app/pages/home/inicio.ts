@@ -222,6 +222,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
     if (!this.initialPopupReady || !this.announcementsLoaded || this.initialPopupOpened) return;
     if (this.configService.maintenanceMode()) return;
+    if (this.shouldSkipInitialPopup()) return;
 
     this.initialPopupOpened = true;
     if (this.announcementImages().length > 0) {
@@ -230,6 +231,15 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.openWelcomeFlyer();
+  }
+
+  private shouldSkipInitialPopup(): boolean {
+    if (typeof navigator === 'undefined') return true;
+
+    const userAgent = navigator.userAgent || '';
+    const crawlerPattern = /googlebot|google-inspectiontool|adsbot-google|mediapartners-google|storebot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|lighthouse|pagespeed/i;
+
+    return crawlerPattern.test(userAgent);
   }
 
   private lockBodyScroll() {
