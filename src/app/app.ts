@@ -60,10 +60,15 @@ export class App implements OnInit {
 
   private updateSeo(url: string) {
     const cleanPath = this.getCleanPath(url);
-    const isTerms = cleanPath === '/terms-view';
-    const isHome = cleanPath === '/';
+    const normalizedPath = this.normalizePath(cleanPath);
+    const isTerms = normalizedPath === '/terms-view';
+    const isHome = normalizedPath === '/';
     const isIndexable = isHome || isTerms;
-    const canonicalUrl = `${this.canonicalOrigin}${isHome ? '/' : cleanPath}`;
+    const canonicalUrl = isHome
+      ? `${this.canonicalOrigin}/`
+      : isTerms
+        ? `${this.canonicalOrigin}/terms-view/`
+        : `${this.canonicalOrigin}${normalizedPath}`;
 
     this.setCanonical(canonicalUrl);
     this.meta.updateTag({
@@ -92,6 +97,11 @@ export class App implements OnInit {
   private getCleanPath(url: string): string {
     const path = (url || '/').split('?')[0].split('#')[0] || '/';
     return path === '' ? '/' : path;
+  }
+
+  private normalizePath(path: string): string {
+    if (!path || path === '/') return '/';
+    return path.replace(/\/+$/, '');
   }
 
   private setCanonical(url: string) {

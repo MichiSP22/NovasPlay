@@ -171,7 +171,8 @@
   right: 0;
 }
 
-.footer-icon-mail {
+.footer-icon-mail,
+.footer-icon-social {
   width: 17px;
   height: 17px;
   flex: 0 0 17px;
@@ -179,6 +180,10 @@
 
 .footer-icon-mail {
   color: #79d7cf;
+}
+
+.footer-icon-social {
+  color: #e7c873;
 }
 
 .footer-bottom {
