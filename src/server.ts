@@ -15,6 +15,9 @@ const angularApp = new AngularNodeAppEngine();
 const privateRoutePattern = /^\/(admin|profile|checkout|cart-checkout|Access)(\/|$)/i;
 const prerenderedPages = new Map([
   ['/', 'index.html'],
+  ['/catalogo', 'catalogo/index.html'],
+  ['/recargas-free-fire', 'recargas-free-fire/index.html'],
+  ['/recargas-blood-strike', 'recargas-blood-strike/index.html'],
   ['/terms-view', 'terms-view/index.html'],
 ]);
 

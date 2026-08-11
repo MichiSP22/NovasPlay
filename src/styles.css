@@ -585,6 +585,10 @@ body::after {
     novasplay-chat-eye-glow 2.4s ease-in-out infinite;
 }
 
+.novasplay-chat-launcher__eye::before {
+  content: attr(data-letter);
+}
+
 .novasplay-chat-launcher__pulse {
   position: absolute;
   inset: 14px;
@@ -626,6 +630,10 @@ body::after {
   transition:
     opacity 0.18s ease,
     transform 0.18s ease;
+}
+
+.novasplay-chat-launcher__badge::before {
+  content: attr(data-count);
 }
 
 .novasplay-chat-launcher--notified:not(.novasplay-chat-launcher--opened)

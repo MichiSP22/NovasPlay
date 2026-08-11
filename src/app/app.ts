@@ -25,6 +25,20 @@ export class App implements OnInit {
   private meta = inject(Meta);
   private titleService = inject(Title);
   private readonly canonicalOrigin = 'https://novasplay.neocharge.app';
+  private readonly publicSeoPages: Record<string, { title: string; description: string }> = {
+    '/catalogo': {
+      title: 'Catalogo de recargas online | NovasPlay',
+      description: 'Explora el catalogo de NovasPlay para comprar recargas digitales, diamantes, monedas, pases y saldo gamer con pagos verificados y soporte directo.',
+    },
+    '/recargas-free-fire': {
+      title: 'Recargas Free Fire online | NovasPlay',
+      description: 'Compra recargas para Free Fire en NovasPlay. Selecciona diamantes o paquetes, registra tu ID de jugador y confirma tu pago con seguimiento.',
+    },
+    '/recargas-blood-strike': {
+      title: 'Recargas Blood Strike online | NovasPlay',
+      description: 'Compra recargas para Blood Strike en NovasPlay con pagos verificados, soporte directo y seguimiento de tu orden.',
+    },
+  };
 
   showAuthModal = false;
   isLoginMode = true;
@@ -63,12 +77,15 @@ export class App implements OnInit {
     const normalizedPath = this.normalizePath(cleanPath);
     const isTerms = normalizedPath === '/terms-view';
     const isHome = normalizedPath === '/';
-    const isIndexable = isHome || isTerms;
+    const seoPage = this.publicSeoPages[normalizedPath];
+    const isIndexable = isHome || isTerms || !!seoPage;
     const canonicalUrl = isHome
       ? `${this.canonicalOrigin}/`
       : isTerms
         ? `${this.canonicalOrigin}/terms-view/`
-        : `${this.canonicalOrigin}${normalizedPath}`;
+        : seoPage
+          ? `${this.canonicalOrigin}${normalizedPath}/`
+          : `${this.canonicalOrigin}${normalizedPath}`;
 
     this.setCanonical(canonicalUrl);
     this.meta.updateTag({
@@ -84,6 +101,20 @@ export class App implements OnInit {
         name: 'description',
         content: 'Consulta los términos y condiciones de uso de NovasPlay para compras, pagos y recargas online.',
       });
+      return;
+    }
+
+    if (seoPage) {
+      this.titleService.setTitle(seoPage.title);
+      this.meta.updateTag({
+        name: 'description',
+        content: seoPage.description,
+      });
+      this.meta.updateTag({ property: 'og:title', content: seoPage.title });
+      this.meta.updateTag({ property: 'og:description', content: seoPage.description });
+      this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
+      this.meta.updateTag({ name: 'twitter:title', content: seoPage.title });
+      this.meta.updateTag({ name: 'twitter:description', content: seoPage.description });
       return;
     }
 

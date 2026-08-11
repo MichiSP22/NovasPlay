@@ -8,6 +8,21 @@ import { APP_PATHS } from './routes/app-paths';
 
 export const routes: Routes = [
   { path: APP_PATHS.home, component: InicioComponent },
+  {
+    path: APP_PATHS.catalog,
+    loadComponent: () => import('./pages/seo/seo-landing-page').then(c => c.SeoLandingPageComponent),
+    data: { seoPage: 'catalog' },
+  },
+  {
+    path: APP_PATHS.freeFireSeo,
+    loadComponent: () => import('./pages/seo/seo-landing-page').then(c => c.SeoLandingPageComponent),
+    data: { seoPage: 'free-fire' },
+  },
+  {
+    path: APP_PATHS.bloodStrikeSeo,
+    loadComponent: () => import('./pages/seo/seo-landing-page').then(c => c.SeoLandingPageComponent),
+    data: { seoPage: 'blood-strike' },
+  },
   { path: APP_PATHS.checkout, component: Chekout },
   { path: APP_PATHS.cartCheckout, loadComponent: () => import('./pages/cart-checkout/cart-checkout').then(c => c.CartCheckoutComponent) },
   {

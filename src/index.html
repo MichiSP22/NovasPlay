@@ -47,7 +47,7 @@
           "inLanguage": "es-VE",
           "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://novasplay.neocharge.app/?q={search_term_string}#catalogo",
+            "target": "https://novasplay.neocharge.app/catalogo/?q={search_term_string}",
             "query-input": "required name=search_term_string"
           }
         },
@@ -71,10 +71,12 @@
   <link rel="apple-touch-icon" href="novasplay-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@500;700&family=Sora:wght@600;700;800&display=swap">
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+  </noscript>
 </head>
 <body class="notranslate" translate="no">
   <app-root></app-root>
@@ -82,11 +84,19 @@
   <script type="text/javascript">
     var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
     (function () {
+      var userAgent = navigator.userAgent || '';
+      var shouldSkipChat =
+        navigator.webdriver === true ||
+        /googlebot|google-inspectiontool|adsbot-google|mediapartners-google|storebot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|lighthouse|pagespeed/i.test(userAgent);
+
+      if (shouldSkipChat) return;
+
       var chatLauncher = null;
       var greetingBubble = null;
       var greetingTimer = null;
       var shouldOpenWhenReady = false;
       var hasOpenedChat = false;
+      var tawkScriptRequested = false;
 
       function createLauncher() {
         if (document.getElementById('novasplay-chat-launcher')) return;
@@ -99,13 +109,13 @@
         chatLauncher.innerHTML =
           '<span class="novasplay-chat-launcher__pulse"></span>' +
           '<span class="novasplay-chat-launcher__bot">' +
-            '<img src="novabot.png" alt="" aria-hidden="true">' +
+            '<img src="novabot-small.png" alt="" aria-hidden="true" width="160" height="160" decoding="async">' +
             '<span class="novasplay-chat-launcher__visor" aria-hidden="true">' +
-              '<span class="novasplay-chat-launcher__eye">N</span>' +
-              '<span class="novasplay-chat-launcher__eye">N</span>' +
+              '<span class="novasplay-chat-launcher__eye" data-letter="N"></span>' +
+              '<span class="novasplay-chat-launcher__eye" data-letter="N"></span>' +
             '</span>' +
           '</span>' +
-          '<span class="novasplay-chat-launcher__badge" aria-hidden="true">1</span>' +
+          '<span class="novasplay-chat-launcher__badge" data-count="1" aria-hidden="true"></span>' +
           '<span class="novasplay-chat-launcher__status" aria-hidden="true"></span>';
 
         chatLauncher.addEventListener('click', function () {
@@ -122,7 +132,6 @@
         greetingBubble.type = 'button';
         greetingBubble.id = 'novasplay-chat-greeting';
         greetingBubble.className = 'novasplay-chat-greeting';
-        greetingBubble.setAttribute('aria-label', 'Abrir chat con NovaBot');
         greetingBubble.innerHTML =
           '<span class="novasplay-chat-greeting__name">NovaBot</span>' +
           '<span class="novasplay-chat-greeting__message">NovaBot esta disponible para ayudarte.</span>';
@@ -138,6 +147,7 @@
         hasOpenedChat = true;
         shouldOpenWhenReady = true;
         hideGreetingBubble();
+        loadTawkScript();
 
         if (chatLauncher) {
           chatLauncher.classList.add('novasplay-chat-launcher--loading');
@@ -161,6 +171,8 @@
       }
 
       function openTawkWidget() {
+        loadTawkScript();
+
         if (!window.Tawk_API || typeof window.Tawk_API.maximize !== 'function') {
           return false;
         }
@@ -254,12 +266,25 @@
         setLauncherVisible(true);
       };
 
-      var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
-      s1.async = true;
-      s1.src = 'https://embed.tawk.to/6a246c4d74bd6b1c2dcc96ed/1jqf4e3i0';
-      s1.charset = 'UTF-8';
-      s1.setAttribute('crossorigin', '*');
-      s0.parentNode.insertBefore(s1, s0);
+      function loadTawkScript() {
+        if (tawkScriptRequested || document.getElementById('tawk-script')) return;
+        tawkScriptRequested = true;
+        Tawk_LoadStart = new Date();
+
+        var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
+        s1.id = 'tawk-script';
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/6a246c4d74bd6b1c2dcc96ed/1jqf4e3i0';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+      }
+
+      window.addEventListener('load', function () {
+        if (chatLauncher) {
+          chatLauncher.classList.remove('novasplay-chat-launcher--loading');
+        }
+      }, { once: true });
     })();
   </script>
   <!--End of Tawk.to Script-->

@@ -1303,8 +1303,24 @@
 
   .hero-novix-peek,
   .coin-burst,
-  .side-arcade {
+  .side-arcade,
+  .hero-hud,
+  .game-glyph,
+  .pixel-stream,
+  .hero-grid::before {
     display: none;
+  }
+
+  .backdrop-img {
+    animation: none;
+    filter: blur(10px) saturate(0.95) brightness(0.34);
+    transform: scale(1.03);
+  }
+
+  .spotlight-card::before,
+  .hero-primary::after,
+  .deck-card.active {
+    animation: none;
   }
 }
 /* Responsive global del hero principal */

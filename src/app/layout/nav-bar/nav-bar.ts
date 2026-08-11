@@ -110,16 +110,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   private setHeroItems(items: any[]) {
     this.Imagenes = items;
-    this.preloadHeroImages(items);
     Promise.resolve().then(() => {
       this.moveDeckTo(0, 0);
       this.activateHero(this.Imagenes[0], false).then(() => this.startHeroAutoplay());
-    });
-  }
-
-  private preloadHeroImages(items: any[]) {
-    items.forEach(item => {
-      this.loadHeroImage(item?.url);
     });
   }
 

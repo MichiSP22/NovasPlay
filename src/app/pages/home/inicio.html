@@ -19,7 +19,7 @@
       class="announcement-image-button"
       aria-label="Abrir anuncio"
       (click)="openAnnouncementTarget(activeAnnouncement())">
-      <img [src]="activeAnnouncement().link || ''" alt="Anuncio de NovasPlay" (load)="syncAnnouncementImageLayout($event)">
+      <img [src]="activeAnnouncement().link || ''" alt="Anuncio de NovasPlay" loading="eager" decoding="async" (load)="syncAnnouncementImageLayout($event)">
     </button>
 
     @if (announcementImages().length > 1) {
@@ -95,7 +95,7 @@
       <span class="welcome-flyer-orbit welcome-flyer-orbit-two"></span>
       <span class="welcome-flyer-stage"></span>
       <span class="welcome-flyer-screen-glow"></span>
-      <img class="welcome-flyer-novix" src="novix-inauguration-scene.png" alt="">
+      <img class="welcome-flyer-novix" src="novix-inauguration-scene-small.png" alt="" width="820" height="694" loading="eager" decoding="async">
       <span class="welcome-flyer-phone-grip"></span>
       <span class="welcome-flyer-platform">
         <span class="flyer-phone-shell">
@@ -118,7 +118,7 @@
               <span class="material-icons notranslate" translate="no">arrow_downward</span>
             </span>
             <span class="flyer-phone-game">
-              <img src="novasplay-feature-game.png" alt="">
+              <img src="novasplay-feature-game.png" alt="" width="359" height="217" loading="lazy" decoding="async">
               <span>
                 <small>Ahora en portada</small>
                 <b>Blood Strike</b>
@@ -172,6 +172,11 @@
         <p>
           NovasPlay reúne recargas digitales para jugadores que buscan rapidez, precios competitivos y acompañamiento real durante el proceso. Desde el catálogo puedes elegir el juego, seleccionar el paquete, registrar tus datos de jugador y confirmar el pago con seguimiento de tu orden.
         </p>
+        <nav class="seo-overview-links" aria-label="Paginas destacadas de recargas">
+          <a href="/catalogo/">Catalogo de recargas</a>
+          <a href="/recargas-free-fire/">Recargas Free Fire</a>
+          <a href="/recargas-blood-strike/">Recargas Blood Strike</a>
+        </nav>
       </div>
 
       <div class="seo-overview-grid" aria-label="Ventajas de comprar en NovasPlay">

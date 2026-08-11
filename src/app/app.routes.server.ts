@@ -6,6 +6,18 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender
   },
   {
+    path: 'catalogo',
+    renderMode: RenderMode.Prerender
+  },
+  {
+    path: 'recargas-free-fire',
+    renderMode: RenderMode.Prerender
+  },
+  {
+    path: 'recargas-blood-strike',
+    renderMode: RenderMode.Prerender
+  },
+  {
     path: 'terms-view',
     renderMode: RenderMode.Prerender
   },

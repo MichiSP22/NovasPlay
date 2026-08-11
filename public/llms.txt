@@ -1,0 +1,12 @@
+# NovasPlay
+
+NovasPlay es una plataforma de recargas digitales para juegos, enfocada en catalogo gamer, compras seguras, seguimiento de pedidos y soporte directo con NovaBot.
+
+## Enlaces principales
+
+- [Inicio](https://novasplay.neocharge.app/)
+- [Catalogo](https://novasplay.neocharge.app/catalogo/)
+- [Recargas Free Fire](https://novasplay.neocharge.app/recargas-free-fire/)
+- [Recargas Blood Strike](https://novasplay.neocharge.app/recargas-blood-strike/)
+- [Terminos y condiciones](https://novasplay.neocharge.app/terms-view/)
+- [Sitemap](https://novasplay.neocharge.app/sitemap.xml)

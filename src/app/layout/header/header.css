@@ -335,6 +335,10 @@
 
 .header-novix-guide img {
   width: 100%;
+  height: auto;
+  aspect-ratio: 180 / 116;
+  align-self: start;
+  object-fit: contain;
   display: block;
   filter:
     drop-shadow(0 18px 26px rgba(0, 0, 0, 0.34))

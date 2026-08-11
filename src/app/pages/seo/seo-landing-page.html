@@ -1,0 +1,85 @@
+<main class="seo-page">
+  <section class="seo-hero" aria-labelledby="seo-page-title">
+    <div class="seo-hero-copy">
+      <span class="seo-kicker">{{ page.kicker }}</span>
+      <h1 id="seo-page-title">{{ page.title }}</h1>
+      <p>{{ page.description }}</p>
+
+      <div class="seo-actions">
+        <a class="seo-primary" href="/#catalogo">
+          Ver catalogo
+          <span class="material-icons notranslate" translate="no" aria-hidden="true">arrow_forward</span>
+        </a>
+        <a class="seo-secondary" href="mailto:soporte@novasplay.com">
+          Contactar soporte
+        </a>
+      </div>
+    </div>
+
+    <div class="seo-visual" aria-hidden="true">
+      <img [src]="page.image" [alt]="page.imageAlt" width="420" height="300" loading="eager" decoding="async">
+      <span class="seo-visual-glow"></span>
+    </div>
+  </section>
+
+  <section class="seo-section" aria-labelledby="seo-benefits-title">
+    <div class="seo-section-heading">
+      <span class="seo-kicker">Por que NovasPlay</span>
+      <h2 id="seo-benefits-title">Una compra pensada para jugadores que quieren claridad.</h2>
+    </div>
+
+    <div class="seo-card-grid">
+      @for (highlight of page.highlights; track highlight) {
+        <article class="seo-info-card">
+          <span class="material-icons notranslate" translate="no" aria-hidden="true">verified</span>
+          <p>{{ highlight }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="seo-section seo-steps" aria-labelledby="seo-steps-title">
+    <div class="seo-section-heading">
+      <span class="seo-kicker">Proceso de compra</span>
+      <h2 id="seo-steps-title">Como comprar una recarga en NovasPlay.</h2>
+    </div>
+
+    <ol class="seo-step-list">
+      @for (step of page.steps; track step; let index = $index) {
+        <li>
+          <span>{{ index + 1 }}</span>
+          <p>{{ step }}</p>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="seo-section" aria-labelledby="seo-related-title">
+    <div class="seo-section-heading">
+      <span class="seo-kicker">Enlaces utiles</span>
+      <h2 id="seo-related-title">Explora mas opciones publicas de NovasPlay.</h2>
+    </div>
+
+    <nav class="seo-related" aria-label="Paginas relacionadas">
+      @for (link of page.related; track link.href) {
+        <a [href]="link.href">{{ link.label }}</a>
+      }
+    </nav>
+  </section>
+
+  <section class="seo-section seo-faq" aria-labelledby="seo-faq-title">
+    <div class="seo-section-heading">
+      <span class="seo-kicker">Preguntas frecuentes</span>
+      <h2 id="seo-faq-title">Dudas comunes antes de comprar.</h2>
+    </div>
+
+    <div class="seo-faq-list">
+      @for (item of page.faq; track item.question) {
+        <article>
+          <h3>{{ item.question }}</h3>
+          <p>{{ item.answer }}</p>
+        </article>
+      }
+    </div>
+  </section>
+</main>

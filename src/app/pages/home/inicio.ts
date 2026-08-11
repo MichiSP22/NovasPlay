@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
 import { NavBarComponent } from '../../layout/nav-bar/nav-bar';
 import { Catalog } from '../catalog/catalogo';
 import { Features } from '../../features/features';
@@ -34,6 +33,11 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.configService.getConfig().subscribe();
+    if (this.shouldSkipInitialPopup()) {
+      this.announcementsLoaded = true;
+      return;
+    }
+
     this.loadAnnouncements();
   }
 
@@ -42,7 +46,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initialPopupTimer = window.setTimeout(() => {
         this.initialPopupReady = true;
         this.tryOpenInitialPopup();
-      }, 700);
+      }, 900);
     }
 
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
@@ -205,17 +209,45 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private loadAnnouncements() {
     this.contentImageService.getActiveByCategory(ContentImageCategory.Announcements)
-      .pipe(finalize(() => {
-        this.announcementsLoaded = true;
-        this.tryOpenInitialPopup();
-      }))
       .subscribe({
         next: (res) => {
           const items = (res?.value || []).filter(item => !!item.link);
           this.announcementImages.set(items);
+          this.prepareInitialAnnouncement(items).finally(() => {
+            this.announcementsLoaded = true;
+            this.tryOpenInitialPopup();
+          });
         },
-        error: () => this.announcementImages.set([]),
+        error: () => {
+          this.announcementImages.set([]);
+          this.announcementsLoaded = true;
+          this.tryOpenInitialPopup();
+        },
       });
+  }
+
+  private prepareInitialAnnouncement(items: ContentImage[]): Promise<void> {
+    if (typeof window === 'undefined') return Promise.resolve();
+
+    const firstImage = items[0]?.link?.trim();
+    if (!firstImage) return Promise.resolve();
+
+    return new Promise(resolve => {
+      const image = new Image();
+      let finished = false;
+
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        window.clearTimeout(timeout);
+        resolve();
+      };
+
+      const timeout = window.setTimeout(done, 900);
+      image.onload = done;
+      image.onerror = done;
+      image.src = firstImage;
+    });
   }
 
   private tryOpenInitialPopup() {
@@ -239,7 +271,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     const userAgent = navigator.userAgent || '';
     const crawlerPattern = /googlebot|google-inspectiontool|adsbot-google|mediapartners-google|storebot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|lighthouse|pagespeed/i;
 
-    return crawlerPattern.test(userAgent);
+    return navigator.webdriver === true || crawlerPattern.test(userAgent);
   }
 
   private lockBodyScroll() {

@@ -28,10 +28,8 @@
   </div>
 
   <div class="hero-backdrop">
-    @if (Imagenes.length > 0) {
-      @for (img of Imagenes; track img.id || img.title; let i = $index) {
-        <img [src]="img.url" [alt]="img.title" class="backdrop-img" [class.active]="isActiveHero(img)" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i <= 1 ? 'eager' : 'lazy'">
-      }
+    @if (imagenActiva()) {
+      <img [src]="imagenActiva().url" [alt]="imagenActiva().title" class="backdrop-img active" fetchpriority="low" loading="eager" decoding="async" width="1600" height="900">
     }
   </div>
 
@@ -53,7 +51,7 @@
 
     <div class="hero-showcase">
       <div class="hero-stage">
-        <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek.png" alt="" aria-hidden="true">
+        <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek-small.png" alt="" aria-hidden="true" width="420" height="513" loading="eager" decoding="async">
         @if (imagenActiva()) {
           <div class="showcase-frame notranslate" translate="no">
           <span class="corner-piece corner-tl" aria-hidden="true"></span>
@@ -68,9 +66,7 @@
 
           <article class="spotlight-card">
             <div class="spotlight-media">
-              @for (img of Imagenes; track img.id || img.title; let i = $index) {
-                <img [src]="img.url" [alt]="img.title" [class.active]="isActiveHero(img)" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i <= 1 ? 'eager' : 'lazy'">
-              }
+              <img [src]="imagenActiva().url" [alt]="imagenActiva().title" class="active" fetchpriority="high" loading="eager" decoding="async" width="640" height="360">
               <span class="media-glow"></span>
             </div>
             <div class="spotlight-info">
@@ -91,7 +87,7 @@
       <div #heroDeck class="deck-track" role="list" aria-label="Productos destacados">
         @for (img of Imagenes; track img.id || img.title; let i = $index) {
           <button type="button" class="deck-card" role="listitem" [class.active]="isActiveHero(img)" (click)="selectHeroItem(img, i)">
-            <img [src]="img.iconUrl || img.url" [alt]="img.title" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" [attr.loading]="i === 0 ? 'eager' : 'lazy'" width="160" height="120">
+            <img [src]="img.iconUrl || img.url" [alt]="img.title" loading="lazy" decoding="async" width="160" height="120">
             <span class="deck-title notranslate" translate="no">{{ img.title }}</span>
           </button>
         }
