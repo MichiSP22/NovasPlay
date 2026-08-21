@@ -30,6 +30,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private initialPopupOpened = false;
   private announcementsLoaded = false;
   private previousBodyOverflow = '';
+  private previousHtmlOverflow = '';
   private bodyScrollLocked = false;
   private revealObserver?: IntersectionObserver;
 
@@ -45,10 +46,14 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (typeof window !== 'undefined') {
-      this.initialPopupTimer = window.setTimeout(() => {
+      if (this.prefersLiteExperience()) {
         this.initialPopupReady = true;
-        this.tryOpenInitialPopup();
-      }, this.prefersLiteExperience() ? 4800 : 2200);
+      } else {
+        this.initialPopupTimer = window.setTimeout(() => {
+          this.initialPopupReady = true;
+          this.tryOpenInitialPopup();
+        }, 2200);
+      }
     }
 
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
@@ -278,6 +283,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.initialPopupReady || !this.announcementsLoaded || this.initialPopupOpened) return;
     if (this.configService.maintenanceMode()) return;
     if (this.shouldSkipInitialPopup()) return;
+    if (this.prefersLiteExperience()) return;
 
     this.initialPopupOpened = true;
     if (this.announcementImages().length > 0) {
@@ -307,16 +313,26 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private lockBodyScroll() {
     if (typeof document === 'undefined' || this.bodyScrollLocked) return;
+    if (this.prefersLiteExperience()) return;
 
     this.previousBodyOverflow = document.body.style.overflow;
+    this.previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     this.bodyScrollLocked = true;
   }
 
   private unlockBodyScroll() {
-    if (typeof document === 'undefined' || !this.bodyScrollLocked) return;
+    if (typeof document === 'undefined') return;
 
-    document.body.style.overflow = this.previousBodyOverflow;
+    if (this.bodyScrollLocked) {
+      document.body.style.overflow = this.previousBodyOverflow;
+      document.documentElement.style.overflow = this.previousHtmlOverflow;
+    } else if (this.prefersLiteExperience()) {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
     this.bodyScrollLocked = false;
   }
 }

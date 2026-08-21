@@ -3992,16 +3992,10 @@
 }
 
 @media (max-width: 760px), (pointer: coarse) {
-  app-features,
-  app-catalogo,
   .trust-section,
   .seo-overview {
     content-visibility: auto;
     contain-intrinsic-size: 520px;
-  }
-
-  app-catalogo {
-    contain-intrinsic-size: 980px;
   }
 }
 

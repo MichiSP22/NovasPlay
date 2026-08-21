@@ -968,7 +968,16 @@ html.np-low-motion .novasplay-chat-launcher__pulse {
 
 html.np-lite body {
   background-attachment: scroll !important;
-  overscroll-behavior-y: contain;
+}
+
+html.np-lite,
+html.np-lite body {
+  height: auto !important;
+  min-height: 100%;
+  overflow-y: auto !important;
+  overscroll-behavior-y: auto !important;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 html.np-lite body::before,
