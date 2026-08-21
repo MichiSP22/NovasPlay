@@ -208,7 +208,7 @@ export class Catalog implements OnInit, OnDestroy {
   }
 
   getDisplayIcon(juego: Product): string {
-    return juego.iconInfo?.iconURL || juego.imageInfo?.iconURL || juego.imageInfo?.imageURL || '';
+    return juego.imageInfo?.imageURL || juego.imageInfo?.iconURL || juego.iconInfo?.iconURL || '';
   }
 
   irACheckout(juego: Product) {

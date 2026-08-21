@@ -71,7 +71,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
               return {
                 id: p.Id || p.id,
                 url: urlExtraida,
-                iconUrl: iconExtraido || urlExtraida,
+                iconUrl: urlExtraida || iconExtraido,
                 title: p.Name || p.name,
                 desc: p.Description || p.description || 'Domina el campo de batalla con las mejores recargas.'
               };
