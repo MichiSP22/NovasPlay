@@ -943,3 +943,25 @@ body::after {
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
   }
 }
+
+html.np-low-motion {
+  scroll-behavior: auto;
+}
+
+html.np-low-motion *,
+html.np-low-motion *::before,
+html.np-low-motion *::after {
+  animation: none !important;
+  animation-delay: 0s !important;
+  scroll-behavior: auto !important;
+}
+
+html.np-low-motion .scroll-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.np-low-motion .novasplay-chat-launcher__pulse {
+  display: none !important;
+}

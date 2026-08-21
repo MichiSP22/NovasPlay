@@ -1916,7 +1916,7 @@
 }
 
 @media (min-width: 901px) and (max-width: 1440px) and (prefers-reduced-motion: no-preference) {
-  .header-novix-guide {
+  :host-context(html:not(.np-low-motion)) .header-novix-guide {
     animation: headerNovixFloat 8s ease-in-out infinite !important;
   }
 }

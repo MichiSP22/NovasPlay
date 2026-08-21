@@ -11,6 +11,39 @@
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <link rel="canonical" href="https://novasplay.neocharge.app/">
   <meta name="theme-color" content="#081018">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var resizeTimer = null;
+
+      function matches(query) {
+        return typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
+      }
+
+      function applyRuntimeProfile() {
+        var nav = window.navigator || {};
+        var connection = nav.connection || nav.mozConnection || nav.webkitConnection || {};
+        var width = window.innerWidth || root.clientWidth || 1024;
+        var saveData = connection.saveData === true;
+        var slowConnection = /^(slow-2g|2g|3g)$/i.test(connection.effectiveType || '');
+        var lowMemory = typeof nav.deviceMemory === 'number' && nav.deviceMemory <= 4;
+        var lowCores = typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency <= 4;
+        var reducedMotion = matches('(prefers-reduced-motion: reduce)');
+        var touchScreen = matches('(pointer: coarse)');
+        var smallScreen = width <= 760;
+        var lite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || smallScreen || (touchScreen && width <= 900);
+
+        root.classList.toggle('np-lite', lite);
+        root.classList.toggle('np-low-motion', lite || reducedMotion || saveData || slowConnection);
+      }
+
+      applyRuntimeProfile();
+      window.addEventListener('resize', function () {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(applyRuntimeProfile, 160);
+      }, { passive: true });
+    })();
+  </script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="NovasPlay">
   <meta property="og:title" content="NovasPlay | Recargas online para juegos">
@@ -226,7 +259,13 @@
         }, 10000);
       }
 
+      function isLiteRuntime() {
+        return document.documentElement.classList.contains('np-lite') ||
+          document.documentElement.classList.contains('np-low-motion');
+      }
+
       function armAttentionCue() {
+        if (isLiteRuntime()) return;
         if (hasPlayedAlert()) return;
 
         window.setTimeout(function () {
@@ -237,9 +276,17 @@
         }, 1600);
       }
 
-      createLauncher();
-      createGreetingBubble();
-      armAttentionCue();
+      function bootNovaBotShell() {
+        createLauncher();
+        createGreetingBubble();
+        armAttentionCue();
+      }
+
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(bootNovaBotShell, { timeout: isLiteRuntime() ? 3200 : 900 });
+      } else {
+        window.setTimeout(bootNovaBotShell, isLiteRuntime() ? 2400 : 350);
+      }
 
       Tawk_API.onLoad = function () {
         if (shouldOpenWhenReady) {

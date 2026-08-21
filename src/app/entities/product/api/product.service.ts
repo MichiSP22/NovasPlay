@@ -20,6 +20,12 @@ export class ProductService {
     orderByField: 'Id',
     orderByAscending: false
   };
+  private readonly heroProductsQuery: SearchRequest = {
+    pageNumber: 1,
+    pageSize: 12,
+    orderByField: 'Id',
+    orderByAscending: false
+  };
 
   constructor() {
     this.productsChanged.subscribe(() => this.clearSearchCache());
@@ -49,7 +55,7 @@ export class ProductService {
     const params: any = { 
       'Pagination.PageNumber': (searchParams.pageNumber || 1).toString(), 
       'Pagination.PageSize': (searchParams.pageSize || 10).toString(),
-      'Select': ['Id', 'Name', 'Description', 'TimeMinDetail', 'TimeMaxDetail', 'SoldOut', 'InternalProcess', 'ImageURL', 'ProductsCategories_Category_Name']
+      'Select': ['Id', 'Name', 'Description', 'TimeMinDetail', 'TimeMaxDetail', 'SoldOut', 'InternalProcess', 'ImageURL', 'IconURL', 'ProductsCategories_Category_Name']
     };
     if (searchParams.orderByField) {
       params['OrderBy.Field'] = searchParams.orderByField;
@@ -89,6 +95,10 @@ export class ProductService {
 
   searchHomeProducts(): Observable<GenericResponse<any>> {
     return this.search(this.homeProductsQuery);
+  }
+
+  searchHeroProducts(): Observable<GenericResponse<any>> {
+    return this.search(this.heroProductsQuery);
   }
 
   create(product: Product): Observable<GenericResponse<string>> {

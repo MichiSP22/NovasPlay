@@ -17,16 +17,28 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   imagenActiva = signal<any>({ title: 'Cargando...', desc: 'Obteniendo juegos disponibles...' });
   heroProgressVisible = signal(false);
+  ambientHeroVisuals = signal(false);
+  backdropHeroVisuals = signal(false);
+  showHeroMascot = signal(false);
+  heroItemLimit = signal(4);
   Imagenes: any[] = [];
   @ViewChild('heroDeck') heroDeck?: ElementRef<HTMLElement>;
   private currentRealIndex = 0;
   private heroActivationId = 0;
   private autoplayTimer?: ReturnType<typeof setTimeout>;
+  private experienceMediaQueries: MediaQueryList[] = [];
+  private resizeTimer?: ReturnType<typeof setTimeout>;
+  private readonly experienceChangeHandler = () => this.updateExperienceMode();
+  private readonly resizeHandler = () => {
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(() => this.updateExperienceMode(), 160);
+  };
   private preloadedImages = new Map<string, Promise<void>>();
   readonly heroAutoplayDelay = 6800;
   private readonly heroTransitionMs = 1300;
 
   ngOnInit() {
+    this.setupExperienceMode();
     this.cargarJuegos();
     this.subscripcion = this.productService.productsChanged.subscribe(() => {
       this.cargarJuegos();
@@ -38,10 +50,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.subscripcion.unsubscribe();
     }
     this.pauseHeroAutoplay();
+    this.teardownExperienceMode();
   }
 
   cargarJuegos() {
-    this.productService.searchHomeProducts().subscribe({
+    this.productService.searchHeroProducts().subscribe({
       next: (res) => {
         if (res?.success && res.value && res.value.items) {
           const productos = res.value.items as any[];
@@ -64,8 +77,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
               };
             });
 
-          const maxHeroItems = this.prefersLiteExperience() ? 4 : 8;
-          this.setHeroItems(allItems.length ? this.shuffleArray(allItems).slice(0, maxHeroItems) : []);
+          this.setHeroItems(allItems.length ? this.shuffleArray(allItems).slice(0, this.heroItemLimit()) : []);
         }
       },
       error: () => this.setHeroItems([]),
@@ -241,10 +253,81 @@ export class NavBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  private prefersLiteExperience(): boolean {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  private setupExperienceMode() {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
 
-    return window.matchMedia('(max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
+    this.updateExperienceMode();
+    this.experienceMediaQueries = [
+      window.matchMedia('(max-width: 760px)'),
+      window.matchMedia('(max-width: 900px)'),
+      window.matchMedia('(max-width: 1280px)'),
+      window.matchMedia('(max-width: 1440px)'),
+      window.matchMedia('(pointer: coarse)'),
+      window.matchMedia('(prefers-reduced-motion: reduce)')
+    ];
+
+    this.experienceMediaQueries.forEach(query => {
+      if (typeof query.addEventListener === 'function') {
+        query.addEventListener('change', this.experienceChangeHandler);
+      } else {
+        query.addListener(this.experienceChangeHandler);
+      }
+    });
+
+    window.addEventListener('resize', this.resizeHandler, { passive: true });
+  }
+
+  private teardownExperienceMode() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
+
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer);
+      this.resizeTimer = undefined;
+    }
+
+    this.experienceMediaQueries.forEach(query => {
+      if (typeof query.removeEventListener === 'function') {
+        query.removeEventListener('change', this.experienceChangeHandler);
+      } else {
+        query.removeListener(this.experienceChangeHandler);
+      }
+    });
+    this.experienceMediaQueries = [];
+  }
+
+  private updateExperienceMode() {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+
+    const width = window.innerWidth || document.documentElement.clientWidth || 1024;
+    const nav = typeof navigator !== 'undefined' ? navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+      mozConnection?: { saveData?: boolean; effectiveType?: string };
+      webkitConnection?: { saveData?: boolean; effectiveType?: string };
+      deviceMemory?: number;
+    } : undefined;
+    const connection = nav?.connection || nav?.mozConnection || nav?.webkitConnection;
+    const saveData = connection?.saveData === true;
+    const slowConnection = /^(slow-2g|2g|3g)$/i.test(connection?.effectiveType || '');
+    const lowMemory = typeof nav?.deviceMemory === 'number' && nav.deviceMemory <= 4;
+    const lowCores = typeof nav?.hardwareConcurrency === 'number' && nav.hardwareConcurrency <= 4;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touchScreen = window.matchMedia('(pointer: coarse)').matches;
+    const smallScreen = width <= 760;
+    const runtimeLite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || smallScreen || (touchScreen && width <= 900);
+
+    this.liteExperience.set(runtimeLite || width <= 1440 || touchScreen);
+    this.ambientHeroVisuals.set(!runtimeLite && width >= 901);
+    this.backdropHeroVisuals.set(!runtimeLite && width >= 1280 && !touchScreen);
+    this.showHeroMascot.set(!runtimeLite && width >= 760);
+    this.heroItemLimit.set(runtimeLite ? 3 : width <= 1440 || touchScreen ? 5 : 8);
+  }
+
+  private liteExperience = signal(false);
+
+  private prefersLiteExperience(): boolean {
+    return this.liteExperience();
   }
 
   private shuffleArray(array: any[]) {

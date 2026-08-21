@@ -1,33 +1,35 @@
 <section class="hero-command">
-  <span class="hero-energy energy-a" aria-hidden="true"></span>
-  <span class="hero-energy energy-b" aria-hidden="true"></span>
-  <span class="hero-hud hud-a" aria-hidden="true"></span>
-  <span class="hero-hud hud-b" aria-hidden="true"></span>
-  <span class="game-glyph glyph-a material-icons notranslate" translate="no" aria-hidden="true">sports_esports</span>
-  <span class="game-glyph glyph-b material-icons notranslate" translate="no" aria-hidden="true">gamepad</span>
-  <span class="pixel-stream stream-a" aria-hidden="true"></span>
-  <span class="pixel-stream stream-b" aria-hidden="true"></span>
-  <span class="coin-burst coin-a material-icons notranslate" translate="no" aria-hidden="true">monetization_on</span>
-  <span class="coin-burst coin-b material-icons notranslate" translate="no" aria-hidden="true">paid</span>
-  <span class="coin-burst coin-c material-icons notranslate" translate="no" aria-hidden="true">toll</span>
-  <div class="side-arcade side-left" aria-hidden="true">
-    <span class="arcade-rail"></span>
-    <span class="arcade-node node-1"></span>
-    <span class="arcade-node node-2"></span>
-    <span class="arcade-node node-3"></span>
-    <span class="arcade-cross cross-1"></span>
-    <span class="arcade-bars"></span>
-  </div>
-  <div class="side-arcade side-right" aria-hidden="true">
-    <span class="arcade-rail"></span>
-    <span class="arcade-node node-1"></span>
-    <span class="arcade-node node-2"></span>
-    <span class="arcade-node node-3"></span>
-    <span class="arcade-cross cross-1"></span>
-    <span class="arcade-bars"></span>
-  </div>
+  @if (ambientHeroVisuals()) {
+    <span class="hero-energy energy-a" aria-hidden="true"></span>
+    <span class="hero-energy energy-b" aria-hidden="true"></span>
+    <span class="hero-hud hud-a" aria-hidden="true"></span>
+    <span class="hero-hud hud-b" aria-hidden="true"></span>
+    <span class="game-glyph glyph-a material-icons notranslate" translate="no" aria-hidden="true">sports_esports</span>
+    <span class="game-glyph glyph-b material-icons notranslate" translate="no" aria-hidden="true">gamepad</span>
+    <span class="pixel-stream stream-a" aria-hidden="true"></span>
+    <span class="pixel-stream stream-b" aria-hidden="true"></span>
+    <span class="coin-burst coin-a material-icons notranslate" translate="no" aria-hidden="true">monetization_on</span>
+    <span class="coin-burst coin-b material-icons notranslate" translate="no" aria-hidden="true">paid</span>
+    <span class="coin-burst coin-c material-icons notranslate" translate="no" aria-hidden="true">toll</span>
+    <div class="side-arcade side-left" aria-hidden="true">
+      <span class="arcade-rail"></span>
+      <span class="arcade-node node-1"></span>
+      <span class="arcade-node node-2"></span>
+      <span class="arcade-node node-3"></span>
+      <span class="arcade-cross cross-1"></span>
+      <span class="arcade-bars"></span>
+    </div>
+    <div class="side-arcade side-right" aria-hidden="true">
+      <span class="arcade-rail"></span>
+      <span class="arcade-node node-1"></span>
+      <span class="arcade-node node-2"></span>
+      <span class="arcade-node node-3"></span>
+      <span class="arcade-cross cross-1"></span>
+      <span class="arcade-bars"></span>
+    </div>
+  }
 
-  @if (imagenActiva()) {
+  @if (backdropHeroVisuals() && imagenActiva()) {
     <div class="hero-backdrop" aria-hidden="true">
       <img [src]="imagenActiva().url" alt="" class="hero-backdrop-img" fetchpriority="low" loading="lazy" decoding="async" width="960" height="540">
     </div>
@@ -51,7 +53,9 @@
 
     <div class="hero-showcase">
       <div class="hero-stage">
-        <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek-small.png" alt="" aria-hidden="true" width="420" height="513" loading="lazy" decoding="async" fetchpriority="low">
+        @if (showHeroMascot()) {
+          <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek-small.png" alt="" aria-hidden="true" width="420" height="513" loading="lazy" decoding="async" fetchpriority="low">
+        }
         @if (imagenActiva()) {
           <div class="showcase-frame notranslate" translate="no">
           <span class="corner-piece corner-tl" aria-hidden="true"></span>

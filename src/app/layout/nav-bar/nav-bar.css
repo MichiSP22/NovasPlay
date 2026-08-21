@@ -2112,39 +2112,72 @@
   }
 }
 
+:host-context(.np-low-motion) .hero-backdrop,
+:host-context(.np-low-motion) .hero-energy,
+:host-context(.np-low-motion) .hero-hud,
+:host-context(.np-low-motion) .game-glyph,
+:host-context(.np-low-motion) .pixel-stream,
+:host-context(.np-low-motion) .coin-burst,
+:host-context(.np-low-motion) .side-arcade {
+  display: none !important;
+}
+
+:host-context(.np-low-motion) .hero-command,
+:host-context(.np-low-motion) .hero-command::before,
+:host-context(.np-low-motion) .hero-command::after,
+:host-context(.np-low-motion) .hero-grid::before,
+:host-context(.np-low-motion) .showcase-frame,
+:host-context(.np-low-motion) .showcase-frame::before,
+:host-context(.np-low-motion) .spotlight-card::before,
+:host-context(.np-low-motion) .deck-card.active {
+  animation: none !important;
+}
+
+:host-context(.np-low-motion) .showcase-frame {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.np-low-motion) .spotlight-media img {
+  transform: none !important;
+  transition: opacity 180ms ease;
+  will-change: auto;
+}
+
 @media (min-width: 901px) and (max-width: 1440px) and (prefers-reduced-motion: no-preference) {
-  .hero-energy {
+  :host-context(html:not(.np-low-motion)) .hero-energy {
     display: block !important;
     opacity: 0.36;
     animation: energyPass 10s ease-in-out infinite !important;
   }
 
-  .hero-hud {
+  :host-context(html:not(.np-low-motion)) .hero-hud {
     display: block !important;
     opacity: 0.24;
     animation: hudPulse 8.5s ease-in-out infinite !important;
   }
 
-  .coin-burst {
+  :host-context(html:not(.np-low-motion)) .coin-burst {
     display: grid !important;
     opacity: 0.48;
     animation: coinFloat 11s ease-in-out infinite !important;
   }
 
-  .hero-grid::before {
+  :host-context(html:not(.np-low-motion)) .hero-grid::before {
     opacity: 0.35;
     animation: premiumAura 14s ease-in-out infinite alternate !important;
   }
 
-  .hero-stage .showcase-frame {
+  :host-context(html:not(.np-low-motion)) .hero-stage .showcase-frame {
     animation: heroFrameLite 8.5s ease-in-out infinite !important;
   }
 
-  .hero-stage .hero-novix-peek {
+  :host-context(html:not(.np-low-motion)) .hero-stage .hero-novix-peek {
     animation: novixPeekDocked 8s ease-in-out infinite !important;
   }
 
-  .deck-card.active {
+  :host-context(html:not(.np-low-motion)) .deck-card.active {
     animation: deckAliveLite 9s ease-in-out infinite !important;
   }
 }

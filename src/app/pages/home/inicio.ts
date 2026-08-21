@@ -48,7 +48,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initialPopupTimer = window.setTimeout(() => {
         this.initialPopupReady = true;
         this.tryOpenInitialPopup();
-      }, this.prefersLiteExperience() ? 3200 : 2200);
+      }, this.prefersLiteExperience() ? 4800 : 2200);
     }
 
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
@@ -222,7 +222,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.announcementLoadTimer = window.setTimeout(() => {
       this.loadAnnouncements();
-    }, this.prefersLiteExperience() ? 1800 : 900);
+    }, this.prefersLiteExperience() ? 2600 : 900);
   }
 
   private loadAnnouncements() {
@@ -295,7 +295,9 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private prefersLiteExperience(): boolean {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
 
-    return window.matchMedia('(max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
+    const root = typeof document !== 'undefined' ? document.documentElement : null;
+    return root?.classList.contains('np-lite') === true ||
+      window.matchMedia('(max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
   }
 
   private lockBodyScroll() {
