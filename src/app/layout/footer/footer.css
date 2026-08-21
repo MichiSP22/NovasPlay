@@ -262,7 +262,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .main-footer,
   .main-footer::after,
   .brand-mark::after,

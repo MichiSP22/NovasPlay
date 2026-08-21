@@ -914,3 +914,32 @@ body::after {
     width: min(220px, calc(100vw - 96px));
   }
 }
+
+@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .novasplay-chat-launcher,
+  .novasplay-chat-launcher__bot,
+  .novasplay-chat-launcher__eye,
+  .novasplay-chat-launcher__pulse,
+  .novasplay-chat-launcher--attention,
+  .novasplay-chat-greeting {
+    animation: none !important;
+  }
+
+  .novasplay-chat-launcher img {
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.36));
+  }
+
+  .novasplay-chat-launcher__pulse {
+    display: none;
+  }
+
+  .novasplay-chat-greeting {
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+  }
+}

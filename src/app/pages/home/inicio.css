@@ -3924,3 +3924,77 @@
     width: min(240px, 100%);
   }
 }
+
+@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .welcome-flyer-backdrop,
+  .welcome-flyer,
+  .welcome-flyer::before,
+  .welcome-flyer-primary::before,
+  .welcome-flyer-visual::before,
+  .welcome-flyer-platform,
+  .welcome-flyer-novix,
+  .welcome-flyer-aura,
+  .welcome-flyer-orbit,
+  .welcome-flyer-stage,
+  .welcome-flyer-screen-glow,
+  .welcome-flyer-coin,
+  .welcome-flyer-spark,
+  .trust-section,
+  .trust-section::before,
+  .trust-section::after,
+  .trust-grid::before,
+  .trust-card,
+  .announcement-popup,
+  .announcement-dots button {
+    animation: none !important;
+  }
+
+  .welcome-flyer-backdrop,
+  .announcement-popup-backdrop {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .welcome-flyer {
+    box-shadow: 0 24px 62px rgba(0, 0, 0, 0.5);
+  }
+
+  .welcome-flyer::before,
+  .welcome-flyer-orbit,
+  .welcome-flyer-stage,
+  .welcome-flyer-screen-glow,
+  .welcome-flyer-coin,
+  .welcome-flyer-spark,
+  .welcome-flyer-phone-grip {
+    display: none !important;
+  }
+
+  .welcome-flyer-novix {
+    filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.46));
+    transform: none;
+  }
+
+  .welcome-flyer-visual::before,
+  .welcome-flyer-aura {
+    filter: none;
+    opacity: 0.46;
+  }
+
+  .welcome-flyer-platform,
+  .flyer-phone-shell,
+  .announcement-image-button {
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  }
+
+  .trust-card {
+    transition: border-color 0.16s ease, background 0.16s ease;
+  }
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  .trust-section,
+  .seo-overview {
+    content-visibility: auto;
+    contain-intrinsic-size: 520px;
+  }
+}

@@ -1664,5 +1664,34 @@
 
 }
 
+@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .art-label,
+  .novix-message {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .novix-guide,
+  .novix-stage,
+  .novix-stage::before,
+  .novix-character,
+  .novix-character-mobile,
+  .novix-line,
+  .novix-pointer .material-icons {
+    animation: none !important;
+  }
+
+  .novix-stage::before {
+    filter: none;
+    opacity: 0.42;
+  }
+
+  .novix-character,
+  .novix-character-mobile {
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.34));
+    will-change: auto;
+  }
+}
+
 
 

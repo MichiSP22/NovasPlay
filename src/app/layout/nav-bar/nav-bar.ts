@@ -64,7 +64,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
               };
             });
 
-          this.setHeroItems(allItems.length ? this.shuffleArray(allItems).slice(0, 10) : []);
+          const maxHeroItems = this.prefersLiteExperience() ? 4 : 8;
+          this.setHeroItems(allItems.length ? this.shuffleArray(allItems).slice(0, maxHeroItems) : []);
         }
       },
       error: () => this.setHeroItems([]),
@@ -150,6 +151,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   startHeroAutoplay() {
     this.pauseHeroAutoplay();
+    if (this.prefersLiteExperience()) return;
     if (this.Imagenes.length <= 1) return;
 
     this.autoplayTimer = setTimeout(() => {
@@ -205,6 +207,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   private restartHeroProgress() {
     this.heroProgressVisible.set(false);
+    if (this.prefersLiteExperience()) return;
     if (this.Imagenes.length <= 1) return;
 
     const scheduleFrame = typeof requestAnimationFrame === 'function'
@@ -236,6 +239,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
       left: Math.max(0, targetLeft),
       behavior: speed > 0 ? 'smooth' : 'auto',
     });
+  }
+
+  private prefersLiteExperience(): boolean {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+
+    return window.matchMedia('(max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
   }
 
   private shuffleArray(array: any[]) {

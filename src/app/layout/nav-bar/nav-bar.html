@@ -27,11 +27,11 @@
     <span class="arcade-bars"></span>
   </div>
 
-  <div class="hero-backdrop">
-    @if (imagenActiva()) {
-      <img [src]="imagenActiva().url" [alt]="imagenActiva().title" class="backdrop-img active" fetchpriority="low" loading="eager" decoding="async" width="1600" height="900">
-    }
-  </div>
+  @if (imagenActiva()) {
+    <div class="hero-backdrop" aria-hidden="true">
+      <img [src]="imagenActiva().url" alt="" class="hero-backdrop-img" fetchpriority="low" loading="lazy" decoding="async" width="960" height="540">
+    </div>
+  }
 
   <div class="hero-grid">
     <aside class="hero-copy-panel">
@@ -51,7 +51,7 @@
 
     <div class="hero-showcase">
       <div class="hero-stage">
-        <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek-small.png" alt="" aria-hidden="true" width="420" height="513" loading="eager" decoding="async">
+        <img class="hero-novix-peek hero-novix-peek-back" src="novix-hero-peek-small.png" alt="" aria-hidden="true" width="420" height="513" loading="lazy" decoding="async" fetchpriority="low">
         @if (imagenActiva()) {
           <div class="showcase-frame notranslate" translate="no">
           <span class="corner-piece corner-tl" aria-hidden="true"></span>

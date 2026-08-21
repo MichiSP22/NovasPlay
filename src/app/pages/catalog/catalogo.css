@@ -1399,3 +1399,64 @@
     display: none;
   }
 }
+
+@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .catalog-wrapper,
+  .catalog-wrapper::before,
+  .catalog-wrapper::after,
+  .catalog-showcase,
+  .catalog-showcase::after,
+  .showcase-copy,
+  .showcase-copy::before,
+  .showcase-bg-grid,
+  .showcase-controller,
+  .showcase-coin,
+  .showcase-pixel,
+  .showcase-circuit,
+  .showcase-card,
+  .showcase-card::after,
+  .orbit-ring,
+  .orbit-core,
+  .orbit-core::after,
+  .scan-line,
+  .nova-dot,
+  .heading-line,
+  .heading-accent,
+  .card-ribbon,
+  .skeleton-pulse,
+  .popular-card,
+  .catalog-board {
+    animation: none !important;
+  }
+
+  .catalog-wrapper {
+    background-size: auto;
+  }
+
+  .catalog-wrapper::after,
+  .showcase-controller,
+  .showcase-coin,
+  .showcase-pixel,
+  .showcase-circuit,
+  .scan-line,
+  .nova-dot,
+  .catalog-showcase::after {
+    display: none !important;
+  }
+
+  .catalog-showcase,
+  .game-card,
+  .catalog-board {
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+  }
+
+  .showcase-card,
+  .showcase-card img,
+  .game-img {
+    filter: none !important;
+  }
+
+  .popular-card {
+    transition: transform 0.16s ease, border-color 0.16s ease;
+  }
+}

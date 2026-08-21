@@ -25,11 +25,13 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   public activeAnnouncement = computed(() => this.announcementImages()[this.activeAnnouncementIndex()] || null);
 
   private initialPopupTimer?: number;
+  private announcementLoadTimer?: number;
   private initialPopupReady = false;
   private initialPopupOpened = false;
   private announcementsLoaded = false;
   private previousBodyOverflow = '';
   private bodyScrollLocked = false;
+  private revealObserver?: IntersectionObserver;
 
   ngOnInit() {
     this.configService.getConfig().subscribe();
@@ -38,7 +40,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.loadAnnouncements();
+    this.scheduleAnnouncementLoad();
   }
 
   ngAfterViewInit() {
@@ -46,22 +48,22 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initialPopupTimer = window.setTimeout(() => {
         this.initialPopupReady = true;
         this.tryOpenInitialPopup();
-      }, 900);
+      }, this.prefersLiteExperience() ? 3200 : 2200);
     }
 
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
 
-    const revealItems = document.querySelectorAll('.scroll-reveal, .popular-card');
-    const observer = new IntersectionObserver((entries) => {
+    const revealItems = document.querySelectorAll('.scroll-reveal');
+    this.revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          this.revealObserver?.unobserve(entry.target);
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
 
-    revealItems.forEach(item => observer.observe(item));
+    revealItems.forEach(item => this.revealObserver?.observe(item));
   }
 
   ngOnDestroy() {
@@ -69,6 +71,11 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       clearTimeout(this.initialPopupTimer);
     }
 
+    if (this.announcementLoadTimer) {
+      clearTimeout(this.announcementLoadTimer);
+    }
+
+    this.revealObserver?.disconnect();
     this.unlockBodyScroll();
   }
 
@@ -207,6 +214,17 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 80);
   }
 
+  private scheduleAnnouncementLoad() {
+    if (typeof window === 'undefined') {
+      this.announcementsLoaded = true;
+      return;
+    }
+
+    this.announcementLoadTimer = window.setTimeout(() => {
+      this.loadAnnouncements();
+    }, this.prefersLiteExperience() ? 1800 : 900);
+  }
+
   private loadAnnouncements() {
     this.contentImageService.getActiveByCategory(ContentImageCategory.Announcements)
       .subscribe({
@@ -272,6 +290,12 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     const crawlerPattern = /googlebot|google-inspectiontool|adsbot-google|mediapartners-google|storebot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|lighthouse|pagespeed/i;
 
     return navigator.webdriver === true || crawlerPattern.test(userAgent);
+  }
+
+  private prefersLiteExperience(): boolean {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+
+    return window.matchMedia('(max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
   }
 
   private lockBodyScroll() {

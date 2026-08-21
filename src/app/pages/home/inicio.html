@@ -19,7 +19,7 @@
       class="announcement-image-button"
       aria-label="Abrir anuncio"
       (click)="openAnnouncementTarget(activeAnnouncement())">
-      <img [src]="activeAnnouncement().link || ''" alt="Anuncio de NovasPlay" loading="eager" decoding="async" (load)="syncAnnouncementImageLayout($event)">
+      <img [src]="activeAnnouncement().link || ''" alt="Anuncio de NovasPlay" loading="lazy" decoding="async" fetchpriority="low" (load)="syncAnnouncementImageLayout($event)">
     </button>
 
     @if (announcementImages().length > 1) {
@@ -95,7 +95,7 @@
       <span class="welcome-flyer-orbit welcome-flyer-orbit-two"></span>
       <span class="welcome-flyer-stage"></span>
       <span class="welcome-flyer-screen-glow"></span>
-      <img class="welcome-flyer-novix" src="novix-inauguration-scene-small.png" alt="" width="820" height="694" loading="eager" decoding="async">
+      <img class="welcome-flyer-novix" src="novix-inauguration-scene-lite.png" alt="" width="640" height="542" loading="lazy" decoding="async" fetchpriority="low">
       <span class="welcome-flyer-phone-grip"></span>
       <span class="welcome-flyer-platform">
         <span class="flyer-phone-shell">
