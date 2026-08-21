@@ -1676,7 +1676,7 @@
   }
 }
 
-@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .header {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -1915,7 +1915,7 @@
   }
 }
 
-@media (min-width: 901px) and (max-width: 1440px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 901px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   :host-context(html:not(.np-low-motion)) .header-novix-guide {
     animation: headerNovixFloat 8s ease-in-out infinite !important;
   }

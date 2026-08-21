@@ -30,8 +30,7 @@
         var lowCores = typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency <= 4;
         var reducedMotion = matches('(prefers-reduced-motion: reduce)');
         var touchScreen = matches('(pointer: coarse)');
-        var smallScreen = width <= 760;
-        var lite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || smallScreen || (touchScreen && width <= 900);
+        var lite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || touchScreen;
 
         root.classList.toggle('np-lite', lite);
         root.classList.toggle('np-low-motion', lite || reducedMotion || saveData || slowConnection);

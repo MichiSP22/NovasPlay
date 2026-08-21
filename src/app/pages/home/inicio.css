@@ -3925,7 +3925,7 @@
   }
 }
 
-@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .welcome-flyer-backdrop,
   .welcome-flyer,
   .welcome-flyer::before,
@@ -4023,7 +4023,7 @@
   animation: none !important;
 }
 
-@media (min-width: 901px) and (max-width: 1440px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 901px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   :host-context(html:not(.np-low-motion)) .welcome-flyer {
     animation: flyerEnter 0.24s cubic-bezier(0.2, 0.85, 0.2, 1) !important;
   }

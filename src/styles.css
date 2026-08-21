@@ -915,7 +915,7 @@ body::after {
   }
 }
 
-@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .scroll-reveal {
     opacity: 1;
     transform: none;
@@ -963,5 +963,62 @@ html.np-low-motion .scroll-reveal {
 }
 
 html.np-low-motion .novasplay-chat-launcher__pulse {
+  display: none !important;
+}
+
+html.np-lite body {
+  background-attachment: scroll !important;
+  overscroll-behavior-y: contain;
+}
+
+html.np-lite body::before,
+html.np-lite body::after {
+  display: none !important;
+}
+
+html.np-lite .scroll-reveal,
+html.np-lite .popular-card {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.np-lite .hero-command,
+html.np-lite .catalog-wrapper,
+html.np-lite .checkout-page,
+html.np-lite .cart-checkout-page,
+html.np-lite .profile-page {
+  background-attachment: scroll !important;
+}
+
+html.np-lite .showcase-frame,
+html.np-lite .spotlight-card,
+html.np-lite .deck-card,
+html.np-lite .catalog-showcase,
+html.np-lite .catalog-board,
+html.np-lite .game-card,
+html.np-lite .launch-notice-shell,
+html.np-lite .trust-card,
+html.np-lite .seo-overview-shell,
+html.np-lite .welcome-flyer,
+html.np-lite .announcement-popup {
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24) !important;
+  will-change: auto !important;
+}
+
+html.np-lite img,
+html.np-lite video {
+  filter: none !important;
+}
+
+html.np-lite .novasplay-chat-launcher {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+html.np-lite .novasplay-chat-greeting {
   display: none !important;
 }

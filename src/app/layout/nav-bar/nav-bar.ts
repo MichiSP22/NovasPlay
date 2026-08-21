@@ -261,7 +261,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
       window.matchMedia('(max-width: 760px)'),
       window.matchMedia('(max-width: 900px)'),
       window.matchMedia('(max-width: 1280px)'),
-      window.matchMedia('(max-width: 1440px)'),
       window.matchMedia('(pointer: coarse)'),
       window.matchMedia('(prefers-reduced-motion: reduce)')
     ];
@@ -314,14 +313,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
     const lowCores = typeof nav?.hardwareConcurrency === 'number' && nav.hardwareConcurrency <= 4;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const touchScreen = window.matchMedia('(pointer: coarse)').matches;
-    const smallScreen = width <= 760;
-    const runtimeLite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || smallScreen || (touchScreen && width <= 900);
+    const runtimeLite = reducedMotion || saveData || slowConnection || lowMemory || lowCores || touchScreen;
 
-    this.liteExperience.set(runtimeLite || width <= 1440 || touchScreen);
+    this.liteExperience.set(runtimeLite);
     this.ambientHeroVisuals.set(!runtimeLite && width >= 901);
-    this.backdropHeroVisuals.set(!runtimeLite && width >= 1280 && !touchScreen);
-    this.showHeroMascot.set(!runtimeLite && width >= 760);
-    this.heroItemLimit.set(runtimeLite ? 3 : width <= 1440 || touchScreen ? 5 : 8);
+    this.backdropHeroVisuals.set(!runtimeLite && width >= 960);
+    this.showHeroMascot.set(!runtimeLite && width >= 560);
+    this.heroItemLimit.set(runtimeLite ? 3 : 8);
   }
 
   private liteExperience = signal(false);

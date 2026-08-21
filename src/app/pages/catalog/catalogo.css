@@ -1365,7 +1365,7 @@
   }
 }
 
-@media (max-width: 1440px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .catalog-wrapper,
   .catalog-wrapper::before,
   .catalog-wrapper::after,

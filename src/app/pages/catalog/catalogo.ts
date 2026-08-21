@@ -152,6 +152,11 @@ export class Catalog implements OnInit, OnDestroy {
       const cards = document.querySelectorAll('#catalog-section .popular-card:not(.is-visible)');
       if (!cards.length) return;
 
+      if (document.documentElement.classList.contains('np-lite')) {
+        cards.forEach(card => card.classList.add('is-visible'));
+        return;
+      }
+
       if (typeof IntersectionObserver === 'undefined') {
         cards.forEach(card => card.classList.add('is-visible'));
         return;

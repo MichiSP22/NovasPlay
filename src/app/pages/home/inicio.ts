@@ -54,6 +54,11 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
 
     const revealItems = document.querySelectorAll('.scroll-reveal');
+    if (this.prefersLiteExperience()) {
+      revealItems.forEach(item => item.classList.add('is-visible'));
+      return;
+    }
+
     this.revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
