@@ -514,6 +514,32 @@
   display: none;
 }
 
+@media (min-width: 1121px) {
+  .novix-guide {
+    min-height: 278px;
+    grid-template-rows: minmax(164px, 1fr) auto;
+  }
+
+  .novix-stage {
+    min-height: 164px;
+    overflow: visible;
+  }
+
+  .novix-stage::before {
+    bottom: 10px;
+    width: 192px;
+  }
+
+  .novix-character-desktop {
+    left: 50%;
+    bottom: 8px;
+    width: auto;
+    max-width: calc(100% - 18px);
+    height: min(146px, calc(100% - 18px));
+    object-fit: contain;
+  }
+}
+
 @keyframes novixFloat {
   0%,
   100% {
@@ -1045,6 +1071,22 @@
   background: var(--secondary-400);
 }
 
+.pkg-quick-add {
+  display: none;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-300), var(--secondary-400));
+  color: #07101a;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.pkg-quick-add:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .soldout-label {
   position: absolute;
   top: 10px;
@@ -1520,6 +1562,32 @@
     display: grid;
     gap: 12px;
   }
+
+  .pkg-card {
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+  }
+
+  .pkg-select {
+    display: none;
+  }
+
+  .pkg-quick-add {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+
+  .pkg-quick-add .material-icons {
+    font-size: 19px;
+  }
+
+  .packages-panel .selection-bar {
+    display: none;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1619,7 +1687,7 @@
 
   .pay-item,
   .pkg-card {
-    grid-template-columns: 48px minmax(0, 1fr) 30px;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
     padding: 12px;
   }
 

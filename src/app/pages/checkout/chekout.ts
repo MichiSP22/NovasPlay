@@ -490,6 +490,14 @@ export class Chekout implements OnInit, OnDestroy {
     this.triggerNovixReaction('success', 'Paquete marcado. Si todo esta bien, agregalo a la lista.');
   }
 
+  agregarPaqueteRapido(p: Paquete, event?: Event) {
+    event?.stopPropagation();
+    if (p.soldOut) return;
+
+    this.paqueteSeleccionado.set(p);
+    this.agregarAlCarrito();
+  }
+
   seleccionarPago(metodo: any) {
     const id = this.getPaymentId(metodo);
     const name = metodo.Name || metodo.name;

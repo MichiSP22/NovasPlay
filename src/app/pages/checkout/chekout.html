@@ -246,12 +246,17 @@
             } @else {
               <div class="packages-list">
                 @for (p of paquetesDinamicos(); track p.id) {
-                  <button
+                  <article
                     class="pkg-card"
-                    type="button"
+                    role="button"
+                    [attr.tabindex]="p.soldOut ? -1 : 0"
+                    [attr.aria-pressed]="paqueteSeleccionado()?.id === p.id"
+                    [attr.aria-disabled]="p.soldOut"
                     [class.selected]="paqueteSeleccionado()?.id === p.id"
                     [class.is-sold-out]="p.soldOut"
-                    (click)="seleccionarPaquete(p)">
+                    (click)="seleccionarPaquete(p)"
+                    (keydown.enter)="seleccionarPaquete(p)"
+                    (keydown.space)="$event.preventDefault(); seleccionarPaquete(p)">
                     @if (p.soldOut) {
                       <span class="soldout-label">Agotado</span>
                     }
@@ -281,7 +286,16 @@
                         {{ paqueteSeleccionado()?.id === p.id ? 'check' : 'add' }}
                       </span>
                     </span>
-                  </button>
+
+                    <button
+                      class="pkg-quick-add"
+                      type="button"
+                      [disabled]="p.soldOut"
+                      (click)="agregarPaqueteRapido(p, $event)">
+                      <span class="material-icons notranslate" translate="no">playlist_add</span>
+                      Añadir
+                    </button>
+                  </article>
                 }
               </div>
 
