@@ -140,7 +140,7 @@
                     <button class="account-help-btn" type="button" aria-label="Ver donde encontrar tu ID y Zone ID">
                       <span class="material-icons notranslate" translate="no">help</span>
                       <span class="account-help-popover" aria-hidden="true">
-                        <img src="/mobile-legends-id-guide.jpeg" alt="">
+                        <img src="/mobile-legends-id-guide.jpeg" alt="" loading="lazy" decoding="async">
                         <strong>Busca tu ID en tu perfil del juego.</strong>
                         <small>El primer numero es tu ID y el numero entre parentesis es el Zone ID.</small>
                       </span>
@@ -158,7 +158,7 @@
                         inputmode="numeric"
                         [(ngModel)]="idUsuario"
                         (ngModelChange)="clearIdAttention()"
-                        placeholder="Ej: 1756529665"
+                        placeholder="Ej: 12345678"
                         required>
                     </label>
 
@@ -172,7 +172,7 @@
                         maxlength="4"
                         [(ngModel)]="zoneIdUsuario"
                         (ngModelChange)="clearZoneAttention()"
-                        placeholder="1776"
+                        placeholder="1234"
                         required>
                       <span class="zone-mark">)</span>
                     </label>

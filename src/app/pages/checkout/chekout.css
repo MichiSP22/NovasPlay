@@ -802,6 +802,7 @@
 }
 
 .account-field {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 9px;
@@ -845,10 +846,11 @@
 
 .account-help-popover {
   position: absolute;
-  right: 0;
-  top: calc(100% + 12px);
+  right: calc(100% + 12px);
+  top: 50%;
   z-index: 8;
-  width: min(330px, calc(100vw - 48px));
+  width: min(310px, calc(100vw - 48px));
+  max-height: min(330px, calc(100vh - 112px));
   display: grid;
   gap: 8px;
   padding: 10px;
@@ -858,7 +860,8 @@
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.46);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(8px) scale(0.98);
+  overflow: auto;
+  transform: translateY(calc(-50% + 8px)) scale(0.98);
   transition: opacity 160ms ease, transform 160ms ease;
 }
 
@@ -866,13 +869,16 @@
 .account-help-btn:focus .account-help-popover,
 .account-help-btn:focus-visible .account-help-popover {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(-50%) scale(1);
 }
 
 .account-help-popover img {
   width: 100%;
+  aspect-ratio: 16 / 9;
   display: block;
+  object-fit: contain;
   border-radius: 8px;
+  background: rgba(121, 215, 207, 0.08);
 }
 
 .account-help-popover strong {
@@ -1713,6 +1719,20 @@
 
   .ml-zone-box {
     column-gap: 5px;
+  }
+
+  .account-help-popover {
+    right: 0;
+    top: calc(100% + 10px);
+    width: min(300px, calc(100vw - 56px));
+    max-height: 280px;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  .account-help-btn:hover .account-help-popover,
+  .account-help-btn:focus .account-help-popover,
+  .account-help-btn:focus-visible .account-help-popover {
+    transform: translateY(0) scale(1);
   }
 }
 
