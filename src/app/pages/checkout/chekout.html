@@ -126,15 +126,32 @@
             <div class="panel-body">
               <div class="panel-heading">
                 <span class="panel-kicker">Cuenta destino</span>
-                <h2>{{ isMobileLegendsRecharge() ? 'Ingresa tu ID de usuario' : 'Identifica al jugador' }}</h2>
+                <h2>
+                  @if (isRobloxRecharge()) {
+                    Indica el correo de entrega
+                  } @else if (isMobileLegendsRecharge()) {
+                    Ingresa tu ID de usuario
+                  } @else {
+                    Identifica al jugador
+                  }
+                </h2>
               </div>
 
               <div
                 class="account-field"
                 [class.mobile-legends-field]="isMobileLegendsRecharge()"
+                [class.roblox-field]="isRobloxRecharge()"
                 [class.needs-attention]="idAttention() || zoneAttention()">
                 <div class="account-field-heading">
-                  <span>{{ isMobileLegendsRecharge() ? 'ID de usuario' : 'User ID de jugador' }}</span>
+                  <span>
+                    @if (isRobloxRecharge()) {
+                      Correo para recibir el codigo
+                    } @else if (isMobileLegendsRecharge()) {
+                      ID de usuario
+                    } @else {
+                      User ID de jugador
+                    }
+                  </span>
 
                   @if (isMobileLegendsRecharge()) {
                     <button
@@ -204,6 +221,40 @@
                       <small>El primer numero es tu ID y el numero entre parentesis es el Zone ID.</small>
                     </div>
                   }
+                } @else if (isRobloxRecharge()) {
+                  <input
+                    id="playerEmailInput"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    [(ngModel)]="emailUsuario"
+                    (ngModelChange)="clearIdAttention()"
+                    placeholder="correo@ejemplo.com"
+                    required>
+                  <small>
+                    @if (idAttention()) {
+                      Necesitamos un correo valido para enviarte el codigo de Roblox.
+                    } @else {
+                      Enviaremos el codigo de Roblox a este correo cuando tu compra quede confirmada.
+                    }
+                  </small>
+
+                  <div class="roblox-redeem-guide" role="note">
+                    <div class="redeem-guide-head">
+                      <span class="material-icons notranslate" translate="no">redeem</span>
+                      <div>
+                        <strong>Como usar tu codigo Roblox</strong>
+                        <small>Guardalo y canjealo solamente en la pagina oficial.</small>
+                      </div>
+                    </div>
+
+                    <ol class="redeem-steps">
+                      <li>Cuando recibas el codigo, entra desde tu navegador a <b>roblox.com/redeem</b>.</li>
+                      <li>Inicia sesion en la cuenta de Roblox donde quieres usar el saldo.</li>
+                      <li>Pega el codigo en el campo de canje y confirma la operacion.</li>
+                      <li>Si Roblox te muestra credito disponible, conviertelo a Robux desde esa misma seccion.</li>
+                    </ol>
+                  </div>
                 } @else {
                   <input
                     id="playerIdInput"
@@ -425,11 +476,11 @@
             }
 
             @for (item of carrito(); track item.idInterno) {
-              <div class="cart-item-row">
-                <div class="cart-item-info">
-                  <span class="cart-item-qty">{{ item.paquete.cant }}</span>
-                  <span class="cart-item-id">ID: {{ item.idUsuario }}</span>
-                </div>
+                <div class="cart-item-row">
+                  <div class="cart-item-info">
+                    <span class="cart-item-qty">{{ item.paquete.cant }}</span>
+                    <span class="cart-item-id">{{ item.accountLabel || 'ID' }}: {{ item.idUsuario }}</span>
+                  </div>
                 <div class="cart-item-price">
                   @if (item.paquete.promotion) {
                     <div class="summary-price-stack">

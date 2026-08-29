@@ -12,6 +12,7 @@ export interface ItemCarrito {
   idInterno: number;
   juego: string;
   idUsuario: string;
+  accountLabel?: string;
   accountData?: Array<{
     key: string;
     value: string;

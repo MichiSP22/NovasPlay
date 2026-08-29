@@ -67,6 +67,10 @@ export class Chekout implements OnInit, OnDestroy {
     const name = this.normalizeLookupText(this.juego()?.name || '');
     return name.includes('mobile legends') || name.includes('mlbb') || name.includes('bang bang');
   });
+  isRobloxRecharge = computed(() => {
+    const name = this.normalizeLookupText(this.juego()?.name || '');
+    return name.includes('roblox') || name.includes('robux');
+  });
 
   idUsuario = '';
   zoneIdUsuario = '';
@@ -545,6 +549,7 @@ export class Chekout implements OnInit, OnDestroy {
     this.cartService.addItem({
       juego: this.juegoNombre(),
       idUsuario: accountPayload.displayValue,
+      accountLabel: accountPayload.displayLabel,
       accountData: accountPayload.data,
       paquete: this.paqueteSeleccionado()!,
       metodoPagoId: this.metodoPagoSeleccionado()!,
@@ -556,7 +561,44 @@ export class Chekout implements OnInit, OnDestroy {
     this.triggerNovixReaction('success', 'Recarga agregada. La deje lista en tu resumen.');
   }
 
-  private buildAccountPayload(): { displayValue: string; data: Array<{ key: string; value: string }> } | null {
+  private buildAccountPayload(): { displayLabel: string; displayValue: string; data: Array<{ key: string; value: string }> } | null {
+    if (this.juego()?.internalProcess) {
+      const account = this.idUsuario.trim() || 'Interno';
+      return {
+        displayLabel: 'Cuenta',
+        displayValue: account,
+        data: [{ key: 'Cuenta', value: account }],
+      };
+    }
+
+    if (this.isRobloxRecharge()) {
+      const email = this.emailUsuario.trim();
+      if (!email) {
+        this.triggerNovixReaction('warn', 'Para Roblox necesito el correo donde enviaremos el codigo.');
+        this.idAttention.set(true);
+        this.notificationService.show('error', 'Debes ingresar el correo donde recibiras el codigo de Roblox.');
+        this.focusRechargeStep('accountStep', 'playerEmailInput', true);
+        return null;
+      }
+
+      if (!this.isValidEmail(email)) {
+        this.triggerNovixReaction('warn', 'Ese correo no se ve completo. Revisalo antes de seguir.');
+        this.idAttention.set(true);
+        this.notificationService.show('error', 'Ingresa un correo valido para recibir el codigo de Roblox.');
+        this.focusRechargeStep('accountStep', 'playerEmailInput', true);
+        return null;
+      }
+
+      return {
+        displayLabel: 'Correo',
+        displayValue: email,
+        data: [
+          { key: 'Cuenta', value: email },
+          { key: 'Correo', value: email },
+        ],
+      };
+    }
+
     const playerId = this.idUsuario.trim();
     if (!playerId) {
       this.triggerNovixReaction('warn', this.isMobileLegendsRecharge()
@@ -587,6 +629,7 @@ export class Chekout implements OnInit, OnDestroy {
       }
 
       return {
+        displayLabel: 'ID',
         displayValue: `${playerId} (${zoneId})`,
         data: [
           { key: 'Cuenta', value: `${playerId} (${zoneId})` },
@@ -597,9 +640,14 @@ export class Chekout implements OnInit, OnDestroy {
     }
 
     return {
+      displayLabel: 'ID',
       displayValue: playerId,
       data: [{ key: 'Cuenta', value: playerId }],
     };
+  }
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
   }
 
   eliminarDelCarrito(idInterno: number) {
@@ -666,7 +714,19 @@ export class Chekout implements OnInit, OnDestroy {
       ];
     }
 
-    if (this.juego() && !this.juego()?.internalProcess && !this.idUsuario.trim()) {
+    const isAccountMissing = this.isRobloxRecharge()
+      ? !this.emailUsuario.trim()
+      : !this.idUsuario.trim();
+
+    if (this.juego() && !this.juego()?.internalProcess && isAccountMissing) {
+      if (this.isRobloxRecharge()) {
+        return [
+          'Coloca tu correo de entrega.',
+          'Ahi enviaremos el codigo de Roblox.',
+          'Revisa que no tenga errores.'
+        ];
+      }
+
       if (this.isMobileLegendsRecharge()) {
         return [
           'Coloca tu ID de usuario.',
@@ -724,14 +784,20 @@ export class Chekout implements OnInit, OnDestroy {
   clearIdAttention() {
     const wasMissing = this.idAttention();
     const playerId = this.idUsuario.trim();
-    const isValidPlayerId = this.isMobileLegendsRecharge() ? /^\d+$/.test(playerId) : !!playerId;
+    const isValidPlayerId = this.isRobloxRecharge()
+      ? this.isValidEmail(this.emailUsuario.trim())
+      : this.isMobileLegendsRecharge()
+        ? /^\d+$/.test(playerId)
+        : !!playerId;
 
     if (isValidPlayerId) {
       this.idAttention.set(false);
       if (wasMissing) {
-        this.triggerNovixReaction('success', this.isMobileLegendsRecharge()
-          ? 'Perfecto, ya tengo el ID. Ahora revisa el Zone ID.'
-          : 'Perfecto, ya tengo el ID. Sigamos con el pago.');
+        this.triggerNovixReaction('success', this.isRobloxRecharge()
+          ? 'Correo listo. Cuando completes la compra te enviamos el codigo.'
+          : this.isMobileLegendsRecharge()
+            ? 'Perfecto, ya tengo el ID. Ahora revisa el Zone ID.'
+            : 'Perfecto, ya tengo el ID. Sigamos con el pago.');
       } else {
         this.resetNovixMessage();
       }
