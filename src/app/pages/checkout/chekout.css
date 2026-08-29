@@ -892,6 +892,10 @@
   font-size: 0.78rem;
 }
 
+.mobile-legends-inline-guide {
+  display: none;
+}
+
 .account-field input {
   width: 100%;
   min-height: 54px;
@@ -1722,17 +1726,37 @@
   }
 
   .account-help-popover {
-    right: 0;
-    top: calc(100% + 10px);
-    width: min(300px, calc(100vw - 56px));
-    max-height: 280px;
-    transform: translateY(8px) scale(0.98);
+    display: none;
   }
 
-  .account-help-btn:hover .account-help-popover,
-  .account-help-btn:focus .account-help-popover,
-  .account-help-btn:focus-visible .account-help-popover {
-    transform: translateY(0) scale(1);
+  .mobile-legends-inline-guide {
+    display: grid;
+    gap: 8px;
+    max-width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(121, 215, 207, 0.28);
+    border-radius: 8px;
+    background: rgba(5, 9, 15, 0.68);
+  }
+
+  .mobile-legends-inline-guide img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    object-fit: contain;
+    border-radius: 7px;
+    background: rgba(121, 215, 207, 0.08);
+  }
+
+  .mobile-legends-inline-guide strong {
+    color: #fff;
+    font-size: 0.88rem;
+    line-height: 1.2;
+  }
+
+  .mobile-legends-inline-guide small {
+    color: var(--text-2);
+    font-size: 0.78rem;
   }
 }
 

@@ -137,7 +137,12 @@
                   <span>{{ isMobileLegendsRecharge() ? 'ID de usuario' : 'User ID de jugador' }}</span>
 
                   @if (isMobileLegendsRecharge()) {
-                    <button class="account-help-btn" type="button" aria-label="Ver donde encontrar tu ID y Zone ID">
+                    <button
+                      class="account-help-btn"
+                      type="button"
+                      aria-label="Ver donde encontrar tu ID y Zone ID"
+                      [attr.aria-expanded]="mobileLegendsHelpOpen()"
+                      (click)="toggleMobileLegendsHelp()">
                       <span class="material-icons notranslate" translate="no">help</span>
                       <span class="account-help-popover" aria-hidden="true">
                         <img src="/mobile-legends-id-guide.jpeg" alt="" loading="lazy" decoding="async">
@@ -187,6 +192,18 @@
                       En Mobile Legends se ve como ID: 12345678 (1234). Ingresa ambos datos para evitar errores.
                     }
                   </small>
+
+                  @if (mobileLegendsHelpOpen()) {
+                    <div class="mobile-legends-inline-guide" role="note">
+                      <img
+                        src="/mobile-legends-id-guide.jpeg"
+                        alt="Ejemplo de ID y Zone ID en el perfil de Mobile Legends"
+                        loading="lazy"
+                        decoding="async">
+                      <strong>Busca tu ID en tu perfil del juego.</strong>
+                      <small>El primer numero es tu ID y el numero entre parentesis es el Zone ID.</small>
+                    </div>
+                  }
                 } @else {
                   <input
                     id="playerIdInput"

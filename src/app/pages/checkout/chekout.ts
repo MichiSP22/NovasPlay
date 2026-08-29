@@ -52,6 +52,7 @@ export class Chekout implements OnInit, OnDestroy {
   authRequiredNotice = signal<boolean>(false);
   idAttention = signal<boolean>(false);
   zoneAttention = signal<boolean>(false);
+  mobileLegendsHelpOpen = signal<boolean>(false);
   novixMessageIndex = signal<number>(0);
   novixPrompt = signal<string | null>(null);
   novixReaction = signal<'idle' | 'warn' | 'success'>('idle');
@@ -748,6 +749,10 @@ export class Chekout implements OnInit, OnDestroy {
         this.resetNovixMessage();
       }
     }
+  }
+
+  toggleMobileLegendsHelp() {
+    this.mobileLegendsHelpOpen.update(open => !open);
   }
 
   private startNovixMessageLoop() {
