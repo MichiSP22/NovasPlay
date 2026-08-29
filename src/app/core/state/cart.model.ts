@@ -12,6 +12,10 @@ export interface ItemCarrito {
   idInterno: number;
   juego: string;
   idUsuario: string;
+  accountData?: Array<{
+    key: string;
+    value: string;
+  }>;
   paquete: Paquete;
   metodoPagoId: number;
   metodoPagoNombre: string;

@@ -126,26 +126,84 @@
             <div class="panel-body">
               <div class="panel-heading">
                 <span class="panel-kicker">Cuenta destino</span>
-                <h2>Identifica al jugador</h2>
+                <h2>{{ isMobileLegendsRecharge() ? 'Ingresa tu ID de usuario' : 'Identifica al jugador' }}</h2>
               </div>
 
-              <label class="account-field" [class.needs-attention]="idAttention()">
-                <span>User ID de jugador</span>
-                <input
-                  id="playerIdInput"
-                  type="text"
-                  [(ngModel)]="idUsuario"
-                  (ngModelChange)="clearIdAttention()"
-                  placeholder="Ej: 12345678"
-                  required>
-                <small>
-                  @if (idAttention()) {
-                    Falta este dato para poder agregar la recarga.
-                  } @else {
-                    Asegurate de que el ID sea correcto antes de agregar la recarga.
+              <div
+                class="account-field"
+                [class.mobile-legends-field]="isMobileLegendsRecharge()"
+                [class.needs-attention]="idAttention() || zoneAttention()">
+                <div class="account-field-heading">
+                  <span>{{ isMobileLegendsRecharge() ? 'ID de usuario' : 'User ID de jugador' }}</span>
+
+                  @if (isMobileLegendsRecharge()) {
+                    <button class="account-help-btn" type="button" aria-label="Ver donde encontrar tu ID y Zone ID">
+                      <span class="material-icons notranslate" translate="no">help</span>
+                      <span class="account-help-popover" aria-hidden="true">
+                        <img src="/mobile-legends-id-guide.jpeg" alt="">
+                        <strong>Busca tu ID en tu perfil del juego.</strong>
+                        <small>El primer numero es tu ID y el numero entre parentesis es el Zone ID.</small>
+                      </span>
+                    </button>
                   }
-                </small>
-              </label>
+                </div>
+
+                @if (isMobileLegendsRecharge()) {
+                  <div class="ml-account-grid">
+                    <label class="ml-id-box" [class.needs-attention]="idAttention()">
+                      <span class="field-mini-label">User ID</span>
+                      <input
+                        id="playerIdInput"
+                        type="text"
+                        inputmode="numeric"
+                        [(ngModel)]="idUsuario"
+                        (ngModelChange)="clearIdAttention()"
+                        placeholder="Ej: 1756529665"
+                        required>
+                    </label>
+
+                    <label class="ml-zone-box" [class.needs-attention]="zoneAttention()">
+                      <span class="field-mini-label">Zone ID</span>
+                      <span class="zone-mark">(</span>
+                      <input
+                        id="zoneIdInput"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="4"
+                        [(ngModel)]="zoneIdUsuario"
+                        (ngModelChange)="clearZoneAttention()"
+                        placeholder="1776"
+                        required>
+                      <span class="zone-mark">)</span>
+                    </label>
+                  </div>
+
+                  <small>
+                    @if (idAttention()) {
+                      Falta tu ID de usuario para poder agregar la recarga.
+                    } @else if (zoneAttention()) {
+                      Falta el Zone ID de 4 digitos que aparece entre parentesis.
+                    } @else {
+                      En Mobile Legends se ve como ID: 12345678 (1234). Ingresa ambos datos para evitar errores.
+                    }
+                  </small>
+                } @else {
+                  <input
+                    id="playerIdInput"
+                    type="text"
+                    [(ngModel)]="idUsuario"
+                    (ngModelChange)="clearIdAttention()"
+                    placeholder="Ej: 12345678"
+                    required>
+                  <small>
+                    @if (idAttention()) {
+                      Falta este dato para poder agregar la recarga.
+                    } @else {
+                      Asegurate de que el ID sea correcto antes de agregar la recarga.
+                    }
+                  </small>
+                }
+              </div>
             </div>
           </section>
         }

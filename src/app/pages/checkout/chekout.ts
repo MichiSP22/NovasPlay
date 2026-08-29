@@ -51,6 +51,7 @@ export class Chekout implements OnInit, OnDestroy {
   telefonoInvalido = signal<boolean>(false);
   authRequiredNotice = signal<boolean>(false);
   idAttention = signal<boolean>(false);
+  zoneAttention = signal<boolean>(false);
   novixMessageIndex = signal<number>(0);
   novixPrompt = signal<string | null>(null);
   novixReaction = signal<'idle' | 'warn' | 'success'>('idle');
@@ -61,8 +62,13 @@ export class Chekout implements OnInit, OnDestroy {
 
   juego = signal<Product | null>(null);
   juegoNombre = computed(() => this.juego()?.name || 'Cargando...');
+  isMobileLegendsRecharge = computed(() => {
+    const name = this.normalizeLookupText(this.juego()?.name || '');
+    return name.includes('mobile legends') || name.includes('mlbb') || name.includes('bang bang');
+  });
 
   idUsuario = '';
+  zoneIdUsuario = '';
   emailUsuario = '';
 
   paqueteSeleccionado = signal<Paquete | null>(null);
@@ -392,6 +398,14 @@ export class Chekout implements OnInit, OnDestroy {
     return cleanUrl;
   }
 
+  private normalizeLookupText(value: string): string {
+    return (value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
   formatWaitTime(timeStr: string): string {
     if (!timeStr) return '0 min';
     const [h, m] = timeStr.split(':').map(val => parseInt(val, 10) || 0);
@@ -511,13 +525,9 @@ export class Chekout implements OnInit, OnDestroy {
   }
 
   agregarAlCarrito() {
-    if (!this.idUsuario.trim()) {
-      this.triggerNovixReaction('warn', 'Ey, falta tu ID. Colocalo primero para evitar errores.');
-      this.idAttention.set(true);
-      this.notificationService.show('error', 'Debes ingresar tu User ID (Paso 01) antes de agregar al carrito.');
-      this.focusRechargeStep('accountStep', 'playerIdInput', true);
-      return;
-    }
+    const accountPayload = this.buildAccountPayload();
+    if (!accountPayload) return;
+
     if (!this.metodoPagoSeleccionado()) {
       this.triggerNovixReaction('warn', 'Aun falta el metodo de pago. Escoge uno y seguimos.');
       this.notificationService.show('error', 'Debes seleccionar un metodo de pago antes de agregar la recarga.');
@@ -533,7 +543,8 @@ export class Chekout implements OnInit, OnDestroy {
 
     this.cartService.addItem({
       juego: this.juegoNombre(),
-      idUsuario: this.idUsuario,
+      idUsuario: accountPayload.displayValue,
+      accountData: accountPayload.data,
       paquete: this.paqueteSeleccionado()!,
       metodoPagoId: this.metodoPagoSeleccionado()!,
       metodoPagoNombre: this.metodoPagoSeleccionadoNombre(),
@@ -542,6 +553,52 @@ export class Chekout implements OnInit, OnDestroy {
     this.notificationService.show('success', 'Recarga agregada al carrito.');
     this.paqueteSeleccionado.set(null);
     this.triggerNovixReaction('success', 'Recarga agregada. La deje lista en tu resumen.');
+  }
+
+  private buildAccountPayload(): { displayValue: string; data: Array<{ key: string; value: string }> } | null {
+    const playerId = this.idUsuario.trim();
+    if (!playerId) {
+      this.triggerNovixReaction('warn', this.isMobileLegendsRecharge()
+        ? 'Ey, falta tu ID de usuario. En Mobile Legends va antes del parentesis.'
+        : 'Ey, falta tu ID. Colocalo primero para evitar errores.');
+      this.idAttention.set(true);
+      this.notificationService.show('error', 'Debes ingresar tu User ID (Paso 01) antes de agregar al carrito.');
+      this.focusRechargeStep('accountStep', 'playerIdInput', true);
+      return null;
+    }
+
+    if (this.isMobileLegendsRecharge()) {
+      if (!/^\d+$/.test(playerId)) {
+        this.triggerNovixReaction('warn', 'El ID de Mobile Legends debe contener solo numeros.');
+        this.idAttention.set(true);
+        this.notificationService.show('error', 'El User ID de Mobile Legends debe contener solo numeros.');
+        this.focusRechargeStep('accountStep', 'playerIdInput', true);
+        return null;
+      }
+
+      const zoneId = this.zoneIdUsuario.trim();
+      if (!/^\d{4}$/.test(zoneId)) {
+        this.triggerNovixReaction('warn', 'Falta el Zone ID de 4 digitos. Es el numero que va entre parentesis.');
+        this.zoneAttention.set(true);
+        this.notificationService.show('error', 'Debes ingresar el Zone ID de 4 digitos para Mobile Legends.');
+        this.focusRechargeStep('accountStep', 'zoneIdInput', true);
+        return null;
+      }
+
+      return {
+        displayValue: `${playerId} (${zoneId})`,
+        data: [
+          { key: 'Cuenta', value: `${playerId} (${zoneId})` },
+          { key: 'User ID', value: playerId },
+          { key: 'Zone ID', value: zoneId },
+        ],
+      };
+    }
+
+    return {
+      displayValue: playerId,
+      data: [{ key: 'Cuenta', value: playerId }],
+    };
   }
 
   eliminarDelCarrito(idInterno: number) {
@@ -609,10 +666,26 @@ export class Chekout implements OnInit, OnDestroy {
     }
 
     if (this.juego() && !this.juego()?.internalProcess && !this.idUsuario.trim()) {
+      if (this.isMobileLegendsRecharge()) {
+        return [
+          'Coloca tu ID de usuario.',
+          'El Zone ID va en el campo pequeno.',
+          'Revisa los numeros antes de seguir.'
+        ];
+      }
+
       return [
         'Coloca tu ID para cargar sin errores.',
         'Revisa que no falte ningun numero.',
         'Tu ID es la llave de esta recarga.'
+      ];
+    }
+
+    if (this.isMobileLegendsRecharge() && !/^\d{4}$/.test(this.zoneIdUsuario.trim())) {
+      return [
+        'Ahora coloca el Zone ID.',
+        'Son 4 digitos entre parentesis.',
+        'El ejemplo se abre en el signo de ayuda.'
       ];
     }
 
@@ -649,10 +722,28 @@ export class Chekout implements OnInit, OnDestroy {
 
   clearIdAttention() {
     const wasMissing = this.idAttention();
-    if (this.idUsuario.trim()) {
+    const playerId = this.idUsuario.trim();
+    const isValidPlayerId = this.isMobileLegendsRecharge() ? /^\d+$/.test(playerId) : !!playerId;
+
+    if (isValidPlayerId) {
       this.idAttention.set(false);
       if (wasMissing) {
-        this.triggerNovixReaction('success', 'Perfecto, ya tengo el ID. Sigamos con el pago.');
+        this.triggerNovixReaction('success', this.isMobileLegendsRecharge()
+          ? 'Perfecto, ya tengo el ID. Ahora revisa el Zone ID.'
+          : 'Perfecto, ya tengo el ID. Sigamos con el pago.');
+      } else {
+        this.resetNovixMessage();
+      }
+    }
+  }
+
+  clearZoneAttention() {
+    const wasMissing = this.zoneAttention();
+    const zoneId = this.zoneIdUsuario.trim();
+    if (/^\d{4}$/.test(zoneId)) {
+      this.zoneAttention.set(false);
+      if (wasMissing) {
+        this.triggerNovixReaction('success', 'Zone ID listo. Ya podemos seguir.');
       } else {
         this.resetNovixMessage();
       }

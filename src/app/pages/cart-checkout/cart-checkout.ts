@@ -310,8 +310,14 @@ export class CartCheckoutComponent implements OnInit, OnDestroy {
     allItems.forEach((item, index) => {
       formData.append(`Items[${index}].DetailID`, item.paquete.id.toString());
       formData.append(`Items[${index}].PaymentID`, item.metodoPagoId.toString());
-      formData.append(`Items[${index}].Data[0].Key`, 'Cuenta');
-      formData.append(`Items[${index}].Data[0].Value`, item.idUsuario || '');
+      const itemData = item.accountData?.length
+        ? item.accountData
+        : [{ key: 'Cuenta', value: item.idUsuario || '' }];
+
+      itemData.forEach((data, dataIndex) => {
+        formData.append(`Items[${index}].Data[${dataIndex}].Key`, data.key);
+        formData.append(`Items[${index}].Data[${dataIndex}].Value`, data.value);
+      });
       
       const ref = this.references()[item.metodoPagoId];
       formData.append(`Items[${index}].Reference`, ref);
