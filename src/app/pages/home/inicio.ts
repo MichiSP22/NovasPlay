@@ -17,7 +17,6 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   public configService = inject(CompanyConfigService);
   private contentImageService = inject(ContentImageService);
 
-  public showWelcomeFlyer = signal(false);
   public showAnnouncementPopup = signal(false);
   public announcementImages = signal<ContentImage[]>([]);
   public activeAnnouncementIndex = signal(0);
@@ -93,32 +92,12 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   closePopupOnEscape() {
     if (this.showAnnouncementPopup()) {
       this.closeAnnouncementPopup();
-      return;
     }
-
-    if (this.showWelcomeFlyer()) {
-      this.closeWelcomeFlyer();
-    }
-  }
-
-  openWelcomeFlyer() {
-    this.showAnnouncementPopup.set(false);
-    this.showWelcomeFlyer.set(true);
-    this.lockBodyScroll();
-  }
-
-  closeWelcomeFlyer() {
-    this.showWelcomeFlyer.set(false);
-    this.unlockBodyScroll();
   }
 
   openAnnouncementPopup() {
-    if (this.announcementImages().length === 0) {
-      this.openWelcomeFlyer();
-      return;
-    }
+    if (this.announcementImages().length === 0) return;
 
-    this.showWelcomeFlyer.set(false);
     this.activeAnnouncementIndex.set(0);
     this.showAnnouncementPopup.set(true);
     this.lockBodyScroll();
@@ -165,16 +144,8 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.announcementImageLayout.set('portrait');
   }
-  goToCatalog() {
-    this.showWelcomeFlyer.set(false);
-    this.showAnnouncementPopup.set(false);
-    this.unlockBodyScroll();
-    this.scrollToCatalog();
-  }
-
   openAnnouncementTarget(announcement: ContentImage | null) {
     const target = announcement?.targetLink?.trim() || '#catalogo';
-    this.showWelcomeFlyer.set(false);
     this.showAnnouncementPopup.set(false);
     this.unlockBodyScroll();
 
@@ -197,20 +168,6 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     window.location.href = target;
-  }
-
-  openNovabot() {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-
-    const launcher = document.getElementById('novasplay-chat-launcher') as HTMLButtonElement | null;
-    if (launcher) {
-      launcher.click();
-      return;
-    }
-
-    const tawkApi = (window as any).Tawk_API;
-    if (tawkApi?.showWidget) tawkApi.showWidget();
-    if (tawkApi?.maximize) tawkApi.maximize();
   }
 
   private scrollToCatalog() {
@@ -291,7 +248,6 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.openWelcomeFlyer();
   }
 
   private shouldSkipInitialPopup(): boolean {
