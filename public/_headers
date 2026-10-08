@@ -24,3 +24,12 @@
 
 /Access/*
   X-Robots-Tag: noindex, nofollow
+
+/index.csr
+  X-Robots-Tag: noindex, follow
+
+/index.csr.html
+  X-Robots-Tag: noindex, follow
+
+/404.html
+  X-Robots-Tag: noindex, follow

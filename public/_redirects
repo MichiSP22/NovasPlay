@@ -2,4 +2,15 @@
 /recargas-free-fire /recargas-free-fire/ 301
 /recargas-blood-strike /recargas-blood-strike/ 301
 /terms-view /terms-view/ 301
-/* /index.html 200
+# Only application routes use the client shell. Unknown URLs must return 404.
+# Use the extensionless target so Pages does not redirect away from the route.
+/admin /index.csr 200
+/admin/ /index.csr 200
+/profile /index.csr 200
+/profile/ /index.csr 200
+/cart-checkout /index.csr 200
+/cart-checkout/ /index.csr 200
+/Access/Google/Callback /index.csr 200
+/Access/Google/Callback/ /index.csr 200
+/checkout/:id /index.csr 200
+/checkout/:id/ /index.csr 200

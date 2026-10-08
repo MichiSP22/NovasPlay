@@ -59,6 +59,12 @@ app.use((req, res, next) => {
     return;
   }
 
+  if (pagePath !== '/' && req.path !== `${pagePath}/`) {
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(301, `${pagePath}/${query}`);
+    return;
+  }
+  res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
   res.sendFile(absoluteHtmlFile);
 });
 /**
@@ -69,6 +75,14 @@ app.use(
     maxAge: '1y',
     index: false,
     redirect: false,
+    setHeaders: (res, filePath) => {
+      if (/\.(html|xml|txt)$/.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+      if (filePath.endsWith('index.csr.html') || filePath.endsWith('404.html')) {
+        res.setHeader('X-Robots-Tag', 'noindex, follow');
+      }
+    },
   }),
 );
 

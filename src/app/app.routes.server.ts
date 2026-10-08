@@ -43,6 +43,8 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: '**',
-    renderMode: RenderMode.Server
+    renderMode: RenderMode.Server,
+    status: 404,
+    headers: { 'X-Robots-Tag': 'noindex, follow' }
   }
 ];

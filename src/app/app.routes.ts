@@ -33,5 +33,5 @@ export const routes: Routes = [
   { path: APP_PATHS.profile, component: UserProfileComponent },
   { path: APP_PATHS.authGoogleCallback, loadComponent: () => import('./pages/auth/auth-callback/auth-callback').then(c => c.AuthCallbackComponent) },
   { path: APP_PATHS.terms, loadComponent: () => import('./pages/terms/terms-page').then(c => c.TermsPageComponent) },
-  { path: APP_PATHS.wildcard, redirectTo: APP_PATHS.home },
+  { path: APP_PATHS.wildcard, loadComponent: () => import('./pages/not-found/not-found').then(c => c.NotFoundComponent), data: { notFound: true } },
 ];

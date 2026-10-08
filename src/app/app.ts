@@ -95,34 +95,24 @@ export class App implements OnInit {
         : 'noindex,follow,max-image-preview:large',
     });
 
-    if (isTerms) {
-      this.titleService.setTitle('Términos y condiciones | NovasPlay');
-      this.meta.updateTag({
-        name: 'description',
-        content: 'Consulta los términos y condiciones de uso de NovasPlay para compras, pagos y recargas online.',
-      });
-      return;
-    }
-
-    if (seoPage) {
-      this.titleService.setTitle(seoPage.title);
-      this.meta.updateTag({
-        name: 'description',
-        content: seoPage.description,
-      });
-      this.meta.updateTag({ property: 'og:title', content: seoPage.title });
-      this.meta.updateTag({ property: 'og:description', content: seoPage.description });
-      this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
-      this.meta.updateTag({ name: 'twitter:title', content: seoPage.title });
-      this.meta.updateTag({ name: 'twitter:description', content: seoPage.description });
-      return;
-    }
-
-    this.titleService.setTitle('NovasPlay | Recargas online para juegos');
-    this.meta.updateTag({
-      name: 'description',
-      content: 'NovasPlay es una tienda de recargas online para juegos. Compra diamantes, monedas, pases y saldo gamer con pagos verificados, soporte directo y seguimiento de tu orden.',
-    });
+    const isNotFound = this.route.firstChild?.snapshot.data['notFound'] === true;
+    const page = isNotFound ? {
+      title: 'Página no encontrada | NovasPlay',
+      description: 'Esta dirección no existe. Vuelve al inicio o al catálogo de NovasPlay.',
+    } : isTerms ? {
+      title: 'Términos y condiciones | NovasPlay',
+      description: 'Consulta los términos y condiciones de uso de NovasPlay para compras, pagos y recargas online.',
+    } : seoPage || {
+      title: 'NovasPlay | Recargas online para juegos',
+      description: 'NovasPlay es una tienda de recargas online para juegos. Compra diamantes, monedas, pases y saldo gamer con pagos verificados, soporte directo y seguimiento de tu orden.',
+    };
+    this.titleService.setTitle(page.title);
+    this.meta.updateTag({ name: 'description', content: page.description });
+    this.meta.updateTag({ property: 'og:title', content: page.title });
+    this.meta.updateTag({ property: 'og:description', content: page.description });
+    this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
+    this.meta.updateTag({ name: 'twitter:title', content: page.title });
+    this.meta.updateTag({ name: 'twitter:description', content: page.description });
   }
 
   private getCleanPath(url: string): string {
